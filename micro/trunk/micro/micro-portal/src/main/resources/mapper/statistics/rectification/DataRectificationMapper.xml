@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.statistics.rectification.mapper.DataRectificationMapper">
+
+    <resultMap id="dataRectificationMap" type="com.cloud.portal.statistics.rectification.model.DataRectification">
+        <result property="hylx" column="hylx"/>
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="code" column="code"/>
+        <result property="total" column="total"/>
+        <result property="completed" column="completed"/>
+        <result property="onTime" column="on_time"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="completedPercent" column="completed_percent"/>
+        <result property="onTimePercent" column="on_time_percent"/>
+    </resultMap>
+
+    <select id="treeList" resultMap="dataRectificationMap">
+        select a.id,
+        a.parent_id,
+        a.code,
+        nvl(b.total, 0) as total,
+        nvl(b.COMPLETED, 0) as COMPLETED,
+        nvl(b.ON_TIME, 0) as ON_TIME,
+        nvl2(b.completed,b.completed/b.total,0) as completed_percent,
+        nvl2(b.ON_TIME,b.ON_TIME/b.total,0) as on_time_percent
+        from（
+        select t.code,
+        sum(t.total) as total,
+        sum(t.COMPLETED) as COMPLETED,
+        sum(t.ON_TIME) as ON_TIME
+        from t_thcs_statistics_data_rectify t
+        <where>
+            <if test="query.code!=null and query.code!=''">
+                and t.code like #{query.code}||'%'
+            </if>
+            <if test="query.hylx!=null and query.hylx!=''">
+                and t.hylx = #{query.hylx}
+            </if>
+            <if test="query.starTime != null and query.starTime != ''">
+                AND t.send_time &gt;= to_date(#{query.starTime},'yyyy-mm-dd')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND t.send_time &lt;= to_date(#{query.endTime},'yyyy-mm-dd')
+            </if>
+        </where>
+        group by t.code) b
+        right join sys_area a
+        on a.code = b.code
+        <where>
+            <if test="query.code!=null and query.code!=''">
+                and a.code like #{query.code}||'%'
+            </if>
+        </where>
+        order by a.code
+    </select>
+
+</mapper>

@@ -1,0 +1,21 @@
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: ENC(Y5kjQIYvTB8hITXDsgZuSw==) #portal
+      client-secret: ENC(xWZB6li8jOnobv6/kdmRBzvX2UUWeC3d) #sunshine
+      scope: server
+
+
+  # 美亚API接口信息 支持驼峰形式传递参数
+maya-api:
+  token-url: https://68.26.19.197:8343/v1/apigw/oauth2/token
+  app-key: cfef1a50c3c84abe8836e226b18115af
+  secret-key: a2063e4e10e04e88b5dfe4d47e64827b
+  api-url:
+    ch-hotel-url: http://68.26.19.197:8380/gd_ga_za_gnlkxx
+    hk-hotel-url: http://68.26.19.197:8380/gd_ga_za_gatlkxx
+    fo-hotel-url: http://68.26.19.197:8380/gd_ga_za_gwlkxx
+    case-url: http://68.26.19.197:8380/gd_ga_za
+
+

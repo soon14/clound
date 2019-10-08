@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.CsbaMapper">
+
+    <resultMap id="csbaMap" type="com.cloud.portal.archive.ylcs.entity.Csba">
+        <result property="amcsPdbz" column="amcs_pdbz"/>
+        <result property="bgDengjishijian" column="bg_dengjishijian"/>
+        <result property="bgNotpass" column="bg_notpass"/>
+        <result property="bgState" column="bg_state"/>
+        <result property="bgTongguoshijian" column="bg_tongguoshijian"/>
+        <result property="compCode" column="comp_code"/>
+        <result property="compId" column="comp_id"/>
+        <result property="compName" column="comp_name"/>
+        <result property="compcodexl" column="compcodexl"/>
+        <result property="csbaBabh" column="csba_babh"/>
+        <result property="csbaBbgzrq" column="csba_bbgzrq"/>
+        <result property="csbaBbwcrq" column="csba_bbwcrq"/>
+        <result property="csbaBbyy" column="csba_bbyy"/>
+        <result property="csbaBxsl" column="csba_bxsl"/>
+        <result property="csbaBz" column="csba_bz"/>
+        <result property="csbaCz" column="csba_cz"/>
+        <result property="csbaDengjishijian" column="csba_dengjishijian"/>
+        <result property="csbaDjr" column="csba_djr"/>
+        <result property="csbaDjrzj" column="csba_djrzj"/>
+        <result property="csbaFddbr" column="csba_fddbr"/>
+        <result property="csbaFddbrzj" column="csba_fddbrzj"/>
+        <result property="csbaGddm" column="csba_gddm"/>
+        <result property="csbaGdxx" column="csba_gdxx"/>
+        <result property="csbaHdxfzsl" column="csba_hdxfzsl"/>
+        <result property="csbaId" column="csba_id"/>
+        <result property="csbaJd" column="csba_jd"/>
+        <result property="csbaJindu" column="csba_jindu"/>
+        <result property="csbaJjlx" column="csba_jjlx"/>
+        <result property="csbaJjlxdm" column="csba_jjlxdm"/>
+        <result property="csbaJydz" column="csba_jydz"/>
+        <result property="csbaJymc" column="csba_jymc"/>
+        <result property="csbaJymj" column="csba_jymj"/>
+        <result property="csbaJytzz" column="csba_jytzz"/>
+        <result property="csbaKyrq" column="csba_kyrq"/>
+        <result property="csbaLxdh" column="csba_lxdh"/>
+        <result property="csbaQzzl" column="csba_qzzl"/>
+        <result property="csbaSjzgbm" column="csba_sjzgbm"/>
+        <result property="csbaState" column="csba_state"/>
+        <result property="csbaTongguoshijian" column="csba_tongguoshijian"/>
+        <result property="csbaUpdatetime" column="csba_updatetime"/>
+        <result property="csbaWd" column="csba_wd"/>
+        <result property="csbaXkzfzjg" column="csba_xkzfzjg"/>
+        <result property="csbaXzdz" column="csba_xzdz"/>
+        <result property="csbaYljyxkz" column="csba_yljyxkz"/>
+        <result property="csbaYlnr" column="csba_ylnr"/>
+        <result property="csbaYyzz" column="csba_yyzz"/>
+        <result property="csbaYzbm" column="csba_yzbm"/>
+        <result property="csbaYzfzjg" column="csba_yzfzjg"/>
+        <result property="csbaYzfzjgdm" column="csba_yzfzjgdm"/>
+        <result property="csbaZagljg" column="csba_zagljg"/>
+        <result property="csbaZagljgdm" column="csba_zagljgdm"/>
+        <result property="csbaZajbdm" column="csba_zajbdm"/>
+        <result property="csbaZcmc" column="csba_zcmc"/>
+        <result property="csbaZjdm" column="csba_zjdm"/>
+        <result property="csbaZrmj" column="csba_zrmj"/>
+        <result property="csbaZzjgdm" column="csba_zzjgdm"/>
+        <result property="gwcsPdbz" column="gwcs_pdbz"/>
+        <result property="notpass" column="notpass"/>
+        <result property="state" column="state"/>
+        <result property="version" column="version"/>
+        <result property="ywLx" column="yw_lx"/>
+        <result property="yycsPdbz" column="yycs_pdbz"/>
+
+    </resultMap>
+
+    <select id="getCount" resultType="integer">
+        select COUNT(1) as num from THGL_RES.YL_CSBA A
+        <where>
+            <if test="dwmc != null and dwmc != ''">
+                AND A.csba_zcmc like '%'||#{dwmc}||'%'
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                and A.comp_code like '%'||#{orgCode}||'%'
+            </if>
+            <if test="placeType != null and placeType != ''">
+                and A.yw_lx = #{placeType}
+            </if>
+            <if test="placeState != null and placeState != ''">
+                and A.csba_state = #{placeState}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <select id="findListPage" resultMap="csbaMap">
+        select A.csba_id,A.CSBA_BABH,A.CSBA_ZZJGDM,A.CSBA_ZCMC,A.COMP_ID,A.COMP_CODE,A.YW_LX,A.csba_jjlx,A.csba_state,A.csba_jydz,
+        nvl(A.csba_zagljg,B.Comp_Name) as sspcs
+        from THGL_RES.YL_CSBA A
+        left join THGL_RES.yl_sys_company B on A.comp_code = B.comp_code
+        <where>
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.csba_zcmc like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.orgCode != null and query.orgCode != ''">
+                and A.comp_code like '%'||#{query.orgCode}||'%'
+            </if>
+            <if test="query.placeType != null and query.placeType != ''">
+                and A.yw_lx = #{query.placeType}
+            </if>
+            <if test="query.placeState != null and query.placeState != ''">
+                and A.csba_state = #{query.placeState}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+
+    <select id="getById" resultMap="csbaMap">
+        select * from THGL_RES.YL_CSBA A
+        <where>
+            <if test="csbaId != null and csbaId != ''">
+                AND A.csba_id = #{csbaId}
+            </if>
+        </where>
+    </select>
+</mapper>

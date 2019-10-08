@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.mechanical.mapper.CjclMapper">
+
+
+    <resultMap id="CjclMap" type="com.cloud.portal.archive.mechanical.model.Cjcl">
+        <result property="ywlsh"              column="ywlsh"/>
+        <result property="zagldwbm"           column="zagldwbm"/>
+        <result property="dwmc"               column="dwmc"/>
+        <result property="jdcsyrmc"           column="jdcsyrmc"/>
+        <result property="jdccllxdm"          column="jdccllxdm"/>
+        <result property="clzczp"            column="clzc_zp"       jdbcType="BLOB"/>
+        <result property="zwppmc"             column="zwppmc"/>
+        <result property="ywppmc"             column="ywppmc"/>
+        <result property="clxh"               column="clxh"/>
+        <result property="jdccsysdm"          column="jdccsysdm"/>
+        <result property="jdccsysdyfsdm"      column="jdccsysdyfsdm"/>
+        <result property="jdccsysdefsdm"      column="jdccsysdefsdm"/>
+        <result property="jdchphm"            column="jdchphm"/>
+        <result property="jdcfdjddjh"         column="jdcfdjddjh"/>
+        <result property="clsbdh"             column="clsbdh"/>
+        <result property="jdchpzldm"          column="jdchpzldm"/>
+        <result property="jdcxsgls"           column="jdcxsgls"/>
+        <result property="sxrxm"             column="sxr_xm"/>
+        <result property="sxrzjhm"          column="sxr_zjhm"/>
+        <result property="sxrcyzjdm"         column="sxr_cyzjdm"/>
+        <result property="sxrlxdh"           column="sxr_lxdh"/>
+        <result property="sxsj"               column="sxsj"/>
+        <result property="scrxm"             column="scr_xm"/>
+        <result property="clgzjyqk"          column="clgz_jyqk"/>
+        <result property="sjgsdwmc"           column="sjgsdwmc"/>
+        <result property="sjgsdwdm"           column="sjgsdwdm"/>
+        <result property="djsj"               column="djsj"/>
+        <result property="gxsj"               column="gxsj"/>
+        <result property="xxid"               column="xxid"/>
+        <result property="sjgxsm"             column="sjgxsm"/>
+        <result property="xh"                 column="xh"/>
+        <result property="xh1"                 column="xh1"/>
+        <result property="jjzt"                 column="jjzt"/>
+        <result property="jjcls"                 column="jjcls"/>
+        <result property="cjcls"                 column="cjcls"/>
+        <result property="qcrxm"                 column="qcr_xm"/>
+        <result property="qcrzjhm"                 column="qcr_zjhm"/>
+        <result property="qcrcyzjdm"                 column="qcr_cyzjdm"/>
+        <result property="qcrlxdh"                 column="qcr_lxdh"/>
+        <result property="qcsj"                 column="qcsj"/>
+    </resultMap>
+
+
+    <select id="findCjclPage" resultMap="CjclMap">
+        select rownum as xh1, t.*,case  when t1.ywlsh is null then '未交接' else '已交接' end as jjzt from THGL_RES.jx_tt_cjcljbxx t
+        left join THGL_RES.jx_tt_cjcljjxx t1
+        on t.ywlsh = t1.ywlsh
+        <where>
+            1=1
+            <if test="query.dwbh != null and query.dwbh != ''">
+                AND t.zagldwbm = #{query.dwbh}
+            </if>
+            <if test="query.jdccllxdm != null and query.jdccllxdm != ''">
+                AND t.jdccllxdm = #{query.jdccllxdm}
+            </if>
+            <if test="query.jdchphm != null and query.jdchphm != ''">
+                AND t.jdchphm = #{query.jdchphm}
+            </if>
+            <if test="query.sxrxm != null and query.sxrxm != ''">
+                AND t.sxrxm = #{query.sxrxm}
+            </if>
+            <if test="query.sxrzjhm != null and query.sxrzjhm != ''">
+                AND t.sxr_zjhm = #{query.sxrzjhm}
+            </if>
+            <if test="query.sxsj != null and query.sxsj != ''">
+                AND t.sxsj = #{query.sxsj}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="CountAll" resultMap="CjclMap">
+            select t1.cjcls,t2.jjcls from
+            (select count(1) as cjcls,max(t.zagldwbm) as zagldwbm from THGL_RES.jx_tt_cjcljbxx t where t.zagldwbm=#{dwbh} ${dataScope})t1
+            left join
+            (select count(1) as jjcls,max(t2.zagldwbm) as zagldwbm from(
+            select t.zagldwbm, case  when t1.ywlsh is null then '未交接' else '已交接' end as jjzt from THGL_RES.jx_tt_cjcljbxx t
+            left join THGL_RES.jx_tt_cjcljjxx t1
+            on t.ywlsh = t1.ywlsh
+            where t.zagldwbm=#{dwbh}
+            ${dataScope}) t2
+            where t2.jjzt='已交接')t2
+                  on t1.zagldwbm = t2.zagldwbm
+    </select>
+
+    <select id="getById" resultMap="CjclMap">
+        select rownum as xh1, t.*,t1.qcr_xm, t1.qcr_zjhm,  t1.qcr_cyzjdm,  t1.qcr_lxdh, t1.qcsj,
+        case  when t1.ywlsh is null then '未交接' else '已交接' end as jjzt from THGL_RES.jx_tt_cjcljbxx t
+        left join THGL_RES.jx_tt_cjcljjxx t1
+        on t.ywlsh = t1.ywlsh
+        <where>
+            <if test="ywlsh != null and ywlsh != ''">
+                t.ywlsh = #{ywlsh}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="findImgById" resultMap="CjclMap" >
+        select  A.clzczp from   THGL_RES.jx_tt_cjcljbxx  A
+        <where>
+            A.ywlsh=#{id} AND ROWNUM=1
+        </where>
+
+    </select>
+
+</mapper>

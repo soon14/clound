@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.RyLogMapper">
+
+    <resultMap id="ryLogMap" type="com.cloud.portal.archive.ylcs.entity.RyLog">
+        <result property="rylogId" column="rylog_id"/>
+        <result property="compName" column="comp_name"/>
+        <result property="compId" column="comp_id"/>
+        <result property="compCode" column="comp_code"/>
+        <result property="csbaBh" column="csba_bh"/>
+        <result property="rybaId" column="ryba_id"/>
+        <result property="rybaMc" column="ryba_mc"/>
+        <result property="rybaBh" column="ryba_bh"/>
+        <result property="rybaZp" column="ryba_zp"/>
+        <result property="csbaBabh" column="csba_babh"/>
+        <result property="rylogGzdd" column="rylog_gzdd"/>
+        <result property="rylogDksj" column="rylog_dksj"/>
+        <result property="rylogDklx" column="rylog_dklx"/>
+        <result property="rylogGwxx" column="rylog_gwxx"/>
+        <result property="rylogZp" column="rylog_zp"/>
+        <result property="idcardNum" column="idcard_num"/>
+        <result property="ryIdcardZp" column="ryIdcard_zp"/>
+        <result property="ywLx" column="yw_lx"/>
+        <result property="shebei" column="shebei"/>
+        <result property="sxbState" column="sxb_state"/>
+
+    </resultMap>
+
+    <sql id="ryLogColumns">
+        a.rylog_id   ,
+        a.csba_babh  ,
+        a.ryba_bh    ,
+        a.ryba_id    ,
+        a.ryba_mc    ,
+        a.idcard_num ,
+        a.ryba_zp    ,
+        a.ryidcard_zp,
+        a.rylog_dklx ,
+        a.rylog_dksj ,
+        a.rylog_gzdd ,
+        a.rylog_zp   ,
+        a.shebei     ,
+        a.sxb_state  ,
+        b.bg_djsj,
+        b.bg_notpass,
+        b.bg_state,
+        b.bg_tgsj,
+        b.comp_code,
+        b.comp_id,
+        b.comp_name,
+        b.csbabh,
+        b.fingerprint_data,
+        b.notpass,
+        b.ryba_basj,
+        b.ryba_bbgzsj,
+        b.ryba_bbwcsj,
+        b.ryba_bbyy,
+        b.ryba_bieming,
+        b.ryba_bz,
+        b.ryba_csrq,
+        b.ryba_cyzt,
+        b.ryba_djsj,
+        b.ryba_gjdm,
+        b.ryba_gwbh,
+        b.ryba_gwmc,
+        b.ryba_gwzrms,
+        b.ryba_gxsj,
+        b.ryba_hjdz,
+        b.ryba_hjqhdm,
+        b.ryba_hyzkdm,
+        b.ryba_jg     ,
+        b.ryba_jjlxr  ,
+        b.ryba_jjlxrdh,
+        b.ryba_jkzk   ,
+        b.ryba_jzdz   ,
+        b.ryba_lb     ,
+        b.ryba_lxdh   ,
+        b.ryba_lzsj   ,
+        b.ryba_mz     ,
+        b.ryba_mzdm   ,
+        b.ryba_pyqx   ,
+        b.ryba_qfjg   ,
+        b.ryba_sg     ,
+        b.ryba_ssfzr  ,
+        b.ryba_ssfzrdh,
+        b.ryba_tjrq   ,
+        b.ryba_whcd   ,
+        b.ryba_xb     ,
+        b.ryba_xx     ,
+        b.ryba_zhika  ,
+        b.ryba_zjdm   ,
+        b.ryba_zjhm   ,
+        b.ryba_zp2    ,
+        b.ryba_zp3    ,
+        b.ryba_zxsj   ,
+        b.ryba_zzzhm  ,
+        b.state       ,
+        b.version     ,
+        b.wgrxkzh     ,
+        b.yw_lx
+    </sql>
+
+    <select id="findRyLogPage" resultMap="ryLogMap">
+        select * from THGL_RES.YL_RY_LOG A
+        <where>
+            1=1
+            <if test="query.compId != null and query.compId != ''">
+                and A.comp_id = #{query.compId}
+            </if>
+            <if test="query.rybaMc != null and query.rybaMc != ''">
+                AND A.ryba_mc like '%'||#{query.rybaMc}||'%'
+            </if>
+            <if test="query.sxbState != null and query.sxbState != ''">
+                AND A.sxb_state = #{query.sxbState}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultMap="ryLogMap">
+        select
+        <include refid="ryLogColumns"/>
+         from THGL_RES.YL_RY_LOG a
+         left join THGL_RES.YL_RYBA b on a.ryba_id = b.ryba_id
+        <where>
+              1=1
+            <if test="rylogId != null and rylogId != ''">
+               and  a.rylog_id = #{rylogId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

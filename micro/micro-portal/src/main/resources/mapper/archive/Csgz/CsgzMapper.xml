@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.csgz.mapper.CsgzMapper">
+
+    <resultMap id="CsgzMap" type="com.cloud.portal.archive.csgz.model.Csgz">
+        <result property="id"              column="id"/>
+        <result property="createdate"           column="createdate"/>
+        <result property="lyxt"               column="lyxt"/>
+        <result property="csdwbh"           column="csdwbh"/>
+        <result property="userid"           column="user_id"/>
+    </resultMap>
+
+    <select id="getis" resultType="integer">
+        select count(1) as isgz from t_thcs_gzxx A
+        <where>
+            <if test="csdwbh != null and csdwbh != ''">
+                AND A.csdwbh = #{csdwbh}
+            </if>
+            <if test="userid != null and userid != ''">
+                AND A.user_id = #{userid}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <delete id="remove">
+        delete from t_thcs_gzxx A
+        <where>
+            <if test="csdwbh != null and csdwbh != ''">
+                AND A.csdwbh = #{csdwbh}
+            </if>
+            <if test="userid != null and userid != ''">
+                AND A.user_id = #{userid}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="savecsgz">
+        insert into t_thcs_gzxx
+        (
+         lyxt,
+         csdwbh,
+         user_id
+        )
+        values
+        (
+        #{lyxt},
+        #{dwbh},
+        #{userid}
+        )
+</insert>
+</mapper>

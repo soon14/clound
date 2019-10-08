@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.model.mapper.CollecMapper">
+
+    <resultMap id="CollectMap" type="com.cloud.portal.judged.model.model.Collect">
+        <result property="collect_time" column="collectTime"/>
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="model_id" column="modelId"/>
+        <result property="user_id" column="userId"/>
+        <result property="isCollect" column="isCollect"/>
+        <result property="links" column="links"/>
+        <result property="remark" column="remark"/>
+        <result property="sort" column="sort"/>
+        <result property="stars" column="stars"/>
+        <result property="type" column="type"/>
+        <result property="view_Times" column="viewTimes"/>
+        <result property="open_Type" column="openType"/>
+        <result property="create_Time" column="createTime"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="CollectMap">
+    select tt.id,tt.name,t.model_id,tt.open_Type,tt.type,tt.links,tt.remark,tt.create_Time,round(decode(tt.num,0,'',tt.stars/tt.num),1)as stars from t_thcs_menu_model_collect t left join t_thcs_menu_model tt on t.model_id = tt.id
+    <where>
+
+        <if test="query.userId != null and query.userId != ''">
+            AND t.user_id = #{query.userId}
+        </if>
+        <if test="query.modelId != null and query.modelId != ''">
+            AND t.model_id = #{query.modelId}
+        </if>
+        <if test="query.name != null and query.name != ''">
+            AND t.name = #{query.name}
+        </if>
+    </where>
+</select>
+
+    <select id="modelAll" resultMap="CollectMap">
+        select t.id,t.name,t.open_Type,t.type,t.links,t.remark,t.create_Time,round(decode(t.num,0,'',t.stars/t.num),1)as stars from  t_thcs_menu_model t
+        <where>
+            del_flag='0'
+            <if test="query.userId != null and query.userId != ''">
+                AND t.create_id = #{query.userId}
+            </if>
+            <if test="query.modelId != null and query.modelId != ''">
+                AND t.id = #{query.modelId}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                AND t.name = #{query.name}
+            </if>
+            <if test="query.type != null and query.type != ''">
+                AND t.type = #{query.type}
+            </if>
+        </where>
+    </select>
+
+    <update id="gradeModel">
+       update t_thcs_menu_model set stars = stars + #{stars},num = num + 1 where create_by = #{userId} and id = #{modelId} and type = '3'
+    </update>
+
+    <select id="getCollect" resultType="integer">
+        select count(1) as sum from T_THCS_MENU_MODEL_COLLECT A
+        <where>
+            <if test="modelId != null and modelId != ''">
+                AND A.model_id = #{modelId}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND A.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="remove">
+        delete from T_THCS_MENU_MODEL_COLLECT A
+        <where>
+            <if test="modelId != null and modelId != ''">
+                AND A.model_id = #{modelId}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND A.user_id = #{userId}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="saveCollect">
+        insert into T_THCS_MENU_MODEL_COLLECT
+        (
+         model_id,
+         user_id
+        )
+        values
+        (
+        #{modelId},
+        #{userId}
+        )
+</insert>
+</mapper>

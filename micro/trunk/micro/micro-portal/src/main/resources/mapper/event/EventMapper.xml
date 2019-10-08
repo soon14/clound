@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.event.mapper.EventMapper">
+
+
+    <resultMap id="eventMap" type="com.cloud.portal.event.model.Event">
+        <result property="dwmc" column="dwmc"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="address" column="address"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="bz" column="bz"/>
+        <result property="cdcc" column="cdcc"/>
+        <result property="cdgamjs" column="cdgamjs"/>
+        <result property="cdhkqc" column="cdhkqc"/>
+        <result property="cdjdcc" column="cdjdcc"/>
+        <result property="cdjqs" column="cdjqs"/>
+        <result property="cdwjs" column="cdwjs"/>
+        <result property="cjpsld" column="cjpsld"/>
+        <result property="cjpssj" column="cjpssj"/>
+        <result property="cjryzs" column="cjryzs"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="cxsj" column="cxsj"/>
+        <result property="cyrs" column="cyrs"/>
+        <result property="czjb" column="czjb"/>
+        <result property="db" column="db"/>
+        <result property="dbjb" column="dbjb"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="departmentcode" column="departmentcode"/>
+        <result property="departmentcodeName" column="departmentcode_name"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="fk" column="fk"/>
+        <result property="fscs" column="fscs"/>
+        <result property="fsdd" column="fsdd"/>
+        <result property="fsdy" column="fsdy"/>
+        <result property="fssjcz" column="fssjcz"/>
+        <result property="fssjzz" column="fssjzz"/>
+        <result property="fssjzzM" column="fssjzz_m"/>
+        <result property="fssjzzY" column="fssjzz_y"/>
+        <result property="hdfw" column="hdfw"/>
+        <result property="jg" column="jg"/>
+        <result property="jlx" column="jlx"/>
+        <result property="jqbh" column="jqbh"/>
+        <result property="jyqk" column="jyqk"/>
+        <result property="kqqk" column="kqqk"/>
+        <result property="lastupdatedby" column="lastupdatedby"/>
+        <result property="lastupdatedtime" column="lastupdatedtime"/>
+        <result property="ldjy" column="ldjy"/>
+        <result property="lzpw" column="lzpw"/>
+        <result property="qsrs" column="qsrs"/>
+        <result property="qt" column="qt"/>
+        <result property="qzdl" column="qzdl"/>
+        <result property="qzlyd" column="qzlyd"/>
+        <result property="qzqs" column="qzqs"/>
+        <result property="refreshtime" column="refreshtime"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="securitygrade" column="securitygrade"/>
+        <result property="shjg" column="shjg"/>
+        <result property="shld" column="shld"/>
+        <result property="shsj" column="shsj"/>
+        <result property="sjbh" column="sjbh"/>
+        <result property="sjlx" column="sjlx"/>
+        <result property="sjmc" column="sjmc"/>
+        <result property="sjzjsj" column="sjzjsj"/>
+        <result property="sjzjyy" column="sjzjyy"/>
+        <result property="sjzt" column="sjzt"/>
+        <result property="sljjdw" column="sljjdw"/>
+        <result property="sljjdwFj" column="sljjdw_fj"/>
+        <result property="sq" column="sq"/>
+        <result property="swrs" column="swrs"/>
+        <result property="syjx" column="syjx"/>
+        <result property="systemid" column="systemid"/>
+        <result property="tbdw" column="tbdw"/>
+        <result property="tbdwName" column="tbdw_name"/>
+        <result property="tbr" column="tbr"/>
+        <result property="tbrName" column="tbr_name"/>
+        <result property="tbsj" column="tbsj"/>
+        <result property="uploadflag" column="uploadflag"/>
+        <result property="wgrs" column="wgrs"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="xwfs" column="xwfs"/>
+        <result property="xwfsZ" column="xwfs_z"/>
+        <result property="xzqh" column="xzqh"/>
+        <result property="yy" column="yy"/>
+        <result property="zajl" column="zajl"/>
+        <result property="zaptResCreatetime" column="zapt_res_createtime"/>
+        <result property="zaptResUpdatetime" column="zapt_res_updatetime"/>
+        <result property="zsrs" column="zsrs"/>
+        <result property="zzclqk" column="zzclqk"/>
+    </resultMap>
+
+    <resultMap id="eventSignsMap" type="com.cloud.portal.event.model.EventSigns">
+        <result property="dwmc" column="dwmc"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="address" column="address"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="clqk" column="clqk"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="cyrs" column="cyrs"/>
+        <result property="cyrylb" column="cyrylb"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="departmentcode" column="departmentcode"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="fxsj" column="fxsj"/>
+        <result property="gzqk" column="gzqk"/>
+        <result property="hdfw" column="hdfw"/>
+        <result property="jlx" column="jlx"/>
+        <result property="jqbh" column="jqbh"/>
+        <result property="jyqk" column="jyqk"/>
+        <result property="knfsdd" column="knfsdd"/>
+        <result property="knfssj" column="knfssj"/>
+        <result property="lastupdatedby" column="lastupdatedby"/>
+        <result property="lastupdatedtime" column="lastupdatedtime"/>
+        <result property="ldps" column="ldps"/>
+        <result property="mtlx" column="mtlx"/>
+        <result property="qzlyd" column="qzlyd"/>
+        <result property="refreshtime" column="refreshtime"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="securitygrade" column="securitygrade"/>
+        <result property="shjg" column="shjg"/>
+        <result property="shld" column="shld"/>
+        <result property="shsj" column="shsj"/>
+        <result property="sjmtbh" column="sjmtbh"/>
+        <result property="sjmtmc" column="sjmtmc"/>
+        <result property="systemid" column="systemid"/>
+        <result property="tbdw" column="tbdw"/>
+        <result property="tbr" column="tbr"/>
+        <result property="tbsj" column="tbsj"/>
+        <result property="uploadflag" column="uploadflag"/>
+        <result property="xxly" column="xxly"/>
+        <result property="xzqh" column="xzqh"/>
+        <result property="yy" column="yy"/>
+        <result property="zaptResCreatetime" column="zapt_res_createtime"/>
+        <result property="zaptResUpdatetime" column="zapt_res_updatetime"/>
+        <result property="zzclqk" column="zzclqk"/>
+    </resultMap>
+
+    <!--事件列表查询-->
+    <select id="findEventPage" resultMap="eventMap">
+        select a.* from T_THCS_EVENT a
+        <where>
+            deleteflag='0'
+            <if test="query.dwmc!=null and query.dwmc!=''">
+                and a.dwmc like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.sjmc!=null and query.sjmc!=''">
+                and a.sjmc like '%'||#{query.sjmc}||'%'
+            </if>
+            <if test="query.sjbh!=null and query.sjbh!=''">
+                and a.sjbh like '%'||#{query.sjbh}||'%'
+            </if>
+            <if test="query.sjlx!=null and query.sjlx!=''">
+                and a.sjlx = #{query.sjlx}
+            </if>
+            <if test="query.sjzt!=null and query.sjzt!=''">
+                and a.sjzt = #{query.sjzt}
+            </if>
+            <if test="query.yy!=null and query.yy!=''">
+                and a.yy = #{query.yy}
+            </if>
+            <if test="query.startTime != null and query.startTime != ''">
+                AND A.fssjcz &gt; to_date(#{query.startTime}||'00:00:00','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND A.fssjcz &lt; to_date(#{query.endTime}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <!--事件苗头列表查询-->
+    <select id="findEventSignsPage" resultMap="eventSignsMap">
+        select a.* from T_THCS_EVENT_SIGNS a
+        <where>
+            deleteflag='0'
+            <if test="query.dwmc!=null and query.dwmc!=''">
+                and a.dwmc like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.sjmtmc!=null and query.sjmtmc!=''">
+                and a.sjmtmc like '%'||#{query.sjmtmc}||'%'
+            </if>
+            <if test="query.sjmtbh!=null and query.sjmtbh!=''">
+                and a.sjmtbh like '%'||#{query.sjmtbh}||'%'
+            </if>
+            <if test="query.mtlx!=null and query.mtlx!=''">
+                and a.mtlx = #{query.mtlx}
+            </if>
+            <if test="query.yy!=null and query.yy!=''">
+                and a.yy = #{query.yy}
+            </if>
+            <if test="query.reservation06!=null and query.reservation06!=''">
+                and a.reservation06 = #{query.reservation06}
+            </if>
+            <if test="query.startTime != null and query.startTime != ''">
+                AND A.fxsj &gt; to_date(#{query.startTime}||'00:00:00','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND A.fxsj &lt; to_date(#{query.endTime}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="getEventById" resultMap="eventMap">
+        select a.* from T_THCS_EVENT a where a.systemid = #{id}
+    </select>
+
+    <select id="getEventSignById" resultMap="eventSignsMap">
+        select a.* from T_THCS_EVENT_SIGNS a where a.systemid = #{id}
+    </select>
+
+</mapper>

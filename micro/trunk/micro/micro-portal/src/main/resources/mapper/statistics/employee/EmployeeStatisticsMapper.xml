@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.statistics.employee.mapper.EmployeeStatisticsMapper">
+
+    <resultMap id="employeeStatisticsMap" type="com.cloud.portal.statistics.employee.model.EmployeeStatistics">
+        <result property="hylx" column="hylx"/>
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="code" column="code"/>
+        <result property="total" column="total"/>
+        <result property="shry" column="shry"/>
+        <result property="dbry" column="dbry"/>
+        <result property="skry" column="skry"/>
+        <result property="swry" column="swry"/>
+        <result property="ztry" column="ztry"/>
+        <result property="xdry" column="xdry"/>
+        <result property="xsfzry" column="xsfzry"/>
+        <result property="zszhjsbry" column="zszhjsbry"/>
+        <result property="zdsfry" column="zdsfry"/>
+    </resultMap>
+
+    <select id="treeList" resultMap="employeeStatisticsMap">
+        select a.id,
+        a.parent_id,
+        a.code,
+        nvl(b.total, 0) as total,
+        nvl(b.shry, 0) as shry,
+        nvl(b.dbry, 0) as dbry,
+        nvl(b.skry, 0) as skry,
+        nvl(b.swry, 0) as swry,
+        nvl(b.ztry, 0) as ztry,
+        nvl(b.xdry, 0) as xdry,
+        nvl(b.xsfzry, 0) as xsfzry,
+        nvl(b.zszhjsbry, 0) as zszhjsbry,
+        nvl(b.zdsfry, 0) as zdsfry from（
+        select t.code,
+        sum(t.total) as total,
+        sum(t.shry) as shry,
+        sum(t.dbry) as dbry,
+        sum(t.skry) as skry,
+        sum(t.swry) as swry,
+        sum(t.ztry) as ztry,
+        sum(t.xdry) as xdry,
+        sum(t.xsfzry) as xsfzry,
+        sum(t.zszhjsbry) as zszhjsbry,
+        sum(t.zdsfry) as zdsfry
+        from t_thcs_statistics_employee t
+        <where>
+            <if test="query.code!=null and query.code!=''">
+                and t.code like #{query.code}||'%'
+            </if>
+            <if test="query.hylx!=null and query.hylx!=''">
+                and t.hylx = #{query.hylx}
+            </if>
+        </where>
+        group by t.code )b
+        right join sys_area a
+        on a.code = b.code
+        <where>
+            <if test="query.code!=null and query.code!=''">
+                and a.code like #{query.code}||'%'
+            </if>
+        </where>
+        order by a.code
+    </select>
+
+</mapper>

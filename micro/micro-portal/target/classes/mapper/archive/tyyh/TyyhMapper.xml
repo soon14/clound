@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.tyyh.mapper.TyyhMapper">
+
+    <resultMap id="TyyhMap" type="com.cloud.portal.archive.tyyh.model.Tyyh">
+        <result property="photo"                column="photo"/>
+        <result property="orgId"                column="orgId"/>
+        <result property="orgName"              column="orgName"/>
+        <result property="address"              column="address"/>
+        <result property="sortNo"                column="sortNo"/>
+        <result property="manType"              column="manType"/>
+        <result property="rank"                  column="rank"/>
+        <result property="title"                column="title"/>
+        <result property="policeId"              column="policeId"/>
+        <result property="policeName"            column="policeName"/>
+        <result property="policeNumber"          column="policeNumber"/>
+        <result property="company"              column="company"/>
+        <result property="companyPerson"        column="companyPerson"/>
+        <result property="companyCode"          column="companyCode"/>
+        <result property="orgCode"              column="orgCode"/>
+        <result property="orgLevel"              column="orgLevel"/>
+        <result property="policeBusiness"        column="policeBusiness"/>
+        <result property="personMobile"          column="personMobile"/>
+        <result property="project"              column="project"/>
+        <result property="deleted"              column="deleted"/>
+        <result property="policeCategory"        column="policeCategory"/>
+        <result property="auxiliaryType"        column="auxiliaryType"/>
+        <result property="area"                  column="area"/>
+        <result property="mobilePrivate "        column="mobilePrivate"/>
+        <result property="mobileWork"            column="mobileWork"/>
+        <result property="phone"                column="phone"/>
+        <result property="qqAccount"            column="qqAccount"/>
+        <result property="email"                column="email"/>
+        <result property="wxAccount"            column="wxAccount"/>
+        <result property="jobType"              column="jobType"/>
+        <result property="postType"              column="postType"/>
+        <result property="brithStr"              column="brithStr"/>
+        <result property="createTimeStr"        column="createTimeStr"/>
+        <result property="dutyProject"          column="dutyProject"/>
+        <result property="isParentOrg"          column="isParentOrg"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="TyyhMap">
+        select rownum as rank, A.* FROM tyyh_user A
+        <where>
+            <if test="query.policeid != null and query.policeid != ''">
+                AND A.policeid = #{query.policeid}
+            </if>
+            <if test="query.policename != null and query.policename != ''">
+                AND A.policename = #{query.policename}
+            </if>
+            <if test="query.policenumber != null and query.policenumber != ''">
+                AND A.policenumber = #{query.policenumber}
+            </if>
+            <if test="query.mantype != null and query.mantype != ''">
+                AND A.mantype = #{query.mantype}
+            </if>
+        </where>
+    </select>
+
+</mapper>

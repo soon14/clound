@@ -1,0 +1,11 @@
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\cache\RedisCacheManagerConfig.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\cache\RedisTemplateConfig.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\constant\enums\DataScopeTypeEnum.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\util\DataScopeUtil.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\constant\ParmConstant.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\cache\DefaultRedisCacheWriter.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\cache\RedisAutoCacheManager.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\datascope\DataScopeInterceptor.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\mybatis\MybatisPlusConfig.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\datascope\DataScope.java
+G:\intellij work\micro\micro-common\common-data\src\main\java\com\cloud\common\data\cache\RedisCacheAutoConfiguration.java

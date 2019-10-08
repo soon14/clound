@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.lvye.mapper.RoutineCheckMapper">
+
+
+    <resultMap id="checkMap" type="com.cloud.portal.archive.lvye.model.RoutineCheck">
+        <result property="bgzd" column="bgzd"/>
+        <result property="bgzdBz" column="bgzd2"/>
+        <result property="bjcdw" column="bjcdw"/>
+        <result property="bz" column="bz"/>
+        <result property="cljg" column="cljg"/>
+        <result property="clyj" column="clyj"/>
+        <result property="cwbgzd" column="cwbgzd"/>
+        <result property="cwbgzdBz" column="cwbgzd2"/>
+        <result property="dtlrxx" column="dtlrxx"/>
+        <result property="dtlrxxBz" column="dtlrxx2"/>
+        <result property="jcdw" column="jcdw"/>
+        <result property="jcdwZh" column="jcdw_zh"/>
+        <result property="jcfs" column="jcfs"/>
+        <result property="jcId" column="jcid"/>
+        <result property="jcmj" column="jcmj"/>
+        <result property="jcmjTwo" column="jcmj2"/>
+        <result property="jcmjTwoZh" column="jcmj2_zh"/>
+        <result property="jcmjZh" column="jcmj_zh"/>
+        <result property="jcsj" column="jcsj"/>
+        <result property="lfdjzd" column="lfdjzd"/>
+        <result property="lfdjzdBz" column="lfdjzd2"/>
+        <result property="lkdjylr" column="lkdjylr"/>
+        <result property="lkdjylrBz" column="lkdjylr2"/>
+        <result property="lr" column="lr"/>
+        <result property="lrr" column="lrr"/>
+        <result property="lrsj" column="lrsj"/>
+        <result property="ltime" column="ltime"/>
+        <result property="noHotel" column="nohotel"/>
+        <result property="qtjcr" column="qtjcr"/>
+        <result property="qtqk" column="qtqk"/>
+        <result property="qydzfzr" column="qydzfzr"/>
+        <result property="rzdjzd" column="rzdjzd"/>
+        <result property="rzdjzdBz" column="rzdjzd2"/>
+        <result property="scjs" column="scjs"/>
+        <result property="scjsBz" column="scjs2"/>
+        <result property="scslylrslxf" column="scslylrslxf"/>
+        <result property="scslylrslxfBz" column="scslylrslxf2"/>
+        <result property="xfsbjhyq" column="xfsbjhyq"/>
+        <result property="xfsbjhyqBz" column="xfsbjhyq2"/>
+        <result property="xqzgrq" column="xqzgrq"/>
+        <result property="xxxt" column="xxxt"/>
+        <result property="xxxtBz" column="xxxt2"/>
+        <result property="zbxczd" column="zbxczd"/>
+        <result property="zbxczdBz" column="zbxczd2"/>
+
+
+    </resultMap>
+    <select id="findPage" resultMap="checkMap">
+        SELECT * FROM THGL_RES.VIEW_LY_GACHECK A
+        <where>
+            AND A.noHotel=#{query.noHotel}
+            <if test="query.startTime!=null and  query.startTime!=''">
+                AND A.JCSJ &gt;= ${query.startTime}
+            </if>
+            <if test="query.endTime!=null and  query.endTime!=''">
+                AND A.JCSJ &lt;=${query.endTime}
+            </if>
+
+        </where>
+        order by A.jcsj desc
+    </select>
+
+
+</mapper>

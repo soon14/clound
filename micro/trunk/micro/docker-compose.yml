@@ -1,0 +1,159 @@
+# 使用说明 V2.1.0
+# 1. 使用docker-compose  宿主机不需要配置host来发现
+# 2. 无需修改源码，根目录  docker-compose up 即可
+# 3. 静静等待服务启动
+
+version: '2'
+services:
+#  micro-mysql:
+#    build:
+#      context: ./
+#      dockerfile: ./doc/db/Dockerfile
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#    restart: always
+#    container_name: micro-mysql
+#    image: micro-mysql
+#    ports:
+#      - 3306:3306
+
+#  micro-zookeeper:
+#    image: zookeeper:3.4.13
+#    restart: always
+
+  micro-redis:
+    image: redis:4.0.10
+    restart: always
+    container_name: micro-redis
+
+  micro-eureka:
+    build:
+      context: ./
+      dockerfile: ./micro-eureka/Dockerfile
+    restart: always
+    container_name: micro-eureka
+    image: micro-eureka
+    ports:
+      - 8761:8761
+
+  micro-config:
+    build:
+      context: ./
+      dockerfile: ./micro-config/Dockerfile
+    restart: always
+    container_name: micro-config
+    image: micro-config
+    depends_on:
+      - micro-eureka
+
+  micro-gateway:
+    build:
+      context: ./
+      dockerfile: ./micro-gateway/Dockerfile
+    restart: always
+    container_name: micro-gateway
+    image: micro-gateway
+    ports:
+      - 9999:9999
+    depends_on:
+      - micro-config
+
+  micro-auth:
+    build:
+      context: ./
+      dockerfile: ./micro-auth/Dockerfile
+    restart: always
+    container_name: micro-auth
+    image: micro-auth
+    depends_on:
+      - micro-config
+  micro-upms:
+    build:
+      context: ./
+      dockerfile: ./micro-upms/upms-biz/Dockerfile
+    restart: always
+    container_name: micro-upms
+    image: micro-upms
+    depends_on:
+      - micro-config
+#  micro-portal:
+#    build:
+#      context: ./
+#      dockerfile: ./micro-portal/Dockerfile
+#    restart: always
+#    container_name: micro-portal
+#    image: micro-portal
+#    depends_on:
+#      - micro-config
+
+
+#  micro-monitor:
+#    build:
+#      context: ./
+#      dockerfile: ./micro-visual/micro-monitor/Dockerfile
+#    restart: always
+#    image: micro-monitor
+#    container_name: micro-monitor
+#    ports:
+#      - 5001:5001
+#    depends_on:
+#      - micro-config
+#
+#  micro-daemon:
+#    build:
+#      context: ./
+#      dockerfile: ./micro-visual/micro-daemon/Dockerfile
+#    restart: always
+#    image: micro-daemon
+#    container_name: micro-daemon
+#    depends_on:
+#      - micro-config
+
+  micro-codegen:
+    build:
+      context: ./
+      dockerfile: ./micro-visual/micro-codegen/Dockerfile
+    restart: always
+    image: micro-codegen
+    container_name: micro-codegen
+    depends_on:
+      - micro-config
+  micro-quartz:
+    build:
+      context: ./
+      dockerfile: ./micro-visual/micro-quartz/Dockerfile
+    restart: always
+    image: micro-quartz
+    container_name: micro-quartz
+    depends_on:
+      - micro-config
+#  micro-activiti:
+#    build:
+#      context: ./
+#      dockerfile: ./micro-visual/micro-activiti/Dockerfile
+#    restart: always
+#    image: micro-activiti
+#    container_name: micro-activiti
+#    depends_on:
+#      - micro-config
+
+  micro-api:
+    build:
+      context: ./
+      dockerfile: ./micro-api/Dockerfile
+    restart: always
+    container_name: micro-api
+    image: micro-api
+    depends_on:
+      - micro-config
+
+  micro-cas:
+    build:
+      context: ./
+      dockerfile: ./micro-cas/Dockerfile
+    restart: always
+    container_name: micro-cas
+    image: micro-cas
+    depends_on:
+      - micro-config
+

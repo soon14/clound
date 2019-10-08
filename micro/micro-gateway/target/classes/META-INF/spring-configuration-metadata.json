@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "ignore",
+      "type": "com.cloud.gateway.config.FilterIgnorePropertiesConfig",
+      "sourceType": "com.cloud.gateway.config.FilterIgnorePropertiesConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ignore.clients",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.cloud.gateway.config.FilterIgnorePropertiesConfig"
+    },
+    {
+      "name": "ignore.swagger-providers",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.cloud.gateway.config.FilterIgnorePropertiesConfig"
+    }
+  ],
+  "hints": []
+}

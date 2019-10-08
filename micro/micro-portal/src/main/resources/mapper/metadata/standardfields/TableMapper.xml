@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.metadata.standardfields.mapper.TableMapper">
+
+
+  <resultMap id="TableMapper" type="com.cloud.portal.metadata.standardfields.entity.Table">
+                  <id property="id" column="id"/>
+                        <result property="dbId" column="db_Id"/>
+                        <result property="name" column="name"/>
+                        <result property="cName" column="c_name"/>
+                        <result property="type" column="type"/>
+                        <result property="createDate" column="create_date" />
+                        <result property="createBy" column="create_by"/>
+                        <result property="updateDate" column="update_date" />
+                        <result property="updateBy" column="update_by"/>
+                        <result property="delFlag" column="del_flag"/>
+                        <result property="remarks" column="remarks"/>
+            </resultMap>
+
+    <sql id="tableColumns">
+                a.id,
+                a.db_Id,
+                a.name,
+                a.c_name,
+                a.type,
+                a.create_date,
+                a.create_by,
+                a.update_date,
+                a.update_by,
+                a.del_flag,
+                a.remarks
+    </sql>
+
+    <sql id="tableJoins">
+         LEFT JOIN v_datasource_rdbsource rdb on rdb.id = a.db_id
+    </sql>
+
+    <select id="getAllDataSource" resultType="com.cloud.portal.metadata.datasource.entity.RdbSource" >
+        select rdb.id,rdb.name,rdb.type,rdb.schema from v_datasource_rdbsource rdb
+        <where>
+            rdb.del_flag='0'
+        </where>
+        ORDER BY rdb.TYPE
+    </select>
+
+    <select id="findExistsTableList" resultMap="TableMapper">
+        select
+        a.name AS "name",
+        a.type AS "type",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag"
+        from t_datasource_table a
+        <where>
+            a.del_flag = '0'
+            <if test="queryCondition.dbId != null and queryCondition.dbId != ''">
+                AND a.db_id = #{queryCondition.dbId}
+            </if>
+            <if test="queryCondition.type != null and queryCondition.type != ''">
+                AND a.type = #{queryCondition.type}
+            </if>
+        </where>
+    </select>
+
+    <select id="findTablePage"  resultMap="TableMapper">
+        select
+        <include refid="tableColumns"/>
+        ,rdb.name as dbName
+        from t_datasource_table a
+        <include refid="tableJoins"/>
+        <where>
+         a.del_flag='0'
+            <choose>
+                <when test="queryCondition.dbType != null and queryCondition.dbType != ''">
+                    and rdb.type = #{queryCondition.dbType}
+                </when>
+                <otherwise>
+                    <if test="queryCondition.dbId != null and queryCondition.dbId != ''">
+                        and a.db_id = #{queryCondition.dbId}
+                    </if>
+                </otherwise>
+            </choose>
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                 and a.name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+            ORDER BY a.create_date DESC
+         </where>
+    </select>
+
+    <insert id="saveTable">
+		INSERT INTO t_datasource_table(
+			id,
+			db_Id,
+			name,
+			c_name,
+			type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks
+		) VALUES (
+			#{id},
+			#{dbId},
+			#{name},
+			#{cName},
+			#{type},
+			#{createBy},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+
+    <update id="updateTableById">
+		UPDATE t_datasource_table SET
+		name = #{name},
+		c_name = #{cName},
+		remarks = #{remarks},
+		update_date = #{updateDate},
+		update_by = #{updateBy}
+		WHERE id = #{id}
+	</update>
+
+</mapper>

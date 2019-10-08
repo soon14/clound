@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.cloud.common.data.cache.RedisTemplateConfig,\
+    com.cloud.common.data.cache.RedisCacheManagerConfig,\
+    com.cloud.common.data.cache.RedisCacheAutoConfiguration,\
+    com.cloud.common.data.mybatis.MybatisPlusConfig

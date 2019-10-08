@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.point.level.mapper.PointLevelMapper">
+
+    <resultMap id="pointLevelMap" type="com.cloud.portal.point.level.model.PointLevel">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+        <result property="universal" column="universal"/>
+        <result property="placeType" column="place_type"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="creator" column="creator"/>
+        <result property="updater" column="updater"/>
+        <result property="deptCode" column="dept_code"/>
+    </resultMap>
+
+    <resultMap id="pointLevelChildMap" type="com.cloud.portal.point.level.model.PointLevelChild">
+        <result property="id" column="id"/>
+        <result property="levelId" column="level_id"/>
+        <result property="type" column="type"/>
+        <result property="linkType" column="link_type"/>
+        <result property="leftScore" column="left_score"/>
+        <result property="rightScore" column="right_score"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!--根据查询参数 查找符合条件的评定方案列表，列表要求分页-->
+    <select id="findPage" resultMap="pointLevelMap">
+        select t.* from t_thcs_point_level t
+        <where>
+            t.del_flag='0'
+            <if test="query.name!=null and query.name!=''">
+                and t.name LIKE '%'||#{query.name}||'%'
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                and t.place_type = #{query.placeType}
+            </if>
+            <if test="query.cityCode!=null and query.cityCode!=''">
+                and t.city_code = #{query.cityCode}
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                and t.status = #{query.status}
+            </if>
+            <if test="query.universal!=null and query.universal!=''">
+                and t.universal = #{query.universal}
+            </if>
+            <if test="query.dataScope!=null and query.dataScope!=''">
+                AND ( t.city_code IN (SUBSTR(#{query.dataScope},0,4)||'00','440000')
+                      OR t.create_by=#{query.createBy}
+                      OR universal='0'
+                )
+            </if>
+        </where>
+        order by t.update_time desc
+    </select>
+
+    <!--更新方案状态（启用、停用）-->
+    <update id="updateStatus">
+        UPDATE t_thcs_point_level
+        SET
+        STATUS = #{status},
+        UPDATE_BY = #{updateBy},
+        UPDATE_TIME = #{updateTime},
+        UPDATER = #{updater}
+        where ID=#{id}
+    </update>
+
+    <!--更新方案状态（启用、停用）前校验-->
+    <select id="checkStatus"  resultType="java.lang.Integer">
+        select count(1) from t_thcs_point_level a
+        <where>
+            del_flag='0' and a.status ='0'
+            <if test="query.universal!=null and query.universal!=''">
+                and a.universal = #{query.universal}
+            </if>
+            <if test="query.cityCode!=null and query.cityCode!=''">
+                and a.city_code = #{query.cityCode}
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                and a.place_type = #{query.placeType}
+            </if>
+        </where>
+    </select>
+
+    <!--根据方案id查询等级评定子项-->
+    <select id="findChildList" resultMap="pointLevelChildMap">
+        select t.* from t_thcs_point_level_child t
+        <where>
+            <if test="levelId!=null and levelId!=''">
+                and t.level_id = #{levelId}
+            </if>
+        </where>
+        order by type asc
+    </select>
+
+    <!-- 根据分值获取该地区、场所评定的等级 -->
+    <select id="getLevel" resultType="java.lang.String">
+        select fn_index_score_level(#{placeType},#{cityCode},#{score},'3') from dual
+    </select>
+
+    <!--保存等级评定子项-->
+    <insert id="saveAllChild">
+        INSERT INTO t_thcs_point_level_child(
+        id,
+        level_id,
+        type,
+        link_type,
+        left_score,
+        right_score,
+        remark
+        )
+        <foreach collection="childList" item="child" index="index" separator=" union all">
+            SELECT
+            sys_guid() as id,
+            #{child.levelId} as levelId,
+            #{child.type} as type,
+            #{child.linkType} as linkType ,
+            #{child.leftScore} as leftScore,
+            #{child.rightScore} as rightScore,
+            #{child.remark} as remark
+            FROM dual
+        </foreach>
+    </insert>
+
+    <delete id="removeChild">
+        delete from t_thcs_point_level_child where level_id = #{levelId}
+    </delete>
+
+
+</mapper>

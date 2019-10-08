@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.analyze.seal.mapper.SameSealEngraveManyMapper">
+
+    <resultMap id="sameSealEngraveManyMap" type="com.cloud.portal.judged.analyze.seal.model.SameSealEngraveMany">
+        <result property="batchId" column="batch_id"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="engraveTime" column="engrave_time"/>
+        <result property="id" column="id"/>
+        <result property="modelUdId" column="model_udId"/>
+        <result property="monitorTime" column="monitor_time"/>
+        <result property="placeAddress" column="place_address"/>
+        <result property="placeId" column="place_id"/>
+        <result property="placeName" column="place_name"/>
+        <result property="placeType" column="place_type"/>
+        <result property="sealType" column="seal_type"/>
+        <result property="useUnitAddress" column="use_unit_address"/>
+        <result property="useUnitId" column="use_unit_id"/>
+        <result property="useUnitIdCard" column="use_unit_id_card"/>
+        <result property="useUnitLegal" column="use_unit_legal"/>
+        <result property="useUnitName" column="use_unit_name"/>
+        <result property="useUnitPhone" column="use_unit_phone"/>
+        <result property="useUnitType" column="use_unit_type"/>
+        <result property="num" column="num"/>
+        <result property="engraveMonth" column="engraveMonth"/>
+        <result property="sealName" column="seal_Name"/>
+    </resultMap>
+    <sql id="fieldColumn">
+      A.ID,
+      A.PLACE_ID,
+      A.PLACE_TYPE,
+      A.PLACE_NAME,
+      A.PLACE_ADDRESS,
+      A.CITY_CODE,
+      A.USE_UNIT_ID,
+      A.SEAL_TYPE,
+      A.DEPT_CODE,
+      A.DEPT_NAME,
+      A.USE_UNIT_NAME,
+      A.USE_UNIT_ADDRESS,
+      A.USE_UNIT_TYPE,
+      A.USE_UNIT_LEGAL,
+      A.USE_UNIT_ID_CARD,
+      A.USE_UNIT_PHONE,
+      A.MODEL_UDID,
+      A.BATCH_ID,
+      A.MONITOR_TIME,
+      A.SEAL_NAME
+    </sql>
+
+    <select id="analyzePage" resultMap="sameSealEngraveManyMap">
+        SELECT
+        <include refid="fieldColumn"></include>
+        ,B.nums as num,b.engrave_time
+        <choose>
+            <when test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!=''">
+                ,DECODE(to_char(b.MIN_ENGRAVE_TIME,'yyyy-mm-dd'),to_char(b.engrave_time,'yyyy-mm-dd'),to_char(b.engrave_time,'yyyy-mm-dd'),to_char(b.MIN_ENGRAVE_TIME,'yyyy-mm-dd')||'
+                至 '|| to_char(b.engrave_time,'yyyy-mm-dd')) as engraveMonth
+            </when>
+            <otherwise>
+                ,to_char(b.engrave_time,'yyyy-mm') as engraveMonth
+            </otherwise>
+        </choose>
+        FROM (SELECT
+        A.SEAL_NAME,
+        A.USE_UNIT_ID,
+        COUNT(1) AS NUMS,
+        MAX(ID) AS ID,
+        MAX( A.ENGRAVE_TIME) AS ENGRAVE_TIME,
+        MIN(A.ENGRAVE_TIME) as MIN_ENGRAVE_TIME
+        FROM T_THCS_ANALY_KYZ_TYDWYZBDCKZ A
+        <where>
+            <if test="query.sealType!=null and query.sealType!='' ">
+                AND A.SEAL_TYPE=#{query.sealType}
+            </if>
+            <if test="query.sealName!=null and query.sealName!='' ">
+                AND A.SEAL_NAME LIKE '%'||#{query.sealName} ||'%'
+            </if>
+
+            <if test="query.useUnitName!=null and query.useUnitName!='' ">
+                AND A.USE_UNIT_NAME like #{query.useUnitName}||'%'
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' ">
+                AND A.ENGRAVE_TIME between to_date(#{query.startTime}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')
+                and to_date(#{query.endTime}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+        GROUP BY A.SEAL_NAME, A.USE_UNIT_ID
+        <choose>
+            <when test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!=''"></when>
+            <otherwise>,to_char(A.ENGRAVE_TIME,'yyyy-mm')</otherwise>
+        </choose>
+        ) B
+        LEFT JOIN T_THCS_ANALY_KYZ_TYDWYZBDCKZ A
+        ON A.ID = B.ID
+        <where>
+            <if test="query.num!=null ">
+                AND B.nums
+                <choose>
+                    <when test="query.operator == 'lt' ">&lt;= ${query.num}</when>
+                    <when test="query.operator == 'gt' ">&gt;= ${query.num}</when>
+                    <otherwise>= ${query.num}</otherwise>
+                </choose>
+            </if>
+        </where>
+
+        order by b.engrave_time desc
+    </select>
+
+
+    <select id="findListPage" resultMap="sameSealEngraveManyMap">
+        SELECT
+        <include refid="fieldColumn"></include>
+        , A.ENGRAVE_TIME
+        FROM T_THCS_ANALY_KYZ_TYDWYZBDCKZ A
+        <where>
+            <if test="query.useUnitId!=null and query.useUnitId!=''">
+                AND A.use_Unit_Id = #{query.useUnitId}
+            </if>
+            <if test="query.sealType!=null and query.sealType!=''">
+                AND A.seal_Type = #{query.sealType}
+            </if>
+            <if test="query.sealName!=null and query.sealName!='' ">
+                AND A.SEAL_NAME = #{query.sealName}
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' ">
+                AND A.ENGRAVE_TIME between to_date(#{query.startTime}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')
+                and to_date(#{query.endTime}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+        ORDER BY A.ENGRAVE_TIME desc
+    </select>
+
+
+</mapper>

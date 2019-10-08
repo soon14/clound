@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.search.scheme.mapper.SearchSchemeMapper">
+
+    <resultMap id="searchSchemeMap" type="com.cloud.portal.search.scheme.model.SearchScheme">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="searchType" column="search_type"/>
+        <result property="searchInput" column="search_input"/>
+        <result property="apiUserName" column="api_user_name"/>
+        <result property="apiPwd" column="api_pwd"/>
+        <result property="status" column="status"/>
+        <result property="classification" column="classification"/>
+        <result property="sorts" column="sorts"/>
+        <result property="searchContent" column="search_content"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="tokenAddress" column="token_address"/>
+        <result property="requestType" column="request_type"/>
+    </resultMap>
+
+    <!--更新方案状态（启用、停用）-->
+    <update id="updateStatus">
+        UPDATE T_THCS_SEARCH_SCHEME
+        SET
+        STATUS = #{status},
+        UPDATE_BY = #{updateBy},
+        UPDATE_TIME = #{updateTime}
+        where ID=#{id}
+    </update>
+
+</mapper>

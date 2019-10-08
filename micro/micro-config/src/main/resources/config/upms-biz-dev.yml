@@ -1,0 +1,59 @@
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: ENC(IIJjPbXKPf6RQ0fNs2Izkg==)
+      client-secret: ENC(MKBcBGasz5LkPmYwkNcVLgUZGPZ886Q6)
+      scope: server
+      # 默认放行url,子模块重写时application-dev.yml中的公共配置会被覆盖,所以要把公共配置中的放行url再写一次
+      ignore-urls:
+        - /actuator/**
+        - /v2/api-docs
+        - /user/info/*
+        - /user/pki/info/*
+        - /log/save
+
+# 数据源
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ygnet
+    password: sunshine@123
+    url: jdbc:mysql://ygnet3306.mysql.rds.aliyuncs.com:3306/micro_upms?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+
+  # 设置文件上传大小，限制为50M
+  servlet:
+    multipart:
+      maxFileSize: "50MB"
+      maxRequestSize: "50MB"
+
+
+# swagger相关配置,覆盖全局配置
+swagger:
+  enabled: true
+  authorization:
+    authorization-scope-list:
+      - scope: 'server'
+        description: 'server all'
+      - scope: 'read'
+        description: 'read all'
+      - scope: 'write'
+        description: 'access all'
+
+# 文件系统
+minio:
+  url: http://192.168.1.13:9000
+  access-key: ygnet
+  secret-key: sunshine
+
+# Logger Config
+logging:
+  level:
+    com.cloud.admin.mapper: debug
+
+# 设置文件存储位置
+sys:
+  files:
+    path: D:\sysFiles
+

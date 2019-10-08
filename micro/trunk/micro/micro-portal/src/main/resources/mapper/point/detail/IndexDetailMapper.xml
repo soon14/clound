@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.point.detail.mapper.IndexDetailMapper">
+
+    <resultMap id="detailMap" type="com.cloud.portal.point.detail.model.IndexDetail">
+        <result property="bonusTime" column="bonus_time"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="cycleId" column="cycle_id"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="detail" column="detail"/>
+        <result property="id" column="id"/>
+        <result property="indexUdId" column="index_udId"/>
+        <result property="indexVersion" column="index_version"/>
+        <result property="placeId" column="place_id"/>
+        <result property="placeName" column="place_name"/>
+        <result property="placeType" column="place_type"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="pointType" column="point_Type"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="updater" column="updater"/>
+        <result property="creator" column="creator"/>
+        <result property="creatorDept" column="creator_Dept"/>
+    </resultMap>
+
+    <resultMap id="joinIndexMap" type="com.cloud.portal.point.detail.model.IndexDetail">
+        <result property="pointIndex.city" column="city"/>
+        <result property="pointIndex.createBy" column="create_by"/>
+        <result property="pointIndex.createTime" column="create_time"/>
+        <result property="pointIndex.delFlag" column="del_flag"/>
+        <result property="pointIndex.id" column="id"/>
+        <result property="pointIndex.name" column="name"/>
+        <result property="pointIndex.placeType" column="place_type"/>
+        <result property="pointIndex.remark" column="remark"/>
+        <result property="pointIndex.score" column="score"/>
+        <result property="pointIndex.status" column="status"/>
+        <result property="pointIndex.type" column="type"/>
+        <result property="pointIndex.udId" column="udId"/>
+        <result property="pointIndex.updateBy" column="update_by"/>
+        <result property="pointIndex.updateTime" column="update_time"/>
+        <result property="pointIndex.upperLimit" column="upper_limit"/>
+        <result property="pointIndex.version" column="version"/>
+
+        <result property="indexUdId" column="index_udId"/>
+        <result property="indexVersion" column="index_version"/>
+        <result property="bonusTime" column="bonus_time"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="num" column="num"/>
+        <result property="cycleId" column="DETAIL_CYCLE_ID"/>
+        <result property="delFlag" column="DETAIL_DEL_FLAG"/>
+        <result property="placeId" column="place_id"/>
+    </resultMap>
+    <insert id="savePassiveDetail">
+        INSERT INTO T_THCS_POINT_PASSIVE_DETAIL
+          (ID,
+           CYCLE_ID,
+           PLACE_ID,
+           PLACE_NAME,
+           CITY_CODE,
+           DEPT_CODE,
+           PLACE_TYPE,
+           SOURCE_TYPE,
+           INDEX_VERSION,
+           INDEX_UDID,
+           TOTAL_SCORE,
+           BONUS_TIME,
+           CREATE_BY,
+           UPDATE_BY,
+           CREATE_TIME,
+           UPDATE_TIME,
+           DETAIL,
+           DEL_FLAG,
+           CREATOR,
+           UPDATER,
+           CREATOR_DEPT)
+        VALUES
+          (sys_guid(),
+           #{cycleId},
+           #{placeId},
+           #{placeName},
+           #{cityCode},
+           #{deptCode},
+           #{placeType},
+           #{sourceType},
+           #{indexVersion},
+           #{indexUdId},
+           #{totalScore},
+           sysdate,
+           #{createBy},
+           #{updateBy},
+           sysdate,
+           sysdate,
+           #{detail},
+           '0',
+           #{creator},
+           #{updater},
+           #{creatorDept})
+    </insert>
+
+    <select id="detailPage" resultMap="detailMap">
+        SELECT A.* FROM
+        <choose>
+            <when test="query.pointType == '0' || query.pointType == 0">
+                T_THCS_POINT_AUTO_DETAIL
+            </when>
+            <when test="query.pointType == '1' || query.pointType == 1">
+                T_THCS_POINT_PASSIVE_DETAIL
+            </when>
+            <otherwise>
+                V_POINT_INDEX_DETAIL
+            </otherwise>
+        </choose>
+        A
+        <where>
+            <if test="query.delFlag!=null and query.delFlag!=''">
+                AND A.DEL_FLAG=#{query.delFlag}
+            </if>
+            <if test="query.placeId!=null and query.placeId!=''">
+                AND A.PLACE_ID=#{query.placeId}
+            </if>
+            <if test="query.cycleId!=null and query.cycleId!=''">
+                AND A.cycle_id=#{query.cycleId}
+            </if>
+            <if test="query.indexUdId!=null and query.indexUdId!=''">
+                AND A.INDEX_UDID=#{query.indexUdId}
+            </if>
+            <if test="query.indexVersion!=null and query.indexVersion!=''">
+                AND A.INDEX_VERSION=#{query.indexVersion}
+            </if>
+        </where>
+        ORDER BY A.BONUS_TIME DESC
+
+    </select>
+
+
+    <select id="countPage" resultMap="joinIndexMap">
+        SELECT A.*,T.*
+        FROM (SELECT INDEX_UDID,
+        INDEX_VERSION,
+        MAX(BONUS_TIME) AS BONUS_TIME,
+        SUM(TOTAL_SCORE) AS TOTAL_SCORE,
+        CYCLE_ID AS DETAIL_CYCLE_ID,
+        DEL_FLAG AS DETAIL_DEL_FLAG,
+        COUNT(1) AS NUM
+        FROM V_POINT_INDEX_DETAIL A
+        <where>
+            AND A.DEL_FLAG = #{query.delFlag}
+            AND A.PLACE_ID =#{query.placeId}
+            AND A.CYCLE_ID =#{query.cycleId}
+        </where>
+        GROUP BY INDEX_UDID, INDEX_VERSION,CYCLE_ID,DEL_FLAG) A
+        LEFT JOIN T_THCS_POINT_INDEX T
+        ON (A.INDEX_UDID = T.UDID AND A.INDEX_VERSION = T.VERSION)
+        <where>
+            <if test="query.placeName !=null and query.placeName!=''">
+                AND T.NAME LIKE '%'||#{query.placeName}||'%'
+            </if>
+            <if test="query.pointType !=null and query.pointType!=''">
+                AND T.TYPE = #{query.pointType}
+            </if>
+        </where>
+
+
+    </select>
+
+
+    <update id="updateFlag" statementType="CALLABLE">
+        begin
+        <choose>
+            <when test=" pointType == '0' || pointType == 0 ">
+                update T_THCS_POINT_AUTO_DETAIL set
+                DEL_FLAG=#{delFlag},update_by=#{updateBy},updater=#{updater},update_time=sysdate
+                where index_udId=#{indexUdId} AND INDEX_VERSION=#{indexVersion}
+                <if test="placeId!=null and placeId!=''">
+                    AND place_Id =#{placeId}
+                </if>
+                ;
+            </when>
+            <when test=" pointType == '1' || pointType == 1 ">
+                update T_THCS_POINT_PASSIVE_DETAIL set
+                DEL_FLAG=#{delFlag},update_by=#{updateBy},updater=#{updater},update_time=sysdate
+                where index_udId=#{indexUdId} AND INDEX_VERSION=#{indexVersion}
+                <if test="placeId!=null and placeId!=''">
+                    AND place_Id =#{placeId}
+                </if>
+                ;
+            </when>
+            <otherwise>
+                update T_THCS_POINT_AUTO_DETAIL set
+                DEL_FLAG=#{delFlag},update_by=#{updateBy},updater=#{updater},update_time=sysdate
+                where index_udId=#{indexUdId} AND INDEX_VERSION=#{indexVersion}
+                <if test="placeId!=null and placeId!=''">
+                    AND place_Id =#{placeId}
+                </if>
+                ;
+                update T_THCS_POINT_PASSIVE_DETAIL set
+                DEL_FLAG=#{delFlag},update_by=#{updateBy},updater=#{updater},update_time=sysdate
+                where index_udId=#{indexUdId} AND INDEX_VERSION=#{indexVersion}
+                <if test="placeId!=null and placeId!=''">
+                    AND place_Id =#{placeId}
+                </if>
+                ;
+            </otherwise>
+        </choose>
+        end ;
+    </update>
+
+    <select id="indexExitInDetail" resultType="java.lang.Integer">
+        SELECT count(1) as num FROM
+        <choose>
+            <when test=" pointType == '0' || pointType == 0 ">
+                T_THCS_POINT_AUTO_DETAIL A
+            </when>
+            <when test=" pointType == '1' || pointType == 1 ">
+                T_THCS_POINT_PASSIVE_DETAIL A
+            </when>
+            <otherwise>
+                V_POINT_INDEX_DETAIL A
+            </otherwise>
+        </choose>
+        <where>
+            AND rownum=1
+            AND A.INDEX_UDID=#{indexUdId}
+            AND A.INDEX_VERSION=#{indexVersion}
+            <if test="cycleId!=null and cycleId!=''">
+                AND A.CYCLE_ID=#{cycleId}
+            </if>
+            <if test="delFlag!=null and delFlag!=''">
+                AND A.DEL_FLAG=#{delFlag}
+            </if>
+        </where>
+    </select>
+    <select id="countIndexUseNum" resultType="java.lang.Integer">
+        SELECT COUNT(1) AS NUM FROM
+        <choose>
+            <when test=" pointType == '0' || pointType == 0 ">
+                T_THCS_POINT_AUTO_DETAIL A
+            </when>
+
+            <otherwise>
+                T_THCS_POINT_PASSIVE_DETAIL A
+            </otherwise>
+        </choose>
+        AND A.DEL_FLAG = '0'
+        AND A.INDEX_UDID=#{indexUdId}
+        AND A.CYCLE_ID=#{cycleId}
+        AND A.PLACE_ID =#{placeid}
+        <if test="indexVersion!=null and indexVersion!=''">
+            AND A.INDEX_VERSION=#{indexVersion}
+        </if>
+    </select>
+
+    <select id="countPassiveDetailTotalScore" resultType="java.lang.Integer">
+        SELECT SUM(A.TOTAL_SCORE) AS NUM FROM T_THCS_POINT_PASSIVE_DETAIL A
+        <where>
+            AND A.DEL_FLAG = '0'
+            AND A.INDEX_UDID=#{indexUdId}
+            AND A.CYCLE_ID=#{cycleId}
+            AND A.PLACE_ID =#{placeId}
+            AND A.INDEX_VERSION=#{indexVersion}
+        </where>
+    </select>
+
+    <select id="totalTodayDetail" resultType="java.util.Map">
+        select b.type,count(1) as total from T_THCS_POINT_PASSIVE_DETAIL a
+        inner join t_thcs_point_index b on b.udid = a.index_udid
+        where to_char(a.bonus_time,'yyyy-MM-dd') = to_char(sysdate,'yyyy-MM-dd')
+        ${query.dataScope}
+        group by b.type
+    </select>
+
+    <select id="findNewestAutomaticList" resultMap="joinIndexMap">
+        select c.* from (
+            select
+              b.name,
+              b.remark,
+              a.*
+            from t_thcs_point_passive_detail a
+            inner join t_thcs_point_index b
+            on b.udid = a.index_udid
+            where  a.cycle_id=#{query.cycleId}
+            <!-- and b.type = '0' -->
+            ${query.dataScope}
+            order by a.bonus_time desc
+        ) c
+        where rownum &lt;= 10
+    </select>
+
+</mapper>

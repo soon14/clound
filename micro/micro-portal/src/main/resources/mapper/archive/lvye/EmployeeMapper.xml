@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.lvye.mapper.EmployeeMapper">
+
+
+    <resultMap id="employeeMap" type="com.cloud.portal.archive.lvye.model.Employee">
+        <result property="bm" column="bm"/>
+        <result property="bz" column="bz"/>
+        <result property="city" column="city"/>
+        <result property="csrq" column="csrq"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="gj" column="gj"/>
+        <result property="gzgw" column="gzgw"/>
+        <result property="hjdqh" column="hjdqh"/>
+        <result property="hjdxz" column="hjdxz"/>
+        <result property="hyzk" column="hyzk"/>
+        <result property="jjlxr" column="jjlxr"/>
+        <result property="jjlxrdh" column="jjlxrdh"/>
+        <result property="jzz" column="jzz"/>
+        <result property="jzzyxq" column="jzzyxq"/>
+        <result property="lgrq" column="lgrq"/>
+        <result property="lgyy" column="lgyy"/>
+        <result property="lrr" column="lrr"/>
+        <result property="lrsj" column="lrsj"/>
+        <result property="lxfs1" column="lxfs1"/>
+        <result property="lxfs2" column="lxfs2"/>
+        <result property="lxfs3" column="lxfs3"/>
+        <result property="mz" column="mz"/>
+        <result property="picture" column="picture" jdbcType="BLOB"/>
+        <result property="psid" column="psid"/>
+        <result property="rylb" column="rylb"/>
+        <result property="ryzt" column="ryzt"/>
+        <result property="sg" column="sg"/>
+        <result property="sgrq" column="sgrq"/>
+        <result property="sgzjbh" column="sgzjbh"/>
+        <result property="ssdwlb" column="ssdwlb"/>
+        <result property="whcd" column="whcd"/>
+        <result property="xb" column="xb"/>
+        <result property="xkzbh" column="xkzbh"/>
+        <result property="xm" column="xm"/>
+        <result property="xx" column="xx"/>
+        <result property="xzzbm" column="xzzbm"/>
+        <result property="xzzqh" column="xzzqh"/>
+        <result property="xzzxz" column="xzzxz"/>
+        <result property="ywm" column="ywm"/>
+        <result property="ywx" column="ywx"/>
+        <result property="zjhm" column="zjhm"/>
+        <result property="zjstatus" column="zjstatus"/>
+        <result property="zjzl" column="zjzl"/>
+        <result property="zw" column="zw"/>
+        <result property="zzmm" column="zzmm"/>
+    </resultMap>
+    <select id="findPage" resultMap="employeeMap">
+        SELECT * FROM THGL_RES.VIEW_LY_EMPLOYEE A
+        <where>
+           AND A.dwbh=#{query.dwbh}
+           <if test="query.quitType!=null and query.quitType!=''">
+               AND A.RYZT !=#{query.quitType}
+           </if>
+           <if test="query.xm !=null and query.xm!=''">
+               AND A.XM LIKE '%'||#{query.xm}||'%'
+           </if>
+            <if test="query.zjhm !=null and query.zjhm!=''">
+                AND A.zjhm like  #{query.zjhm}||'%'
+            </if>
+            <if test="query.ryzt !=null and query.ryzt!=''">
+                AND A.ryzt =  #{query.ryzt}
+            </if>
+            <if test="query.rylb !=null and query.rylb!=''">
+                AND A.rylb =  #{query.rylb}
+            </if>
+        </where>
+        order by a.lrsj desc
+    </select>
+
+    <select id="monthCount" resultType="java.util.Map">
+        SELECT 'inc'  as "type",COUNT(1) AS "num" FROM THGL_RES.VIEW_LY_EMPLOYEE A
+        <where>
+           AND  A.DWBH=#{unitId}
+           AND SUBSTR(A.SGRQ,0,6)=TO_CHAR(SYSDATE,'YYYYMM')
+           AND A.ryzt !='20'
+        </where>
+        UNION ALL
+        SELECT 'quit'  as "type",COUNT(1) AS "num" FROM THGL_RES.VIEW_LY_EMPLOYEE A
+        <where>
+            AND  A.DWBH=#{unitId}
+            AND SUBSTR(A.LGRQ,0,6)=TO_CHAR(SYSDATE,'YYYYMM')
+            AND A.ryzt ='20'
+        </where>
+
+
+    </select>
+    <select id="findImgById" resultMap="employeeMap" >
+        select  * from   THGL_RES.ZA_T_LY_EMPLOYEE_${code}  A
+        <where>
+             A.PSID=#{id} AND ROWNUM=1
+        </where>
+
+    </select>
+
+
+</mapper>

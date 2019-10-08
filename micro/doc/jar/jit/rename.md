@@ -1,0 +1,17 @@
+#######这里使用到吉大正元的三个jar包、直接用来获取证书里面的身份证信息
+ <dependency>
+ <groupId>com.jit</groupId>
+ <artifactId>jit_pkitool</artifactId>
+ <version>V2.2.0.1</version>
+ </dependency>
+ <dependency>
+ <groupId>com.jit</groupId>
+ <artifactId>jit-cinas-authen</artifactId>
+ <version>1000-jdk15</version>
+ </dependency>
+<dependency>
+ <groupId>com.jit</groupId>
+ <artifactId>jit-cinas-commons</artifactId>
+ <version>1000-jdk13</version>
+ </dependency>
+ ########################如果要maven库中添加

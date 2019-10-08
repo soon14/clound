@@ -1,0 +1,51 @@
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: ENC(I2agZeSu7s19IRU6HZKvNw==) #quartz
+      client-secret: ENC(xWZB6li8jOnobv6/kdmRBzvX2UUWeC3d) #sunshine
+      scope: server
+
+# mysql 数据源配置
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123
+    url: jdbc:mysql://micro-oracle:3306/micro_upms?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+
+#  oracle 数据源
+#spring:
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    username: micro_portal
+#    password: portal2019
+#    url: jdbc:oracle:thin:@192.168.1.13:1521:orcl
+#  resources:
+#    static-locations: classpath:/static/,classpath:/views/
+
+mybatis-plus:
+  # MyBatis Mapper所对应的XML文件位置
+  mapper-locations: classpath:/mapper/**/*Mapper.xml
+  global-config:
+    # 关闭MP3.0自带的banner
+    banner: false
+    db-config:
+      # 主键类型 0:数据库ID自增 1.未定义 2.用户输入 3 id_worker 4.uuid 5.id_worker字符串表示
+      id-type: 0
+      #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+      field-strategy: 1
+      # 默认数据库表下划线命名
+      table-underline: true
+      # 逻辑删除配置
+      # 逻辑删除全局值（1表示已删除，这也是Mybatis Plus的默认配置）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（0表示未删除，这也是Mybatis Plus的默认配置）
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+  #定义全局 类型转换 包 BLOB 字段转 String、后续需要转换可继续添加
+  type-handlers-package: com.cloud.common.data.handler
+

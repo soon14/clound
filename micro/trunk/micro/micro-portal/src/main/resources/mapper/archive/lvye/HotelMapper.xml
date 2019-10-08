@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.lvye.mapper.HotelMapper">
+
+
+    <resultMap id="hotelMap" type="com.cloud.portal.archive.lvye.model.Hotel">
+        <result property="bedNum" column="bednum"/>
+        <result property="dbEncrypt" column="dbencrypt"/>
+        <result property="flag" column="flag"/>
+        <result property="floors" column="floors"/>
+        <result property="grade" column="grade"/>
+        <result property="haddress" column="haddress"/>
+        <result property="hname" column="hname"/>
+        <result property="hnoHotel" column="hnohotel"/>
+        <result property="hotelKind" column="hotelkind"/>
+        <result property="hotelType" column="hoteltype"/>
+        <result property="hotelVer" column="hotelver"/>
+        <result property="inputTime" column="inputtime"/>
+        <result property="legalPerson" column="legalperson"/>
+        <result property="linkDate" column="linkdate"/>
+        <result property="principal" column="principal"/>
+        <result property="psCode" column="pscode"/>
+        <result property="psorgan" column="psorgan"/>
+        <result property="qtlx" column="qtlx"/>
+        <result property="remark" column="remark"/>
+        <result property="roomNum" column="roomnum"/>
+        <result property="safeTel" column="safetel"/>
+        <result property="socialDuty" column="socialduty"/>
+        <result property="stars" column="stars"/>
+        <result property="state" column="state"/>
+        <result property="stateDate" column="statedate"/>
+        <result property="station" column="station"/>
+        <result property="stationEx" column="stationex"/>
+        <result property="telPhone" column="telphone"/>
+        <result property="thirdPart" column="thirdpart"/>
+        <result property="transType" column="transtype"/>
+        <result property="validateCode" column="validatecode"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="cityFlag" column="city_flag"/>
+        <result property="pointType" column="level_type"/>
+        <result property="pointLevelId" column="level_id"/>
+        <result property="pointCycleId" column="cycle_id"/>
+        <result property="pointScore" column="total_score"/>
+        <result property="judgeTime"  column="judge_Time"/>
+        <result property="deptName" column="dept_name"/>
+
+
+    </resultMap>
+
+    <select id="getCount" resultType="integer">
+        select COUNT(1) as num from THGL_RES.VIEW_LY_HOTEL A
+        <if test="pointType!=null and pointType!=''">
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.HNOHOTEL=C.PLACE_ID AND C.SOURCE_TYPE = '3')
+        </if>
+        <where>
+
+            <if test="dwmc != null and dwmc != ''">
+                AND A.hname like '%'||#{dwmc}||'%'
+            </if>
+            <if test="orgCode!=null and orgCode!=''">
+                AND  A.PSCODE  like #{orgCode}||'%'
+            </if>
+            <if test="placeState!=null and placeState!=''">
+                AND  A.STATE  = #{placeState}
+            </if>
+            <if test="placeType!=null and placeType!=''">
+                AND A.hotelKind=#{placeType}
+            </if>
+            <if test="pointType!=null and pointType!=''">
+                AND C.LEVEL_TYPE=#{pointType}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <select id="findListPage" resultMap="hotelMap">
+        select A.* ,NVL(SO.SHORTNAME,A.PSCODE) AS DEPT_NAME,
+        C.TOTAL_SCORE,C.LEVEL_TYPE,C.CYCLE_ID,C.LEVEL_ID,C.JUDGE_TIME
+         from THGL_RES.VIEW_LY_HOTEL A
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.HNOHOTEL=C.PLACE_ID AND C.SOURCE_TYPE = '3')
+        left  join sys_office so on A.PSCODE=so.code
+        <where>
+
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.hname like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.orgCode!=null and query.orgCode!=''">
+                AND  A.PSCODE  like #{query.orgCode}||'%'
+            </if>
+            <if test="query.placeState!=null and query.placeState!=''">
+                AND  A.STATE  = #{query.placeState}
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                 AND A.hotelKind=#{query.placeType}
+            </if>
+            <if test="query.pointType!=null and query.pointType!=''">
+                AND C.LEVEL_TYPE=#{query.pointType}
+            </if>
+
+
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="findOne" resultMap="hotelMap">
+         select A.* ,NVL(SO.SHORTNAME,A.PSCODE) AS DEPT_NAME,
+         C.TOTAL_SCORE,C.LEVEL_TYPE,C.CYCLE_ID,C.LEVEL_ID,C.JUDGE_TIME
+          from THGL_RES.VIEW_LY_HOTEL A
+       LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.HNOHOTEL=C.PLACE_ID AND C.SOURCE_TYPE = '3')
+        left  join sys_office so on A.PSCODE=so.code
+         where A.hnoHotel=#{dwbh} and rownum=1
+
+    </select>
+
+
+</mapper>

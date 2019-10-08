@@ -1,0 +1,40 @@
+server:
+  port: 9929
+
+spring:
+  application:
+    name: micro-portal
+  #配置中心
+  cloud:
+    config:
+      fail-fast: true
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+      discovery:
+        enabled: true
+        service-id: micro-config
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://ygnet:sunshine@micro-eureka:8761/eureka/
+#全局线程池配置(核心线程、最大线程、最大队列数、存活时间（S）)
+thread-pool:
+  corePoolSize: 10
+  maxPoolSize: 20
+  queueCapacity: 40
+  aliveSeconds: 60
+
+
+
+
+
+
+

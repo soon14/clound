@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.point.scheme.mapper.PointSchemeMapper">
+    <resultMap id="PointSchemeMap" type="com.cloud.portal.point.scheme.model.PointScheme">
+        <result property="cityCode" column="city_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="cycleType" column="cycle_type"/>
+        <result property="cycle" column="cycle"/>
+        <result property="defaultScore" column="default_score"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="endTime" column="end_time"/>
+        <result property="id" column="id"/>
+        <result property="isInit" column="is_init"/>
+        <result property="name" column="name"/>
+        <result property="placeType" column="place_type"/>
+        <result property="startTime" column="start_time"/>
+        <result property="status" column="status"/>
+        <result property="universal" column="universal"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="cycleStartTime" column="cycle_start_time"/>
+        <result property="cycleEndTime" column="cycle_end_time"/>
+        <result property="schemeId" column="scheme_id"/>
+        <result property="dataScope" column="dataScope"/>
+        <result property="creator" column="creator"/>
+        <result property="updater" column="updater"/>
+        <result property="levelId" column="levelId"/>
+        <result property="levelType" column="levelType"/>
+
+    </resultMap>
+    <select id="findPage" resultMap="PointSchemeMap">
+        SELECT A.* FROM T_THCS_POINT_SCHEME A
+        <where>
+            AND A.DEL_FLAG='0'
+            <if test="query.name!=null and query.name!=''">
+                AND A.name LIKE '%'||#{query.name}||'%'
+            </if>
+            <if test="query.cityCode!=null and query.cityCode!=''">
+                AND A.city_code = #{query.cityCode}
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                AND A.status = #{query.status}
+            </if>
+            <if test="query.cycleType!=null and query.cycleType!=''">
+                AND A.cycle_type = #{query.cycleType}
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+            <if test="query.universal!=null and query.universal!=''">
+                AND A.universal = #{query.universal}
+            </if>
+            <if test="query.dataScope!=null and query.dataScope!=''">
+                AND ( A.city_code IN (SUBSTR(#{query.dataScope},0,4)||'00','440000') OR A.CREATE_BY=#{query.createBy})
+            </if>
+        </where>
+        order by A.UPDATE_TIME DESC
+    </select>
+
+    <select id="cycleList" resultMap="PointSchemeMap">
+        select * from t_thcs_point_scheme_cycle t where scheme_id=#{id} and t.del_flag='0' order by t.cycle_start_time asc
+    </select>
+
+    <select id="starCycle" resultMap="PointSchemeMap">
+        select tt.*,t.name,t.cycle_type,t.city_code,t.place_type,t.is_init,t.default_score from  t_thcs_point_scheme t inner join t_thcs_point_scheme_cycle tt
+        on t.id = tt.scheme_id
+        where tt.cycle_start_time &lt;= to_date(to_char(sysdate,'yyyy-mm'),'yyyy-mm') and tt.cycle_end_time &gt;= to_date(to_char(sysdate,'yyyy-mm'),'yyyy-mm')
+        and t.status='0'
+        and t.del_flag='0'
+        and t.universal ='0'
+        AND ROWNUM=1
+    </select>
+
+    <select id="areaStarCycle" resultMap="PointSchemeMap">
+        select tt.*,t.name,t.cycle_type,t.city_code,t.place_type,t.is_init,t.default_score from  t_thcs_point_scheme t inner join t_thcs_point_scheme_cycle tt
+        on t.id = tt.scheme_id
+        <where>
+            sysdate between tt.cycle_start_time
+            and tt.cycle_end_time
+            and t.del_flag='0'
+            <if test="query.id!=null and query.id!=''">
+                AND t.id = #{query.id}
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                AND t.status = #{query.status}
+            </if>
+            <if test="query.cityCode!=null and query.cityCode!=''">
+                AND t.city_code = #{query.cityCode}
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                AND t.place_type = #{query.placeType}
+            </if>
+            AND ROWNUM=1
+        </where>
+
+    </select>
+
+    <select id="checkStatus" resultType="Integer">
+        SELECT count(1) FROM T_THCS_POINT_SCHEME A
+        <where>
+            AND A.DEL_FLAG='0'
+            <if test="query.cityCode!=null and query.cityCode!=''">
+                AND A.city_code = #{query.cityCode}
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                AND A.status = #{query.status}
+            </if>
+            <if test="query.placeType!=null and query.placeType!=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+            <if test="query.universal!=null and query.universal!=''">
+                AND A.universal = #{query.universal}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByid" resultMap="PointSchemeMap">
+        SELECT * FROM T_THCS_POINT_SCHEME where id=#{id}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE T_THCS_POINT_SCHEME
+        SET
+        status = #{status},
+        update_by = #{updateBy},
+        update_time = #{updateTime}
+        <where>
+            AND id=#{id}
+        </where>
+
+    </update>
+
+    <update id="resetScore" statementType="CALLABLE">
+        begin
+        UPDATE THGL_RES.JX_TT_QYJBXX T1 SET T1.TOTAL_SCORE = '0',
+        T1.LEVEL_TYPE  = '',
+        T1.LEVEL_ID    = '',
+        t1.CYCLE_ID    =''
+        where t1.CYCLE_ID is not null and t1.level_id is not null;
+
+        UPDATE THGL_RES.KYZ_PRODUCE_UNIT_INFO T1 SET T1.TOTAL_SCORE = '0',
+        T1.LEVEL_TYPE  = '',
+        T1.LEVEL_ID    = '',
+        t1.CYCLE_ID    =''
+        where t1.CYCLE_ID is not null and t1.level_id is not null;
+
+        UPDATE THGL_RES.YL_CSBA T1 SET T1.TOTAL_SCORE = '0',
+        T1.LEVEL_TYPE  = '',
+        T1.LEVEL_ID    = '',
+        t1.CYCLE_ID    =''
+        where t1.CYCLE_ID is not null and t1.level_id is not null;
+        UPDATE THGL_RES.JZ_B_ZA_ZAGXDW T1 SET T1.TOTAL_SCORE = '0',
+        T1.LEVEL_TYPE  = '',
+        T1.LEVEL_ID    = '',
+        t1.CYCLE_ID    =''
+        where t1.CYCLE_ID is not null and t1.level_id is not null;
+
+        <foreach collection="tableName" item="item">
+            UPDATE THGL_RES.ZA_T_LY_HOTEL_${item} T1 SET T1.TOTAL_SCORE = '0',
+            T1.LEVEL_TYPE  = '',
+            T1.LEVEL_ID    = '',
+            t1.CYCLE_ID    =''
+            where t1.CYCLE_ID is not null and t1.level_id is not null;
+        </foreach>
+
+        end ;
+    </update>
+
+    <update id="updateScore" statementType="CALLABLE">
+        begin
+        <choose>
+            <when test="isInit==0">
+                update THGL_RES.JX_TT_QYJBXX T1 set
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE = fn_index_score_level('05',t1.dwdz_ssxqdm,#{defaultScore},'1'),
+                t1.TOTAL_SCORE = #{defaultScore},
+                t1.default_score = #{defaultScore},
+                T1.LEVEL_ID = fn_index_score_level('05',t1.dwdz_ssxqdm,#{defaultScore},'0');
+
+
+                update THGL_RES.KYZ_PRODUCE_UNIT_INFO T1 set
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE = fn_index_score_level('06',t1.AREA_CODE,#{defaultScore},'1'),
+                t1.TOTAL_SCORE = #{defaultScore},
+                t1.default_score = #{defaultScore},
+                T1.LEVEL_ID = fn_index_score_level('06',t1.AREA_CODE,#{defaultScore},'0');
+
+                update THGL_RES.YL_CSBA T1 set
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE = fn_index_score_level(DECODE(T1.yw_lx,'1','08', '2' ,'10' , '3' , '09','15'),t1.COMP_CODE,#{defaultScore},'1'),
+                t1.TOTAL_SCORE = #{defaultScore},
+                t1.default_score = #{defaultScore},
+                T1.LEVEL_ID = fn_index_score_level(t1.YW_LX,t1.COMP_CODE,#{defaultScore},'0');
+
+                update THGL_RES.JZ_B_ZA_ZAGXDW T1 set
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE = fn_index_score_level(t1.gxhylx,t1.DWSZDXZQH,#{defaultScore},'1'),
+                t1.TOTAL_SCORE = #{defaultScore},
+                t1.default_score = #{defaultScore},
+                T1.LEVEL_ID = fn_index_score_level(t1.gxhylx,t1.DWSZDXZQH,#{defaultScore},'0');
+
+            <foreach collection="tableName" item="item">
+                update THGL_RES.ZA_T_LY_HOTEL_${item} T1 set
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE = fn_index_score_level('01',SUBSTR(t1.pscode,0,6),#{defaultScore},'1'),
+                t1.TOTAL_SCORE = #{defaultScore},
+                t1.default_score = #{defaultScore},
+                T1.LEVEL_ID = fn_index_score_level('01',SUBSTR(t1.pscode,0,6),#{defaultScore},'0');
+            </foreach>
+            </when>
+            <otherwise>
+                MERGE INTO THGL_RES.JX_TT_QYJBXX T1
+                USING (SELECT TOTAL_SCORE,
+                PLACE_ID,
+                default_score,
+                SUBSTR(LEV, 0, INSTR(LEV, '#', 1, 1) - 1) LEVEL_ID,
+                SUBSTR(LEV, INSTR(LEV, '#', 1, 1) + 1, LENGTH(LEV)) LEVEL_TYPE
+                FROM (SELECT T.*,
+                FN_INDEX_SCORE_LEVEL(PLACE_TYPE, CITY_CODE, TOTAL_SCORE, '3') AS LEV
+                FROM (SELECT case V.TOTAL_SCORE when 0 then #{defaultScore} when null then #{defaultScore} else V.TOTAL_SCORE end as TOTAL_SCORE,
+                V.ZAGLDWBM as PLACE_ID,
+                v.default_score,
+                V.DWDZ_SSXQDM as CITY_CODE,
+                '05' as PLACE_TYPE
+                FROM THGL_RES.JX_TT_QYJBXX V ) T)) T2
+                ON (T1.ZAGLDWBM = T2.PLACE_ID)
+                WHEN MATCHED THEN
+                UPDATE SET
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME   = SYSDATE,
+                T1.LEVEL_TYPE   = T2.LEVEL_TYPE,
+                T1.TOTAL_SCORE  = T2.TOTAL_SCORE,
+                T1.default_score = T2.TOTAL_SCORE,
+                T1.LEVEL_ID     = T2.LEVEL_ID;
+
+                MERGE INTO THGL_RES.KYZ_PRODUCE_UNIT_INFO T1
+                USING (SELECT TOTAL_SCORE,
+                PLACE_ID,
+                default_score,
+                SUBSTR(LEV, 0, INSTR(LEV, '#', 1, 1) - 1) LEVEL_ID,
+                SUBSTR(LEV, INSTR(LEV, '#', 1, 1) + 1, LENGTH(LEV)) LEVEL_TYPE
+                FROM (SELECT T.*,
+                FN_INDEX_SCORE_LEVEL(PLACE_TYPE, CITY_CODE, TOTAL_SCORE, '3') AS LEV
+                FROM (SELECT case V.TOTAL_SCORE when 0 then 100 when null then 100 else V.TOTAL_SCORE end as TOTAL_SCORE,
+                V.ID as PLACE_ID,
+                v.default_score,
+                V.AREA_CODE as CITY_CODE,
+                '06' as PLACE_TYPE
+                FROM THGL_RES.KYZ_PRODUCE_UNIT_INFO V  ) T)) T2
+                ON (T1.ID = T2.PLACE_ID)
+                WHEN MATCHED THEN
+                UPDATE SET
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME   = SYSDATE,
+                T1.LEVEL_TYPE   = T2.LEVEL_TYPE,
+                T1.TOTAL_SCORE  = T2.TOTAL_SCORE,
+                T1.default_score = T2.TOTAL_SCORE,
+                T1.LEVEL_ID     = T2.LEVEL_ID;
+
+                MERGE INTO THGL_RES.YL_CSBA T1
+                USING (SELECT TOTAL_SCORE,
+                PLACE_ID,
+                default_score,
+                SUBSTR(LEV, 0, INSTR(LEV, '#', 1, 1) - 1) LEVEL_ID,
+                SUBSTR(LEV, INSTR(LEV, '#', 1, 1) + 1, LENGTH(LEV)) LEVEL_TYPE
+                FROM (SELECT T.*,
+                FN_INDEX_SCORE_LEVEL(PLACE_TYPE, CITY_CODE, TOTAL_SCORE, '3') AS LEV
+                FROM (SELECT case V.TOTAL_SCORE when 0 then 100 when null then 100 else V.TOTAL_SCORE end as TOTAL_SCORE,
+                V.CSBA_ID as PLACE_ID,
+                v.default_score,
+                V.COMP_CODE as CITY_CODE,
+                DECODE(V.YW_LX,'1','08', '2' ,'10' , '3' , '09','15') as PLACE_TYPE
+                FROM THGL_RES.YL_CSBA V ) T)) T2
+                ON (T1.CSBA_ID = T2.PLACE_ID)
+                WHEN MATCHED THEN
+                UPDATE SET
+                T1.CYCLE_ID = #{id},
+                T1.JUDGE_TIME   = SYSDATE,
+                T1.LEVEL_TYPE   = T2.LEVEL_TYPE,
+                T1.TOTAL_SCORE  = T2.TOTAL_SCORE,
+                T1.default_score = T2.TOTAL_SCORE,
+                T1.LEVEL_ID     = T2.LEVEL_ID;
+
+                <!--    MERGE INTO THGL_RES.JZ_B_ZA_ZAGXDW T1
+                 USING (SELECT TOTAL_SCORE,
+                 PLACE_ID,
+                 default_score,
+                 SUBSTR(LEV, 0, INSTR(LEV, '#', 1, 1) - 1) LEVEL_ID,
+                 SUBSTR(LEV, INSTR(LEV, '#', 1, 1) + 1, LENGTH(LEV)) LEVEL_TYPE
+                 FROM (SELECT T.*,
+                 FN_INDEX_SCORE_LEVEL(PLACE_TYPE, CITY_CODE, TOTAL_SCORE, '3') AS LEV
+                 FROM (SELECT case V.TOTAL_SCORE when 0 then 100 when null then 100 else V.TOTAL_SCORE end as TOTAL_SCORE,
+                 V.DWBH as PLACE_ID,
+                 v.default_score,
+                 V.DWSZDXZQH as CITY_CODE,
+                 V.gxhylx as PLACE_TYPE
+                 FROM THGL_RES.JZ_B_ZA_ZAGXDW V ) T)) T2
+                 ON (T1.DWBH = T2.PLACE_ID)
+                 WHEN MATCHED THEN
+                 UPDATE SET
+                 T1.CYCLE_ID = #{id},
+                 T1.JUDGE_TIME   = SYSDATE,
+                 T1.LEVEL_TYPE   = T2.LEVEL_TYPE,
+                 T1.TOTAL_SCORE  = T2.TOTAL_SCORE,
+                 T1.default_score = T2.TOTAL_SCORE,
+                 T1.LEVEL_ID     = T2.LEVEL_ID;
+ -->
+                 <foreach collection="tableName" item="item">
+                     MERGE INTO THGL_RES.ZA_T_LY_HOTEL_${item} T1
+                     USING (SELECT TOTAL_SCORE,
+                     PLACE_ID,
+                     default_score,
+                     SUBSTR(LEV, 0, INSTR(LEV, '#', 1, 1) - 1) LEVEL_ID,
+                     SUBSTR(LEV, INSTR(LEV, '#', 1, 1) + 1, LENGTH(LEV)) LEVEL_TYPE
+                     FROM (SELECT T.*,
+                     FN_INDEX_SCORE_LEVEL(PLACE_TYPE, CITY_CODE, TOTAL_SCORE, '3') AS LEV
+                     FROM (SELECT case V.TOTAL_SCORE when 0 then 100 when null then 100 else V.TOTAL_SCORE end as TOTAL_SCORE,
+                     V.HNOHOTEL as PLACE_ID,
+                     v.default_score,
+                     SUBSTR(V.pscode,0,6) as CITY_CODE,
+                     '01' as PLACE_TYPE
+                     FROM THGL_RES.ZA_T_LY_HOTEL_${item} V ) T)) T2
+                     ON (T1.HNOHOTEL = T2.PLACE_ID)
+                     WHEN MATCHED THEN
+                     UPDATE SET
+                     T1.CYCLE_ID = #{id},
+                     T1.JUDGE_TIME   = SYSDATE,
+                     T1.LEVEL_TYPE   = T2.LEVEL_TYPE,
+                     T1.TOTAL_SCORE  = T2.TOTAL_SCORE,
+                     T1.default_score = T2.TOTAL_SCORE,
+                     T1.LEVEL_ID     = T2.LEVEL_ID;
+                 </foreach>
+            </otherwise>
+        </choose>
+        end ;
+    </update>
+
+    <update id="resetSchemeScore" statementType="CALLABLE">
+        begin
+        MERGE INTO THGL_RES.JX_TT_QYJBXX T1
+        USING (SELECT * from THGL_RES.JX_TT_QYJBXX t
+        inner join (select id from t_thcs_point_scheme_cycle t where scheme_id=#{id}) c
+        on t.cycle_id = c.id
+        ) T2
+        ON (T1.ZAGLDWBM = T2.ZAGLDWBM)
+        WHEN MATCHED THEN
+        UPDATE
+        SET T1.TOTAL_SCORE = '0',
+        T1.cycle_id ='',
+        T1.LEVEL_TYPE ='',
+        T1.LEVEL_ID = '';
+
+                MERGE INTO THGL_RES.KYZ_PRODUCE_UNIT_INFO T1
+                USING (SELECT * from THGL_RES.KYZ_PRODUCE_UNIT_INFO t
+                inner join (select id as cycle_id from t_thcs_point_scheme_cycle t where scheme_id=#{id}) c
+                on t.cycle_id = c.cycle_id
+                ) T2
+                ON (T1.id = T2.id)
+                WHEN MATCHED THEN
+                UPDATE
+                SET T1.TOTAL_SCORE = '0',
+                T1.cycle_id ='',
+                T1.LEVEL_TYPE ='',
+                T1.LEVEL_ID = '';
+
+                MERGE INTO THGL_RES.YL_CSBA T1
+                USING (SELECT * from THGL_RES.YL_CSBA t
+                inner join (select id from t_thcs_point_scheme_cycle t where scheme_id=#{id}) c
+                on t.cycle_id = c.id
+                ) T2
+                ON (T1.CSBA_ID = T2.CSBA_ID)
+                WHEN MATCHED THEN
+                UPDATE
+                SET T1.TOTAL_SCORE = '0',
+                T1.cycle_id ='',
+                T1.LEVEL_TYPE ='',
+                T1.LEVEL_ID = '';
+
+               MERGE INTO THGL_RES.JZ_B_ZA_ZAGXDW T1
+               USING (SELECT * from THGL_RES.JZ_B_ZA_ZAGXDW t
+               inner join (select id from t_thcs_point_scheme_cycle t where scheme_id=#{id}) c
+               on t.cycle_id = c.id
+               ) T2
+               ON (T1.DWBH = T2.DWBH)
+               WHEN MATCHED THEN
+               UPDATE
+               SET T1.TOTAL_SCORE = '0',
+               T1.cycle_id ='',
+               T1.LEVEL_TYPE ='',
+               T1.LEVEL_ID = '';
+
+                   <foreach collection="tableName" item="item">
+                       MERGE INTO THGL_RES.ZA_T_LY_HOTEL_${item} T1
+                       USING (SELECT * from THGL_RES.ZA_T_LY_HOTEL_${item} t
+                       inner join (select id from t_thcs_point_scheme_cycle t where scheme_id=#{id}) c
+                       on t.cycle_id = c.id
+                       ) T2
+                       ON (T1.HNOHOTEL = T2.HNOHOTEL)
+                       WHEN MATCHED THEN
+                       UPDATE
+                       SET T1.TOTAL_SCORE = '0',
+                       T1.cycle_id ='',
+                       T1.LEVEL_TYPE ='',
+                       T1.LEVEL_ID = '';
+                   </foreach>
+           end ;
+       </update>
+
+   <update id="removeEdit">
+       update T_THCS_POINT_SCHEME_CYCLE set del_flag = '1' where scheme_id=#{id}
+   </update>
+
+   <update id="removePointScheme">
+       update T_THCS_POINT_SCHEME set del_flag = '1' where id=#{id}
+   </update>
+
+   <insert id="saveEdit">
+   insert into T_THCS_POINT_SCHEME_CYCLE
+   (
+   SCHEME_ID,
+   CYCLE_START_TIME,
+   CYCLE_END_TIME,
+   cycle
+   )values (
+   #{schemeId},
+   #{cycleStartTime},
+   #{cycleEndTime},
+   #{cycle}
+   )
+   </insert>
+
+   <insert id="saveScheme">
+   INSERT INTO T_THCS_POINT_SCHEME
+   ( id,
+   city_code,
+   create_by,
+   create_time,
+   cycle_type,
+   default_score,
+   del_flag,
+   end_time,
+   is_init,
+   name,
+   place_type,
+   start_time,
+   status,
+   universal,
+   update_by,
+   update_time,
+   creator,
+   updater)  VALUES
+   (  #{id},
+   #{cityCode},
+   #{createBy},
+   #{createTime},
+   #{cycleType},
+   #{defaultScore},
+   #{delFlag},
+   #{endTime},
+   #{isInit},
+   #{name},
+   #{placeType},
+   #{startTime},
+   #{status},
+   #{universal},
+   #{updateBy},
+   #{updateTime},
+    #{creator},
+   #{updater})
+   </insert>
+
+   <insert id="savePointScore">
+   insert into t_thcs_point_score
+   select sys_guid() as id,t1.cycle_id,t1.place_id,t1.total_score,t1.level_id,t1.level_type, t1.judge_time,t1.DEPT_CODE,t1.CITY_CODE,t1.PLACE_TYPE,t1.SOURCE_TYPE,t1.PLACE_NAME,t1.DEPT_NAME,place_address
+   from (select id
+           from t_thcs_point_scheme_cycle t
+          <where>
+          <if test="id!=null and id!=''">
+              id != #{id}
+          </if>
+          </where> ) t
+       inner join (select place_id,total_score,level_type,cycle_id,level_id,judge_time,DEPT_CODE, CITY_CODE, PLACE_NAME,PLACE_TYPE,SOURCE_TYPE,default_score,o.shortname as DEPT_NAME,place_address
+       from thgl_res.view_special_place_all inner join sys_office o
+       on DEPT_CODE = o.code
+       ) t1
+       on t.id = t1.cycle_id
+   </insert>
+
+   <insert id="saveSchemeScore">
+       insert into t_thcs_point_score
+       select sys_guid() as id,t1.cycle_id,t1.place_id,t1.total_score,t1.level_id,t1.level_type, t1.judge_time,t1.DEPT_CODE,t1.CITY_CODE,t1.PLACE_TYPE,t1.SOURCE_TYPE,t1.PLACE_NAME,t1.DEPT_NAME,place_address
+       from (select id
+       from t_thcs_point_scheme_cycle t
+        where scheme_id=#{id} ) t
+       inner join (select place_id,total_score,level_type,cycle_id,level_id,judge_time,DEPT_CODE, CITY_CODE, PLACE_NAME,PLACE_TYPE,SOURCE_TYPE,default_score,o.shortname as DEPT_NAME,place_address
+       from thgl_res.view_special_place_all inner join sys_office o
+       on DEPT_CODE = o.code
+       ) t1
+       on t.id = t1.cycle_id
+</insert>
+</mapper>

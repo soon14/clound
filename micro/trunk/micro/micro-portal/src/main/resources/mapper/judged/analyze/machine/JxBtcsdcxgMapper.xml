@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.analyze.machine.mapper.DifferentPlacesRevampMapper">
+
+    <resultMap id="DifferentPlacesRevampMap" type="com.cloud.portal.judged.analyze.machine.model.DifferentPlacesRevamp">
+        <result property="address" column="address"/>
+        <result property="batchId" column="batch_id"/>
+        <result property="carColor" column="car_color"/>
+        <result property="carNo" column="car_no"/>
+        <result property="carType" column="car_type"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="engineNo" column="engine_no"/>
+        <result property="id" column="id"/>
+        <result property="idCard" column="idcard"/>
+        <result property="modelUdId" column="model_udId"/>
+        <result property="monitorTime" column="monitor_time"/>
+        <result property="name" column="name"/>
+        <result property="placeId" column="place_id"/>
+        <result property="placeName" column="place_name"/>
+        <result property="repairTime" column="repair_time"/>
+        <result property="type" column="type"/>
+        <result property="sum" column="sum"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="repairMonth" column="repairMonth"/>
+    </resultMap>
+
+    <select id="oneToMany" resultMap="DifferentPlacesRevampMap">
+        select * from t_thcs_analy_jx_btcsdcxg t
+        <where>
+            <if test="query.carNo!=null and query.carNo!='' ">
+                AND t.car_no like '%'|| #{query.carNo}||'%'
+            </if>
+            <if test="query.type!=null and query.type!='' ">
+                AND t.type = #{query.type}
+            </if>
+            <if test="query.name!=null and query.name!='' ">
+                AND t.name like '%'|| #{query.name}||'%'
+            </if>
+            <if test="query.repairMonth!=null and query.repairMonth!='' ">
+                AND to_char(t.repair_time, 'YYYY-mm') = #{query.repairMonth}
+            </if>
+        </where>
+        order by t.repair_time desc
+    </select>
+
+    <select id="findPage" resultMap="DifferentPlacesRevampMap">
+        select b.*,
+        <choose>
+            <when test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!=''">
+                DECODE(to_char(b.min_repair_time, 'yyyy-mm-dd'),
+                to_char(b.repair_time, 'yyyy-mm-dd'),
+                to_char(b.repair_time, 'yyyy-mm-dd'),
+                to_char(b.min_repair_time, 'yyyy-mm-dd') || ' 至 ' ||
+                to_char(b.repair_time, 'yyyy-mm-dd')) as repairMonth
+            </when>
+            <otherwise>
+                to_char(b.repair_time,'yyyy-mm') as repairMonth
+            </otherwise>
+        </choose>
+        from (select t.car_no as car_no,
+        max(t.name) as name,
+        max(t.type) as type,
+        max(t.engine_no) as engine_no,
+        max(t.car_type) as car_type,
+        max(t.car_color) as car_color,
+        max(t.repair_time) as repair_time,
+        min(t.repair_time) as min_repair_time,
+        max(t.idcard) as idcard,
+        max(t.place_name) as place_name,
+        max(t.dept_code) as dept_code,
+        max(t.city_code) as city_code,
+        max(t.place_id) as place_id,
+        max(t.address) as address,
+        max(t.monitor_time) as monitor_time,
+        count(1) as sum
+        from t_thcs_analy_jx_btcsdcxg t
+        <where>
+            <if test="query.carNo!=null and query.carNo!='' ">
+                AND t.car_no like '%'|| #{query.carNo}||'%'
+            </if>
+            <if test="query.type!=null and query.type!='' ">
+                AND t.type = #{query.type}
+            </if>
+            <if test="query.name!=null and query.name!='' ">
+                AND t.name like '%'|| #{query.name}||'%'
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' ">
+                AND to_char(t.repair_time, 'yyyy-mm-hh') &gt; #{query.startTime}
+            </if>
+            <if test="query.endTime!=null and query.endTime!='' ">
+                AND to_char(t.repair_time, 'yyyy-mm-hh') &lt; #{query.endTime}
+            </if>
+            ${query.dataScope}
+        </where>
+        group by t.car_no) b
+
+    </select>
+
+    <select id="monthPage" resultMap="DifferentPlacesRevampMap">
+        select b.*,to_char(b.repair_time,'yyyy-mm') as repairMonth
+        from (select t.car_no as car_no,
+        max(t.name) as name,
+        max(t.type) as type,
+        max(t.engine_no) as engine_no,
+        max(t.car_type) as car_type,
+        max(t.car_color) as car_color,
+        max(t.repair_time) as repair_time,
+        min(t.repair_time) as min_repair_time,
+        max(t.idcard) as idcard,
+        max(t.place_name) as place_name,
+        max(t.dept_code) as dept_code,
+        max(t.city_code) as city_code,
+        max(t.place_id) as place_id,
+        max(t.address) as address,
+        max(t.monitor_time) as monitor_time,
+        to_char(t.repair_time, 'YYYY-mm') as month,
+        count(1) as sum
+        from t_thcs_analy_jx_btcsdcxg t
+        <where>
+            <if test="query.carNo!=null and query.carNo!='' ">
+                AND t.car_no like '%'|| #{query.carNo}||'%'
+            </if>
+            <if test="query.type!=null and query.type!='' ">
+                AND t.type = #{query.type}
+            </if>
+            <if test="query.name!=null and query.name!='' ">
+                AND t.name like '%'|| #{query.name}||'%'
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' ">
+                AND to_char(t.repair_time, 'yyyy-mm-hh') &gt; #{query.startTime}
+            </if>
+            <if test="query.endTime!=null and query.endTime!='' ">
+                AND to_char(t.repair_time, 'yyyy-mm-hh') &lt; #{query.endTime}
+            </if>
+            ${query.dataScope}
+        </where>
+        group by t.car_no, to_char(t.repair_time, 'YYYY-mm')) b
+        order by b.month desc
+
+    </select>
+</mapper>

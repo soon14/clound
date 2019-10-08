@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.mechanical.mapper.JxyxtMapper">
+
+    <resultMap id="JxyxtMap" type="com.cloud.portal.archive.mechanical.model.Jxyxt">
+        <result property="zagldwbm"           column="zagldwbm"/>
+        <result property="dwmc"               column="dwmc"/>
+        <result property="qyztdm"             column="qyztdm"/>
+        <result property="dwdzdzbm"          column="dwdzdzbm"/>
+        <result property="dwdzssxqdm"        column="dwdz_ssxqdm"/>
+        <result property="dwdzqhnxxdz"       column="dwdz_qhnxxdz"/>
+        <result property="dwdzzxdhzb"        column="dwdz_zxdhzb"/>
+        <result property="dwdzzxdzzb"        column="dwdz_zxdzzb"/>
+        <result property="djdwgajgjgdm"      column="djdw_gajgjgdm"/>
+        <result property="djdwgajgmc"        column="djdw_gajgmc"/>
+        <result property="lxdh"               column="lxdh"/>
+        <result property="zcrq"               column="zcrq"/>
+        <result property="kyrq"               column="kyrq"/>
+        <result property="jjlxdm"             column="jjlxdm"/>
+        <result property="zzjgdm"             column="zzjgdm"/>
+        <result property="fddbrxm"           column="fddbr_xm"/>
+        <result property="fddbrcyzjdm"       column="fddbr_cyzjdm"/>
+        <result property="fddbrzjhm"         column="fddbr_zjhm"/>
+        <result property="fddbrwwx"          column="fddbr_wwx"/>
+        <result property="fddbrwwm"          column="fddbr_wwm"/>
+        <result property="fddbrlxdh"         column="fddbr_lxdh"/>
+        <result property="dwfzrxm"           column="dwfzr_xm"/>
+        <result property="dwfzrcyzjdm"       column="dwfzr_cyzjdm"/>
+        <result property="dwfzrzjhm"         column="dwfzr_zjhm"/>
+        <result property="dwfzrlxdh"         column="dwfzr_lxdh"/>
+        <result property="bwfzrgmsfhm"       column="bwfzr_gmsfhm"/>
+        <result property="bwfzrxm"           column="bwfzr_xm"/>
+        <result property="bwfzrlxdh"         column="bwfzr_xm"/>
+        <result property="jyfwzy"             column="jyfwzy"/>
+        <result property="zczb"               column="zczb"/>
+        <result property="jycdmjpfm"         column="jycd_mjpfm"/>
+        <result property="hyxkzh"             column="hyxkzh"/>
+        <result property="fzjghyxkzfzjgmc"   column="fzjg_hyxkzfzjgmc"/>
+        <result property="yyzzh"              column="yyzzh"/>
+        <result property="fzjgyyzhfzjgmc"    column="fzjg_yyzhfzjgmc"/>
+        <result property="zpm"                column="zpm"/>
+        <result property="dwlbdm"             column="dwlbdm"/>
+        <result property="dwdj"               column="dwdj"/>
+        <result property="zddwbs"             column="zddwbs"/>
+        <result property="sjgsdwmc"           column="sjgsdwmc"/>
+        <result property="sjgsdwdm"           column="sjgsdwdm"/>
+        <result property="djrxm"             column="djr_xm"/>
+        <result property="djsj"               column="djsj"/>
+        <result property="gxsj"               column="gxsj"/>
+        <result property="xxid"               column="xxid"/>
+        <result property="sjgxsm"             column="sjgxsm"/>
+        <result property="xh"                 column="xh"/>
+    </resultMap>
+
+    <select id="getCount" resultType="integer">
+        select COUNT(1) as num from THGL_RES.jx_tt_qyjbxx A
+        <where>
+
+            <if test="dwmc != null and dwmc != ''">
+                 A.dwmc like  '%'||#{dwmc}||'%'
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                and A.dwdz_ssxqdm like '%'||#{orgCode}||'%'
+            </if>
+            <if test="placeType != null and placeType != ''">
+                and A.dwlbdm = #{placeType}
+            </if>
+            <if test="placeState != null and placeState != ''">
+                and A.qyztdm = #{placeState}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <select id="findListPage" resultMap="JxyxtMap">
+        select * from THGL_RES.jx_tt_qyjbxx A
+        <where>
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.dwmc like  '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.orgCode != null and query.orgCode != ''">
+                and A.dwdz_ssxqdm like '%'||#{query.orgCode}||'%'
+            </if>
+            <if test="query.placeType != null and query.placeType != ''">
+                and A.dwlbdm = #{query.placeType}
+            </if>
+            <if test="query.placeState != null and query.placeState != ''">
+                and A.qyztdm = #{query.placeState}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="findOne" resultMap="JxyxtMap">
+        select * from THGL_RES.jx_tt_qyjbxx A
+        <where>
+            1=1
+            <if test="dwbh != null and dwbh != ''">
+                AND A.zagldwbm = #{dwbh}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+
+</mapper>

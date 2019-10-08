@@ -1,0 +1,14 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /cas
+spring:
+  application:
+    name: @artifactId@
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://ygnet:sunshine@micro-eureka:8761/eureka/

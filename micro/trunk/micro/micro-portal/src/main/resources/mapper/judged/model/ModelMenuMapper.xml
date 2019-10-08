@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.model.mapper.ModelMenuMapper">
+
+    <resultMap id="modelMenuMap" type="com.cloud.portal.judged.model.model.ModelMenu">
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="icon" column="icon"/>
+        <result property="id" column="id"/>
+        <result property="links" column="links"/>
+        <result property="name" column="name"/>
+        <result property="openType" column="open_type"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="parentIds" column="parent_ids"/>
+        <result property="permission" column="permission"/>
+        <result property="planLibId" column="plan_lib_id"/>
+        <result property="remark" column="remark"/>
+        <result property="showHide" column="show_hide"/>
+        <result property="sort" column="sort"/>
+        <result property="stars" column="stars"/>
+        <result property="type" column="type"/>
+        <result property="udId" column="udId"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="useBest" column="use_best"/>
+        <result property="viewTimes" column="view_times"/>
+        <result property="num" column="num"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <sql id="modelMenuColumn">
+        a.ID,
+        a.UDID,
+        a.NAME,
+        a.TYPE,
+        a.LINKS,
+        a.SORT,
+        a.PARENT_ID,
+        a.PARENT_IDS,
+        a.SHOW_HIDE,
+        a.USE_BEST,
+        a.PERMISSION,
+        round(decode(a.num,0,'',a.stars/a.num),1)as stars,
+        a.VIEW_TIMES,
+        a.REMARK,
+        a.PLAN_LIB_ID,
+        a.OPEN_TYPE,
+        a.CREATE_TIME,
+        a.UPDATE_TIME,
+        a.CREATE_BY,
+        a.UPDATE_BY,
+        a.DEL_FLAG,
+        a.STATE,
+        to_char(a.CREATE_TIME, 'yyyy-mm-dd')as createDate
+    </sql>
+
+    <select id="queryAll" resultMap="modelMenuMap">
+        select
+        <include refid="modelMenuColumn"/>
+        from t_thcs_menu_model a
+        <where>
+            a.del_flag='0'
+            <if test="query.name != null and query.name != ''">
+                and a.name like'%'||#{query.name}||'%'
+            </if>
+            <if test="query.type != null and query.type != ''">
+                and a.type = #{query.type}
+            </if>
+        </where>
+        order by a.type,a.use_best,a.sort desc
+    </select>
+
+    <update id="updateChild">
+		update t_thcs_menu_model set SHOW_HIDE=#{showHide}, parent_ids=replace(parent_ids,#{oldParentIds},#{newParentIds}) where
+		parent_ids  LIKE CONCAT(#{oldParentIds},'%')
+	</update>
+
+    <update id="deleteChild">
+		update t_thcs_menu_model set del_flag='1' where
+		parent_ids like concat(#{parentIds},'%') or id=#{id}
+	</update>
+
+    <select id="getModelId" resultMap="modelMenuMap">
+        select id from t_thcs_menu_model where type='3'
+        and parent_ids like concat(#{parentIds},'%')
+    </select>
+
+    <select id="getIcon" resultMap="modelMenuMap">
+        select id,icon from t_thcs_menu_model
+        <where>
+            <if test="id != null and id != ''">
+                id=#{id}   AND ROWNUM=1
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getModelByLevel" resultMap="modelMenuMap">
+        select * from
+        (SELECT t.id,
+        t.name,
+        t.type,
+        t.links,
+        t.sort,
+        t.parent_id,
+        t.parent_ids,
+        t.show_hide,
+        t.use_best,
+        t.permission,
+        round(decode(t.num,0,'',t.stars/t.num),1)as stars,
+        t.view_times,
+        t.remark,
+        t.plan_lib_id,
+        t.open_type,
+        t.del_flag,
+        to_char(t.create_time, 'yyyy-mm-dd')as createDate,
+        t.update_time,
+        t.state,
+        level as lev
+        from t_thcs_menu_model t START WITH t.parent_id = '-1' CONNECT BY PRIOR t.id = t.parent_id)
+        <where>
+            del_flag='0' and show_hide='0'
+            <if test="query.level != null and query.level != ''">
+               and lev &lt;= #{query.level}
+            </if>
+            <if test="query.id != null and query.id != ''">
+                and parent_ids like '%'||#{query.id}||'%'
+            </if>
+        </where>
+        order by type,use_best,sort asc
+    </select>
+
+    <select id="getAppList" resultMap="modelMenuMap">
+        select
+        <include refid="modelMenuColumn"/>
+        from t_thcs_menu_model a
+        <where>
+            a.del_flag='0' and a.show_hide = '0' and a.type = '3'
+            <if test="query.id != null and query.id != ''">
+                and a.parent_ids like '%'||#{query.id}||'%'
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and a.name like '%'||#{query.name}||'%'
+            </if>
+        </where>
+        <if test="query.id == null">
+            order by a.use_best,a.sort desc
+        </if>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.analyze.entertainment.mapper.PersonTruthReportMapper">
+
+    <resultMap id="personTruthReportMap" type="com.cloud.portal.judged.analyze.entertainment.model.PersonTruthReport">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="deptName" column="dept_Name"/>
+        <result property="address" column="address"/>
+        <result property="type" column="type"/>
+        <result property="placeId" column="PLACE_ID"/>
+        <result property="actuleNum" column="actule_num"/>
+        <result property="falseNum" column="false_num"/>
+        <result property="modelUdId" column="model_udId"/>
+        <result property="batchId" column="batch_id"/>
+        <result property="monitorTime" column="monitor_time"/>
+        <result property="clockTime" column="clock_time"/>
+        <result property="csrq" column="csrq"/>
+        <result property="cym" column="cym"/>
+        <result property="gj" column="gj"/>
+        <result property="hjdzssxq" column="hjdzssxq"/>
+        <result property="hjdzxz" column="hjdzxz"/>
+        <result property="idCard" column="id_card"/>
+        <result property="lxdh" column="lxdh"/>
+        <result property="mz" column="mz"/>
+        <result property="whcd" column="whcd"/>
+        <result property="xb" column="xb"/>
+        <result property="xm" column="xm"/>
+        <result property="zzdzqz" column="zzdzqz"/>
+        <result property="zzdzssxq" column="zzdzssxq"/>
+        <result property="clockMonth" column="clockMonth"/>
+    </resultMap>
+
+    <sql id="personTruthReportFields">
+      A.ID,
+      A.NAME,
+      A.CITY_CODE,
+      A.DEPT_CODE,
+      A.DEPT_NAME,
+      A.ADDRESS,
+      A.TYPE,
+      A.PLACE_ID ,
+      A.MODEL_UDID,
+      A.BATCH_ID,
+      A.MONITOR_TIME,
+      A.csrq,
+      A.cym,
+      A.gj,
+      A.hjdzssxq,
+      A.hjdzxz,
+      A.id_card,
+      A.lxdh,
+      A.mz,
+      A.whcd,
+      A.xb,
+      A.xm,
+      A.zzdzqz,
+      A.zzdzssxq
+    </sql>
+
+    <select id="analyzePage" resultMap="personTruthReportMap">
+        SELECT
+        <include refid="personTruthReportFields"/>
+        ,B.actule_num,B.false_num,
+        <choose>
+            <when test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' and query.startTime!= query.endTime ">
+                DECODE(to_char(B.min_clock_time,'yyyy-mm-dd'),to_char(B.clock_time,'yyyy-mm-dd'),to_char(B.clock_time,'yyyy-mm-dd'),
+                to_char(B.min_clock_time,'yyyy-mm-dd')||' 至 '|| to_char(B.clock_time,'yyyy-mm-dd')) as clockMonth
+            </when>
+            <otherwise>
+                to_char(B.clock_time, 'yyyy-mm-dd hh24:mi:ss') as clockMonth
+            </otherwise>
+        </choose>
+        from
+        (select A.place_id,
+        max(A.id) as id,
+        max(A.clock_time) as clock_time,
+        min(A.clock_time) as min_clock_time,
+        max(A.actule_num) as actule_num,
+        sum(A.false_num) as false_num
+        from t_thcs_analy_yl_cyrywrsbb A
+        <where>
+            <if test="query.name!=null and query.name!='' ">
+                AND A.name like  '%'|| #{query.name}||'%'
+            </if>
+            <if test="query.deptCode!=null and query.deptCode!='' ">
+                AND A.DEPT_CODE like #{query.deptCode}||'%'
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' ">
+                AND A.clock_time between to_date(#{query.startTime}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')
+                and to_date(#{query.endTime}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+        group by A.place_id
+        <choose>
+            <when test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' "></when>
+            <otherwise>,to_char(A.clock_time,'yyyy-mm')</otherwise>
+        </choose>
+        )B
+        left join t_thcs_analy_yl_cyrywrsbb A on A.id=B.id
+        order by B.clock_time desc
+
+    </select>
+
+    <select id="findListPage" resultMap="personTruthReportMap">
+        SELECT
+        <include refid="personTruthReportFields"/>
+        ,A.clock_time
+        from T_THCS_ANALY_YL_CYRYWRSBB A
+        <where>
+            <if test="query.xm!=null and query.xm!='' ">
+                AND A.xm like '%'|| #{query.xm}||'%'
+            </if>
+            <if test="query.placeId!=null and query.placeId!='' ">
+                AND A.place_id = #{query.placeId}
+            </if>
+            <if test="query.deptCode!=null and query.deptCode!='' ">
+                AND A.DEPT_CODE like #{query.deptCode}||'%'
+            </if>
+            <if test="query.startTime!=null and query.startTime!='' and query.endTime!=null and query.endTime!='' ">
+                AND A.clock_time between to_date(#{query.startTime}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')
+                and to_date(#{query.endTime}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            ${query.dataScope}
+        </where>
+        order by A.clock_time desc
+
+    </select>
+
+
+</mapper>

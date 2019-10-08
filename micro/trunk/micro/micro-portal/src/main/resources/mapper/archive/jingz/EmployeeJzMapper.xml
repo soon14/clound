@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.jingz.mapper.EmployeeJzMapper">
+
+
+    <resultMap id="employeeJzMap" type="com.cloud.portal.archive.jingz.model.EmployeeJz">
+        <result property="baylb" column="baylb"/>
+        <result property="bazgdj" column="bazgdj"/>
+        <result property="bazgzbh" column="bazgzbh"/>
+        <result property="bz" column="bz"/>
+        <result property="cclzgzsj" column="cclzgzsj"/>
+        <result property="cclzrq" column="cclzrq"/>
+        <result property="cqzh" column="cqzh"/>
+        <result property="createdTime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="csrq" column="csrq"/>
+        <result property="dabh" column="dabh"/>
+        <result property="deleteFlag" column="deleteflag"/>
+        <result property="departmentCode" column="departmentcode"/>
+        <result property="djdw" column="djdw"/>
+        <result property="djdwdm" column="djdwdm"/>
+        <result property="djr" column="djr"/>
+        <result property="djrjh" column="djrjh"/>
+        <result property="djsj" column="djsj"/>
+        <result property="djyssgajgshr" column="djyssgajgshr"/>
+        <result property="djyssgajgshrq" column="djyssgajgshrq"/>
+        <result property="djyssgajgshyj" column="djyssgajgshyj"/>
+        <result property="djyssshgajg" column="djyssshgajg"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="ds" column="ds"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="dwmc" column="dwmc"/>
+        <result property="fbyqk" column="fbyqk"/>
+        <result property="fwdw" column="fwdw"/>
+        <result property="fzjg" column="fzjg"/>
+        <result property="fzrq" column="fzrq"/>
+        <result property="gj" column="gj"/>
+        <result property="gzdjwqdm" column="gzdjwqdm"/>
+        <result property="gzdjwqmc" column="gzdjwqmc"/>
+        <result property="gzdpcsdm" column="gzdpcsdm"/>
+        <result property="gzdpcsmc" column="gzdpcsmc"/>
+        <result property="gzdqh" column="gzdqh"/>
+        <result property="gzdqhmc" column="gzdqhmc"/>
+        <result property="gzdsqdm" column="gzdsqdm"/>
+        <result property="gzdsqmc" column="gzdsqmc"/>
+        <result property="gzgwbh" column="gzgwbh"/>
+        <result property="gzgwmc" column="gzgwmc"/>
+        <result property="gzgwms" column="gzgwms"/>
+        <result property="gzgxfw" column="gzgxfw"/>
+        <result property="hjdjwq" column="hjdjwq"/>
+        <result property="hjdjwqmc" column="hjdjwqmc"/>
+        <result property="hjdpcs" column="hjdpcs"/>
+        <result property="hjdpcsmc" column="hjdpcsmc"/>
+        <result property="hjdqh" column="hjdqh"/>
+        <result property="hjdqhmc" column="hjdqhmc"/>
+        <result property="hjdsq" column="hjdsq"/>
+        <result property="hjdsqmc" column="hjdsqmc"/>
+        <result property="hjdxz" column="hjdxz"/>
+        <result property="hyzk" column="hyzk"/>
+        <result property="jczh" column="jczh"/>
+        <result property="jgdm" column="jgdm"/>
+        <result property="jjlxr" column="jjlxr"/>
+        <result property="jjlxrdh" column="jjlxrdh"/>
+        <result property="jkzk" column="jkzk"/>
+        <result property="jszh" column="jszh"/>
+        <result property="jtdh" column="jtdh"/>
+        <result property="jyxkzbh" column="jyxkzbh"/>
+        <result property="jzzbh" column="jzzbh"/>
+        <result property="kscsbwgzsj" column="kscsbwgzsj"/>
+        <result property="lastUpdatedBy" column="lastupdatedby"/>
+        <result property="lastUpdatedTime" column="lastupdatedtime"/>
+        <result property="lgrq" column="lgrq"/>
+        <result property="lgyy" column="lgyy"/>
+        <result property="lxfs1" column="lxfs1"/>
+        <result property="lxfs2" column="lxfs2"/>
+        <result property="lxfs3" column="lxfs3"/>
+        <result property="mz" column="mz"/>
+        <result property="nbbz" column="nbbz"/>
+        <result property="pxqk" column="pxqk"/>
+        <result property="refreshTime" column="refreshtime"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="reservation16" column="reservation16"/>
+        <result property="reservation17" column="reservation17"/>
+        <result property="reservation18" column="reservation18"/>
+        <result property="reservation19" column="reservation19"/>
+        <result property="reservation20" column="reservation20"/>
+        <result property="reservation21" column="reservation21"/>
+        <result property="reservation22" column="reservation22"/>
+        <result property="reservation23" column="reservation23"/>
+        <result property="reservation24" column="reservation24"/>
+        <result property="reservation25" column="reservation25"/>
+        <result property="reservation26" column="reservation26"/>
+        <result property="reservation27" column="reservation27"/>
+        <result property="reservation28" column="reservation28"/>
+        <result property="reservation29" column="reservation29"/>
+        <result property="reservation30" column="reservation30"/>
+        <result property="reservation31" column="reservation31"/>
+        <result property="reservation32" column="reservation32"/>
+        <result property="reservation33" column="reservation33"/>
+        <result property="reservation34" column="reservation34"/>
+        <result property="reservation35" column="reservation35"/>
+        <result property="reservation36" column="reservation36"/>
+        <result property="reservation37" column="reservation37"/>
+        <result property="reservation38" column="reservation38"/>
+        <result property="reservation39" column="reservation39"/>
+        <result property="reservation40" column="reservation40"/>
+        <result property="rylb" column="rylb"/>
+        <result property="ryly" column="ryly"/>
+        <result property="ryzk" column="ryzk"/>
+        <result property="ryzt" column="ryzt"/>
+        <result property="securityGrade" column="securitygrade"/>
+        <result property="sfszw" column="sfszw"/>
+        <result property="sfywfzjl" column="sfywfzjl"/>
+        <result property="sfyzgz" column="sfyzgz"/>
+        <result property="sfzs" column="sfzs"/>
+        <result property="sfzw" column="sfzw"/>
+        <result property="sfzz" column="sfzz"/>
+        <result property="sg" column="sg"/>
+        <result property="sgajgspdw" column="sgajgspdw"/>
+        <result property="sgajgspyj" column="sgajgspyj"/>
+        <result property="sgatspr" column="sgatspr"/>
+        <result property="sgatsprq" column="sgatsprq"/>
+        <result property="sgrq" column="sgrq"/>
+        <result property="sgzjbh" column="sgzjbh"/>
+        <result property="shbzkh" column="shbzkh"/>
+        <result property="sjch" column="sjch"/>
+        <result property="systemId" column="systemid"/>
+        <result property="tc" column="tc"/>
+        <result property="tjrq" column="tjrq"/>
+        <result property="uploadFlag" column="uploadflag"/>
+        <result property="whcd" column="whcd"/>
+        <result property="xb" column="xb"/>
+        <result property="xm" column="xm"/>
+        <result property="xqgajgshr" column="xqgajgshr"/>
+        <result property="xqgajgshrq" column="xqgajgshrq"/>
+        <result property="xqgajgshyj" column="xqgajgshyj"/>
+        <result property="xqshgajg" column="xqshgajg"/>
+        <result property="xx" column="xx"/>
+        <result property="xzdjq" column="xzdjq"/>
+        <result property="xzdjqmc" column="xzdjqmc"/>
+        <result property="xzdpcs" column="xzdpcs"/>
+        <result property="xzdpcsmc" column="xzdpcsmc"/>
+        <result property="xzdqh" column="xzdqh"/>
+        <result property="xzdqhmc" column="xzdqhmc"/>
+        <result property="xzdsq" column="xzdsq"/>
+        <result property="xzdsqmc" column="xzdsqmc"/>
+        <result property="xzdxz" column="xzdxz"/>
+        <result property="xzzbm" column="xzzbm"/>
+        <result property="yddh" column="yddh"/>
+        <result property="ygxz" column="ygxz"/>
+        <result property="ywm" column="ywm"/>
+        <result property="ywx" column="ywx"/>
+        <result property="yxqsrq" column="yxqsrq"/>
+        <result property="zbbh" column="zbbh"/>
+        <result property="zc" column="zc"/>
+        <result property="zgzh" column="zgzh"/>
+        <result property="zgzzxsj" column="zgzzxsj"/>
+        <result property="zgzzxyy" column="zgzzxyy"/>
+        <result property="zjbh" column="zjbh"/>
+        <result property="zjcx" column="zjcx"/>
+        <result property="zjhm" column="zjhm"/>
+        <result property="zjsy" column="zjsy"/>
+        <result property="zjyxq" column="zjyxq"/>
+        <result property="zjzl" column="zjzl"/>
+        <result property="zt" column="zt"/>
+        <result property="zw" column="zw"/>
+        <result property="zwlb" column="zwlb"/>
+        <result property="zzmm" column="zzmm"/>
+        <result property="zzzjmc" column="zzzjmc"/>
+        <result property="zzzjzl" column="zzzjzl"/>
+        <result property="tagType" column="tag_type"/>
+
+    </resultMap>
+    <select id="findPage" resultMap="employeeJzMap">
+        SELECT A.*,TA.tag_type FROM THGL_RES.JZ_B_ZA_CYRY  A
+
+        <choose>
+            <when test="query.tagType !=null and query.tagType!=''">
+                INNER
+            </when>
+            <otherwise>
+                LEFT
+            </otherwise>
+        </choose>
+        JOIN  T_THCS_EMPLOYEE_TAG TA  ON A.ZJHM= TA.ID_CARD
+        <where>
+            AND A.DELETEFLAG='0'
+           AND A.zbbh=#{query.zbbh}
+            <if test="query.ryzt !=null and query.ryzt!=''">
+                AND A.ryzt =  #{query.ryzt}
+            </if>
+
+           <if test="query.xm !=null and query.xm!=''">
+               AND A.XM LIKE '%'||#{query.xm}||'%'
+           </if>
+            <if test="query.zjhm !=null and query.zjhm!=''">
+                AND A.zjhm like  #{query.zjhm}||'%'
+            </if>
+
+            <if test="query.rylb !=null and query.rylb!=''">
+                AND A.rylb =  #{query.rylb}
+            </if>
+            <if test="query.tagType !=null and query.tagType!=''">
+                AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+            </if>
+        </where>
+        order by a.djsj desc
+    </select>
+
+    <select id="monthCount" resultType="java.util.Map">
+        SELECT 'inc'  as "type",COUNT(1) AS "num" FROM THGL_RES.JZ_B_ZA_CYRY A
+        <where>
+            AND A.DELETEFLAG='0'
+            AND  A.zbbh=#{unitId}
+            AND  A.SGRQ &gt;= trunc(sysdate,'MM')  AND A.SGRQ &lt; (last_day(trunc(sysdate))+1)
+            AND A.ryzt ='1'
+        </where>
+        UNION ALL
+        SELECT 'quit'  as "type",COUNT(1) AS "num" FROM THGL_RES.JZ_B_ZA_CYRY A
+        <where>
+            AND A.DELETEFLAG='0'
+            AND  A.zbbh=#{unitId}
+            AND  A.LGRQ &gt;= trunc(sysdate,'MM')  AND A.LGRQ &lt; (last_day(trunc(sysdate))+1)
+            AND A.ryzt ='0'
+        </where>
+
+
+    </select>
+
+    <select id="findById" resultMap="employeeJzMap">
+      SELECT * FROM THGL_RES.JZ_B_ZA_CYRY A
+      where a.systemid=#{id}
+    </select>
+
+</mapper>

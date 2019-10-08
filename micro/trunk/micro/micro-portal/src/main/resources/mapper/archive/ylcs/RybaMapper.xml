@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.RybaMapper">
+
+    <resultMap id="rybaMap" type="com.cloud.portal.archive.ylcs.entity.Ryba">
+        <result property="bgDjsj" column="bg_djsj"/>
+        <result property="bgNotpass" column="bg_notpass"/>
+        <result property="bgState" column="bg_state"/>
+        <result property="bgTgsj" column="bg_tgsj"/>
+        <result property="compCode" column="comp_code"/>
+        <result property="compId" column="comp_id"/>
+        <result property="compName" column="comp_name"/>
+        <result property="csbabh" column="csbabh"/>
+        <result property="fingerprintData" column="fingerprint_data"/>
+        <result property="notpass" column="notpass"/>
+        <result property="rybaBasj" column="ryba_basj"/>
+        <result property="rybaBbgzsj" column="ryba_bbgzsj"/>
+        <result property="rybaBbwcsj" column="ryba_bbwcsj"/>
+        <result property="rybaBbyy" column="ryba_bbyy"/>
+        <result property="rybaBh" column="ryba_bh"/>
+        <result property="rybaBieming" column="ryba_bieming"/>
+        <result property="rybaBz" column="ryba_bz"/>
+        <result property="rybaCsrq" column="ryba_csrq"/>
+        <result property="rybaCyzt" column="ryba_cyzt"/>
+        <result property="rybaDjsj" column="ryba_djsj"/>
+        <result property="rybaGjdm" column="ryba_gjdm"/>
+        <result property="rybaGwbh" column="ryba_gwbh"/>
+        <result property="rybaGwmc" column="ryba_gwmc"/>
+        <result property="rybaGwzrms" column="ryba_gwzrms"/>
+        <result property="rybaGxsj" column="ryba_gxsj"/>
+        <result property="rybaHjdz" column="ryba_hjdz"/>
+        <result property="rybaHjqhdm" column="ryba_hjqhdm"/>
+        <result property="rybaHyzkdm" column="ryba_hyzkdm"/>
+        <result property="rybaId" column="ryba_id"/>
+        <result property="rybaJg" column="ryba_jg"/>
+        <result property="rybaJjlxr" column="ryba_jjlxr"/>
+        <result property="rybaJjlxrdh" column="ryba_jjlxrdh"/>
+        <result property="rybaJkzk" column="ryba_jkzk"/>
+        <result property="rybaJzdz" column="ryba_jzdz"/>
+        <result property="rybaLb" column="ryba_lb"/>
+        <result property="rybaLxdh" column="ryba_lxdh"/>
+        <result property="rybaLzsj" column="ryba_lzsj"/>
+        <result property="rybaMc" column="ryba_mc"/>
+        <result property="rybaMz" column="ryba_mz"/>
+        <result property="rybaMzdm" column="ryba_mzdm"/>
+        <result property="rybaPyqx" column="ryba_pyqx"/>
+        <result property="rybaQfjg" column="ryba_qfjg"/>
+        <result property="rybaSg" column="ryba_sg"/>
+        <result property="rybaSsfzr" column="ryba_ssfzr"/>
+        <result property="rybaSsfzrdh" column="ryba_ssfzrdh"/>
+        <result property="rybaTjrq" column="ryba_tjrq"/>
+        <result property="rybaWhcd" column="ryba_whcd"/>
+        <result property="rybaXb" column="ryba_xb"/>
+        <result property="rybaXx" column="ryba_xx"/>
+        <result property="rybaZhika" column="ryba_zhika"/>
+        <result property="rybaZjdm" column="ryba_zjdm"/>
+        <result property="rybaZjhm" column="ryba_zjhm"/>
+        <result property="rybaZp" column="ryba_zp"/>
+        <result property="rybaZp2" column="ryba_zp2"/>
+        <result property="rybaZp3" column="ryba_zp3"/>
+        <result property="rybaZxsj" column="ryba_zxsj"/>
+        <result property="rybaZzzhm" column="ryba_zzzhm"/>
+        <result property="state" column="state"/>
+        <result property="version" column="version"/>
+        <result property="wgrxkzh" column="wgrxkzh"/>
+        <result property="ywLx" column="yw_lx"/>
+        <result property="tagType" column="tag_type"/>
+    </resultMap>
+
+    <select id="findRybaPage" resultMap="rybaMap">
+        select A.* ,TA.tag_type from THGL_RES.YL_RYBA A
+        <choose>
+            <when test="query.tagType !=null and query.tagType!=''">
+                INNER
+            </when>
+            <otherwise>
+                LEFT
+            </otherwise>
+        </choose>
+        JOIN  T_THCS_EMPLOYEE_TAG TA  ON A.RYBA_ZJHM= TA.ID_CARD
+        <where>
+           1=1
+            <if test="query.compId != null and query.compId != ''">
+                AND A.comp_id = #{query.compId}
+            </if>
+            <if test="query.rybaMc != null and query.rybaMc != ''">
+                AND A.ryba_mc like '%'||#{query.rybaMc}||'%'
+            </if>
+            <if test="query.rybaZjhm != null and query.rybaZjhm != ''">
+                AND A.ryba_zjhm like '%'||#{query.rybaZjhm}||'%'
+            </if>
+            <if test="query.rybaLb != null and query.rybaLb != ''">
+                AND A.ryba_lb like '%'||#{query.rybaLb}||'%'
+            </if>
+            <if test="query.rybaCyzt !=null and  query.rybaCyzt != ''">
+                AND A.ryba_cyzt = #{query.rybaCyzt}
+            </if>
+            <if test="query.tagType !=null and query.tagType!=''">
+                AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+            </if>
+        </where>
+        order by A.ryba_djsj desc
+    </select>
+
+    <select id="getById" resultMap="rybaMap">
+        select * from THGL_RES.YL_RYBA A
+        <where>
+            <if test="rybaId != null and rybaId != ''">
+                AND A.ryba_id = #{rybaId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getRybaCount" resultMap="rybaMap">
+        select
+        (select count(1) from THGL_RES.YL_RYBA where 1=1
+        <if test="compId != null and compId != ''">
+            AND comp_id = #{compId}
+        </if>
+        and ryba_cyzt = '20' and TO_CHAR(ryba_lzsj, 'YYYY-MM') = TO_CHAR(sysdate, 'YYYY-MM')
+        )bylg,
+        (select count(1) from THGL_RES.YL_RYBA where 1=1
+        <if test="compId != null and compId != ''">
+            AND comp_id = #{compId}
+        </if>
+        and ryba_cyzt != '20'
+        and TO_CHAR(ryba_djsj, 'YYYY-MM') = TO_CHAR(sysdate, 'YYYY-MM')
+        )bysg
+        FROM dual
+    </select>
+
+
+    <select id="findRyImgById" resultMap="rybaMap" >
+        select  file_id as rybaZp,file_content as rybaZpContent from THGL_RES.YL_RYBA_FJ  A
+        <where>
+            A.file_id=#{rybaZp} AND ROWNUM=1
+        </where>
+
+    </select>
+
+</mapper>

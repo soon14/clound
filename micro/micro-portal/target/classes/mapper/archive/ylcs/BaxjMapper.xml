@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.BaxjMapper">
+
+    <resultMap id="baxjMap" type="com.cloud.portal.archive.ylcs.entity.Baxj">
+        <result property="baxjBz" column="baxj_bz"/>
+        <result property="baxjId" column="baxj_id"/>
+        <result property="baxjJssj" column="baxj_jssj"/>
+        <result property="baxjKssj" column="baxj_kssj"/>
+        <result property="baxjLjs" column="baxj_ljs"/>
+        <result property="baxjXjr" column="baxj_xjr"/>
+        <result property="baxjXjrid" column="baxj_xjrid"/>
+        <result property="baxjXjs" column="baxj_xjs"/>
+        <result property="compCode" column="comp_code"/>
+        <result property="compId" column="comp_id"/>
+        <result property="compName" column="comp_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="creator" column="creator"/>
+        <result property="csbaBh" column="csba_bh"/>
+        <result property="editMan" column="edit_man"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="xjlxId" column="xjlx_id"/>
+        <result property="xjlxName" column="xjlx_name"/>
+        <result property="ywLx" column="yw_lx"/>
+    </resultMap>
+
+    <select id="findBaxjPage" resultMap="baxjMap">
+        select * from THGL_RES.YL_BAXJ A
+        <where>
+           1=1
+            <if test="query.compId != null and query.compId != ''">
+                AND A.comp_id = #{query.compId}
+            </if>
+            <if test="query.baxjXjr != null and query.baxjXjr != ''">
+                AND A.baxj_xjr like  '%'||#{query.baxjXjr}||'%'
+            </if>
+        </where>
+        order by A.baxj_kssj desc
+    </select>
+
+</mapper>

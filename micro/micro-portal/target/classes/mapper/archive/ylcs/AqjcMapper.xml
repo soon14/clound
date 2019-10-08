@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.AqjcMapper">
+
+    <resultMap id="aqjcMap" type="com.cloud.portal.archive.ylcs.entity.Aqjc">
+        <result property="am" column="am"/>
+        <result property="aqjcId" column="aqjc_id"/>
+        <result property="aqyh" column="aqyh"/>
+        <result property="checkDate" column="check_date"/>
+        <result property="checkMan1" column="check_man1"/>
+        <result property="checkMan2" column="check_man2"/>
+        <result property="checkManZw1" column="check_man_zw1"/>
+        <result property="checkManZw2" column="check_man_zw2"/>
+        <result property="checkPersNum" column="check_pers_num"/>
+        <result property="checkType" column="check_type"/>
+        <result property="cljg" column="cljg"/>
+        <result property="compId" column="comp_id"/>
+        <result property="compName" column="comp_name"/>
+        <result property="compUser" column="comp_user"/>
+        <result property="djxh" column="djxh"/>
+        <result property="dqfs" column="dqfs"/>
+        <result property="gw" column="gw"/>
+        <result property="kffs" column="kffs"/>
+        <result property="recordDate" column="record_date"/>
+        <result property="sjCompCode" column="sj_comp_code"/>
+        <result property="sjCompFzr" column="sj_comp_fzr"/>
+        <result property="sjCompId" column="sj_comp_id"/>
+        <result property="sjCompName" column="sj_comp_name"/>
+        <result property="sjCompNature" column="sj_comp_nature"/>
+        <result property="sjCompPhone" column="sj_comp_phone"/>
+        <result property="xunchaId" column="xuncha_id"/>
+        <result property="yy" column="yy"/>
+        <result property="zgyj" column="zgyj"/>
+        <result property="zhenggai" column="zhenggai"/>
+        <result property="zhenggaiDate" column="zhenggai_date"/>
+    </resultMap>
+
+    <resultMap id="aqjcContentMap" type="com.cloud.portal.archive.ylcs.entity.AqjcContent">
+        <id column="id" property="id"/>
+        <result property="aqjcId" column="aqjc_id"/>
+        <result property="proId" column="pro_id"/>
+        <result property="proName" column="pro_name"/>
+        <result property="proOrderby" column="pro_orderby"/>
+        <result property="leixing" column="leixing"/>
+        <result property="remark" column="remark"/>
+        <result property="reqDate" column="req_date"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findAqjcPage" resultMap="aqjcMap">
+        select * from THGL_RES.YL_AQJC A
+        <where>
+            1=1
+            <if test="query.sjCompId != null and query.sjCompId != ''">
+                AND A.sj_comp_id = #{query.sjCompId}
+            </if>
+            <if test="query.checkDate != null and query.checkDate != ''">
+                AND A.check_date = #{query.checkDate}
+            </if>
+            <if test="query.zhenggai != null and query.zhenggai != ''">
+                AND A.zhenggai = #{query.zhenggai}
+            </if>
+        </where>
+        order by A.check_date desc
+    </select>
+
+    <select id="getAqjcById" resultMap="aqjcMap">
+        select * from THGL_RES.YL_AQJC a
+        <where>
+            1=1
+            <if test="aqjcId != null and aqjcId != ''">
+                and  a.aqjc_id = #{aqjcId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAqjcContent" resultMap="aqjcContentMap">
+        select * from THGL_RES.YL_AQJC_CONTENT a
+        <where>
+            1=1
+            <if test="aqjcId != null and aqjcId != ''">
+                and  a.aqjc_id = #{aqjcId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

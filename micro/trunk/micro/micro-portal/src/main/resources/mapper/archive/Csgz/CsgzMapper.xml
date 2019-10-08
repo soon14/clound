@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.csgz.mapper.CsgzMapper">
+
+    <resultMap id="CsgzMap" type="com.cloud.portal.archive.csgz.model.Csgz">
+        <result property="id"              column="id"/>
+        <result property="createdate"           column="createdate"/>
+        <result property="lyxt"               column="lyxt"/>
+        <result property="csdwbh"           column="csdwbh"/>
+        <result property="userid"           column="user_id"/>
+        <result property="dwbh"              column="dwbh"/>
+        <result property="dwmc"              column="dwmc"/>
+        <result property="jyzt"              column="jyzt"/>
+        <result property="ssds"              column="ssds"/>
+        <result property="ssqx"              column="ssqx"/>
+        <result property="sspcs"              column="sspcs"/>
+        <result property="dwdz"              column="dwdz"/>
+        <result property="lyb"              column="lyb"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="CsgzMap">
+        select * from t_thcs_gzxx t left join THGL_RES.View_Dwxx_All t1 on t.csdwbh = t1.DWBH
+        <where>
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND t1.dwmc like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.userid != null and query.userid != ''">
+                AND t.user_id = #{query.userid}
+            </if>
+            <if test="query.ssds != null and query.ssds != ''">
+                AND t1.ssds = #{query.ssds}
+            </if>
+            <if test="query.jyzt != null and query.jyzt != ''">
+                AND t1.jyzt = #{query.jyzt}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="getis" resultType="integer">
+        select count(1) as isgz from t_thcs_gzxx A
+        <where>
+            <if test="csdwbh != null and csdwbh != ''">
+                AND A.csdwbh = #{csdwbh}
+            </if>
+            <if test="userid != null and userid != ''">
+                AND A.user_id = #{userid}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <delete id="remove">
+        delete from t_thcs_gzxx A
+        <where>
+            <if test="csdwbh != null and csdwbh != ''">
+                AND A.csdwbh = #{csdwbh}
+            </if>
+            <if test="userid != null and userid != ''">
+                AND A.user_id = #{userid}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="savecsgz">
+        insert into t_thcs_gzxx
+        (
+         lyxt,
+         csdwbh,
+         user_id
+        )
+        values
+        (
+        #{lyxt},
+        #{dwbh},
+        #{userid}
+        )
+</insert>
+</mapper>

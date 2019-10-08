@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.tyyh.mapper.TyjgMapper">
+
+    <resultMap id="TyjgMap" type="com.cloud.portal.archive.tyyh.model.Tyjg">
+        <result property="id"                column="id"/>
+        <result property="pid"                column="pid"/>
+        <result property="text"              column="text"/>
+        <result property="isLeaf"              column="isLeaf"/>
+        <result property="rootNodeId"                column="rootNodeId"/>
+        <result property="isTreeNode"              column="isTreeNode"/>
+        <result property="parentId"              column="parentId"/>
+    </resultMap>
+
+    <select id="getTyjg" resultMap="TyjgMap">
+        select * FROM tyyh_offic A
+        <where>
+            <if test="query.pid != null and query.pid != ''">
+                AND A.pid = #{query.pid}
+            </if>
+            <if test="query.id != null and query.id != ''">
+                AND A.id = #{query.id}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

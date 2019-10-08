@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.contact.mapper.CsglMapper">
+
+    <resultMap id="csglMap" type="com.cloud.portal.archive.contact.entity.Csgl">
+        <result property="jzdwbh" column="jzdwbh"/>
+        <result property="lyxtType" column="lyxt_type"/>
+        <result property="qtdwbh" column="qtdwbh"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--分页查询场所关联列表-->
+    <select id="findContactPage" resultMap="csglMap">
+        select A.jzdwbh,
+        A.qtdwbh,
+        A.create_time,
+        '0' as lyxt_type,
+        B.systemId as dwbh,
+        B.Qyzcmc as dwmc,
+        B.Gxhylx as hylx,
+        B.Jyzt as placeState,
+        B.Dwszdxzqh as areaCode ,
+        B.Departmentcode as sspcs,
+        B.Jydz as address
+        from t_thcs_glxx A
+        left join THGL_RES.JZ_B_ZA_ZAGXDW B
+        on A.JZDWBH = B.Systemid
+        <where>
+            1=1
+            <if test="query.qtdwbh != null and query.qtdwbh != ''">
+                AND A.qtdwbh = #{query.qtdwbh}
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询警综场所关联其他业务系统场所列表-->
+    <select id="findJzContactPage" resultMap="csglMap">
+        select A.*,
+        B.dwbh,
+        B.dwmc,
+        B.hylx,
+        B.placeState,
+        B.areaCode ,
+        B.sspcs,
+        B.address,
+        B.compId
+        from t_thcs_glxx A
+        left join THGL_RES.VIEW_CSGL B
+        on A.qtdwbh = B.dwbh
+        <where>
+            1=1
+            <if test="query.jzdwbh != null and query.jzdwbh != ''">
+                AND A.jzdwbh = #{query.jzdwbh}
+            </if>
+        </where>
+    </select>
+
+    <!--其他业务系统场所添加关联页面 -分页查询警综场所列表-->
+    <select id="findPage" resultMap="csglMap">
+        select
+        A.systemId as dwbh,
+        A.Qyzcmc as dwmc,
+        A.Gxhylx as hylx,
+        A.Jyzt as placeState,
+        A.Dwszdxzqh as areaCode ,
+        A.Departmentcode as sspcs,
+        A.Jydz as address,
+        '0' as lyxt_type
+        from THGL_RES.JZ_B_ZA_ZAGXDW A
+        <where>
+            1=1
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.Qyzcmc like '%'|| #{query.dwmc}||'%'
+            </if>
+            <if test="query.hylx != null and query.hylx != ''">
+                AND A.Gxhylx = #{query.hylx}
+            </if>
+            <if test="query.areaCode != null and query.areaCode != ''">
+                AND A.Dwszdxzqh like '%'||#{query.areaCode}||'%'
+            </if>
+            <if test="query.address != null and query.address != ''">
+                AND A.Jydz like '%'||#{query.address}||'%'
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <!--警综场所添加关联页面 -分页查询其他业务系统场所列表-->
+    <select id="findJzPage" resultMap="csglMap">
+        select A.* from THGL_RES.VIEW_CSGL A
+        <where>
+            1=1
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.dwmc like '%'|| #{query.dwmc}||'%'
+            </if>
+            <if test="query.hylx != null and query.hylx != ''">
+                AND A.hylx = #{query.hylx}
+            </if>
+            <if test="query.areaCode != null and query.areaCode != ''">
+                AND A.areaCode like '%'||#{query.areaCode}||'%'
+            </if>
+            <if test="query.address != null and query.address != ''">
+                AND A.address like '%'||#{query.address}||'%'
+            </if>
+            <if test="query.lyxtType != null and query.lyxtType != ''">
+                AND A.lyxt_type = #{query.lyxtType}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <!--查询场所是否已被关联 -->
+    <select id="findCsExists" resultType="java.lang.Integer">
+        select count(1) from t_thcs_glxx A
+        where 1=1
+        <if test="query.qtdwbh != null and query.qtdwbh != ''">
+            AND A.qtdwbh = #{query.qtdwbh}
+        </if>
+        <if test="query.jzdwbh != null and query.jzdwbh != ''">
+            AND A.jzdwbh = #{query.jzdwbh}
+        </if>
+        AND ROWNUM =1
+    </select>
+    <select id="findEntityById" resultMap="csglMap">
+        select A.*
+        <if test=" containJoin == true ">
+            ,B.dwbh,
+            B.dwmc,
+            B.hylx,
+            B.placeState,
+            B.areaCode ,
+            B.sspcs,
+            B.address,
+            B.compId
+        </if>
+        from T_THCS_GLXX A
+        <if test=" containJoin == true ">
+            left join THGL_RES.VIEW_CSGL B ON A.qtdwbh = B.dwbh
+        </if>
+        <where>
+            <if test="jzId != null and jzId != ''">
+                AND A.JZDWBH = #{jzId}
+            </if>
+            <if test="defaultId != null and defaultId != ''">
+                AND A.QTDWBH = #{defaultId}
+            </if>
+
+            AND ROWNUM =1
+        </where>
+
+    </select>
+
+    <!--自动关联-->
+    <insert id="autoContact">
+        MERGE into t_thcs_glxx a
+        using (
+             select A.systemId, c.dwbh, c.lyxt_type
+                   from (select * from THGL_RES.JZ_B_ZA_ZAGXDW where JYZT != '02') A
+                   inner join THGL_RES.view_csgl c
+                   on c.areaCode = a.dwszdxzqh
+                   and (a.QYSJJYMC = c.dwmc or a.QYZCMC = c.dwmc)
+                   and a.XXDZ = c.address
+             union
+              select max(systemid) as systemid, dwbh, '3' as lyxt_type from (
+                  select max(systemid) as systemid, dwbh  from (
+                     select j.systemid, j.lgbh as dwbh from (
+                     select * from THGL_RES.JZ_B_ZA_ZAGXDW where JYZT != '02') j
+                     inner join (select * from thgl_res.view_ly_hotel where state not in ('2', '4')) h
+                     on j.lgbh = h.hnohotel)
+                  group by dwbh)
+                group by dwbh
+              ) b
+             on (a.jzdwbh = b.systemid and a.qtdwbh = b.dwbh)
+            when matched then
+             update
+             set  a.lyxt_type = b.lyxt_type
+           when not matched then
+             insert
+            (a.jzdwbh, a.qtdwbh, a.lyxt_type, a.create_time)
+            values
+            (b.systemid, b.dwbh, b.lyxt_type, sysdate)
+    </insert>
+
+
+    <insert id="saveCsgl">
+        	INSERT INTO t_thcs_glxx(
+			jzdwbh,
+			lyxt_type,
+			qtdwbh,
+			create_time
+		) VALUES (
+			#{jzdwbh},
+			#{lyxtType},
+			#{qtdwbh},
+			#{createTime}
+		)
+    </insert>
+
+    <delete id="deleteCsgl">
+        delete FROM t_thcs_glxx where  jzdwbh =#{jzdwbh} and qtdwbh=#{qtdwbh}
+    </delete>
+</mapper>

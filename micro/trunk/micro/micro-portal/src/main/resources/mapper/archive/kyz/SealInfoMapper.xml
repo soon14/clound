@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.kyzy.mapper.SealInfoMapper">
+
+    <resultMap id="sealInfoMap" type="com.cloud.portal.archive.kyzy.model.SealInfo">
+        <result property="action" column="action"/>
+        <result property="applyDate" column="apply_date"/>
+        <result property="auditDate" column="audit_date"/>
+        <result property="bizNum" column="biz_num"/>
+        <result property="centerDesign" column="center_design"/>
+        <result property="checkDate" column="check_date"/>
+        <result property="chipId" column="chip_id"/>
+        <result property="createAt" column="create_at"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="date" column="date"/>
+        <result property="deliverDate" column="deliver_date"/>
+        <result property="disableDate" column="disable_date"/>
+        <result property="disableType" column="disable_type"/>
+        <result property="edgeWidth" column="edge_width"/>
+        <result property="height" column="height"/>
+        <result property="id" column="id"/>
+        <result property="inspectMark" column="inspect_mark"/>
+        <result property="inspectRemark" column="inspect_remark"/>
+        <result property="isMap" column="is_map"/>
+        <result property="material" column="material"/>
+        <result property="name" column="name"/>
+        <result property="processSign" column="process_sign"/>
+        <result property="produceDate" column="produce_date"/>
+        <result property="produceTransSign" column="produce_trans_sign"/>
+        <result property="produceUnitId" column="produce_unit_id"/>
+        <result property="shape" column="shape"/>
+        <result property="status" column="status"/>
+        <result property="syncFlag" column="sync_flag"/>
+        <result property="textComparison" column="text_comparison"/>
+        <result property="type" column="type"/>
+        <result property="undertakeDate" column="undertake_date"/>
+        <result property="undertakeUnitId" column="undertake_unit_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="useUnitId" column="use_unit_id"/>
+        <result property="width" column="width"/>
+        <result property="approveUnitName" column="approveUnitName"/>
+        <result property="approveUnitLegalName" column="approveUnitLegalName"/>
+        <result property="approveUnitAddress" column="approveUnitAddress" />
+    </resultMap>
+
+    <select id="getCount" resultType="integer">
+        select COUNT(1) from THGL_RES.kyz_seal_info i
+        <where>
+            <if test="produceUnitId != null and produceUnitId != ''">
+                AND i.produce_unit_id = #{produceUnitId}
+            </if>
+            <if test="name != null and name != ''">
+                AND i.name like '%'||#{name}||'%'
+            </if>
+            <if test="status != null and status != ''">
+                AND i.status = #{status}
+            </if>
+            <if test="type != null and type != ''">
+                AND i.type = #{type}
+            </if>
+            <if test="inspectMark != null and inspectMark != ''">
+                AND i.inspect_mark = #{inspectMark}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND i.produce_date &gt; to_date(#{startTime}||'000000','yyyymmddHH24miss')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND i.produce_date &lt; to_date(#{endTime}||'235959','yyyymmddHH24miss')
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="findListPage" resultMap="sealInfoMap">
+        select i.*,
+        a.name       as approveUnitName,
+        a.legal_name as approveUnitLegalName,
+        a.address    as approveUnitAddress
+        from THGL_RES.kyz_seal_info i
+        LEFT join THGL_RES.kyz_unit_info a
+        on i.use_unit_id = a.id
+        <where>
+            <if test="query.produceUnitId != null and query.produceUnitId != ''">
+                AND i.produce_unit_id = #{query.produceUnitId}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                AND i.name like '%'||#{query.name}||'%'
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND i.status = #{query.status}
+            </if>
+            <if test="query.type != null and query.type != ''">
+                AND i.type = #{query.type}
+            </if>
+            <if test="query.inspectMark != null and query.inspectMark != ''">
+                AND i.inspect_mark = #{query.inspectMark}
+            </if>
+            <if test="query.startTime != null and query.startTime != ''">
+                AND i.produce_date &gt; to_date(#{query.startTime}||'000000','yyyymmddHH24miss')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND i.produce_date &lt; to_date(#{query.endTime}||'235959','yyyymmddHH24miss')
+            </if>
+            ${query.dataScope}
+        </where>
+        order by i.produce_date desc nulls last
+    </select>
+
+    <select id="findById" resultMap="sealInfoMap">
+        select i.*,
+        a.name       as approveUnitName,
+        a.legal_name as approveUnitLegalName,
+        a.address    as approveUnitAddress
+        from THGL_RES.kyz_seal_info i
+        LEFT join THGL_RES.kyz_unit_info a
+        on i.use_unit_id = a.id
+        <where>
+            i.id=#{id}
+        </where>
+    </select>
+
+</mapper>

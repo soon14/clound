@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.statistics.sitecase.mapper.TeHangSiteMapper">
+    <resultMap id="TeHangSiteMap" type="com.cloud.portal.statistics.sitecase.model.TeHangSite">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="cityCode" column="code"/>
+        <result property="type" column="type"/>
+        <result property="total" column="total"/>
+        <result property="xzs" column="xzs"/>
+        <result property="gbs" column="gbs"/>
+        <result property="wfl" column="wfl"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+    </resultMap>
+
+    <select id="siteList" resultMap="TeHangSiteMap">
+        select a.id, a.parent_id, a.code, total, xzs, gbs, wfl
+  from (select city_code,
+               max(total) as total,
+               max(xzs) as xzs,
+               max(gbs) as gbs,
+               max(wfl) as wfl
+          from (select dq.*,
+                       decode(substr(CONCAT(round((wfs / total) * 100, 2),
+                                            '%'),
+                                     1,
+                                     1),
+                              '.',
+                              '0' ||
+                              CONCAT(round((wfs / total) * 100, 2), '%'),
+                              CONCAT(round((wfs / total) * 100, 2), '%')) as wfl
+                  from (select t.city_code,
+                               count(t.place_id) as total,
+                               max(nvl(tt.xzs, 0)) as xzs,
+                               max(nvl(tt.gbs, 0)) as gbs,
+                               max(nvl(ajdw.wfs, 0)) as wfs
+
+                          from thgl_res.view_special_place_all t
+
+                          left join (select t.city_code,
+                                           sum(case
+                                                 when t.status = 0 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as xzs,
+                                           sum(case
+                                                 when t.status = 1 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as gbs
+                                      from thgl_res.view_special_place_all t
+                                        <where>
+                                            <if test="cityCode!=null and cityCode!=''">
+                                                and t.city_code like #{cityCode}||'%'
+                                            </if>
+                                            <if test="type!=null and type!=''">
+                                                and t.place_type = #{type}
+                                            </if>
+                                            <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                and t.kyrq &gt;= #{startTime}
+                                                and t.kyrq &lt;= #{endTime}
+                                            </if>
+                                        </where>
+                                     group by t.city_code) tt
+                            on t.city_code = tt.city_code
+                          left join (select count(1) as wfs, tt.city_code
+                                      from thgl_res.jz_yb_asj_dw t
+                                     inner join thgl_res.view_special_place_all tt
+                                        on t.dwbh = tt.place_id
+                                        <where>
+                                            <if test="cityCode!=null and cityCode!=''">
+                                                and tt.city_code like #{cityCode}||'%'
+                                            </if>
+                                            <if test="type!=null and type!=''">
+                                                and tt.place_type = #{type}
+                                            </if>
+                                            <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                and tt.kyrq &gt;= #{startTime}
+                                                and tt.kyrq &lt;= #{endTime}
+                                            </if>
+                                        </where>
+                                     group by tt.city_code) ajdw
+                            on t.city_code = ajdw.city_code
+                            <where>
+                                <if test="cityCode!=null and cityCode!=''">
+                                    and t.city_code like #{cityCode}||'%'
+                                </if>
+                                <if test="type!=null and type!=''">
+                                    and t.place_type = #{type}
+                                </if>
+                            </where>
+                         group by t.city_code) dq
+                 where dq.city_code != substr(dq.city_code, 0, 4) || '00'
+                union all
+                select ds.*,
+                       decode(substr(CONCAT(round((wfs / total) * 100, 2),
+                                            '%'),
+                                     1,
+                                     1),
+                              '.',
+                              '0' ||
+                              CONCAT(round((wfs / total) * 100, 2), '%'),
+                              CONCAT(round((wfs / total) * 100, 2), '%')) as wfl
+                  from (select substr(t.city_code, 0, 4) || '00' as city_code,
+                               count(t.place_id) as total,
+                               max(nvl(tt.xzs, 0)) as xzs,
+                               max(nvl(tt.gbs, 0)) as gbs,
+                               max(nvl(ajdw.wfs, 0)) as wfs
+                          from thgl_res.view_special_place_all t
+
+                          left join (select substr(t.city_code, 0, 4) || '00' as city_code,
+                                           sum(case
+                                                 when t.status = 0 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as xzs,
+                                           sum(case
+                                                 when t.status = 1 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as gbs
+                                      from thgl_res.view_special_place_all t
+                                            <where>
+                                                <if test="cityCode!=null and cityCode!=''">
+                                                    and t.city_code like #{cityCode}||'%'
+                                                </if>
+                                                <if test="type!=null and type!=''">
+                                                    and t.place_type = #{type}
+                                                </if>
+                                                <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                    and t.kyrq &gt;= #{startTime}
+                                                    and t.kyrq &lt;= #{endTime}
+                                                </if>
+                                            </where>
+                                     group by substr(t.city_code, 0, 4) || '00') tt
+                            on substr(t.city_code, 0, 4) || '00' =
+                               substr(tt.city_code, 0, 4) || '00'
+                          left join (select count(1) as wfs,
+                                           substr(tt.city_code, 0, 4) || '00' as city_code
+                                      from thgl_res.jz_yb_asj_dw t
+                                     inner join thgl_res.view_special_place_all tt
+                                        on t.dwbh = tt.place_id
+                                            <where>
+                                                <if test="cityCode!=null and cityCode!=''">
+                                                    and tt.city_code like #{cityCode}||'%'
+                                                </if>
+                                                <if test="type!=null and type!=''">
+                                                    and tt.place_type = #{type}
+                                                </if>
+                                                <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                    and tt.kyrq &gt;= #{startTime}
+                                                    and tt.kyrq &lt;= #{endTime}
+                                                </if>
+                                            </where>
+                                     group by substr(tt.city_code, 0, 4) || '00') ajdw
+                            on substr(t.city_code, 0, 4) || '00' = ajdw.city_code
+                                <where>
+                                    <if test="cityCode!=null and cityCode!=''">
+                                        and t.city_code like #{cityCode}||'%'
+                                    </if>
+                                    <if test="type!=null and type!=''">
+                                        and t.place_type = #{type}
+                                    </if>
+                                </where>
+                         group by substr(t.city_code, 0, 4) || '00') ds
+                union all
+                select s.*,
+                       decode(substr(CONCAT(round((wfs / total) * 100, 2),
+                                            '%'),
+                                     1,
+                                     1),
+                              '.',
+                              '0' ||
+                              CONCAT(round((wfs / total) * 100, 2), '%'),
+                              CONCAT(round((wfs / total) * 100, 2), '%')) as wfl
+                  from (select substr(t.city_code, 0, 2) || '0000' as city_code,
+                               count(t.place_id) as total,
+                               max(nvl(tt.xzs, 0)) as xzs,
+                               max(nvl(tt.gbs, 0)) as gbs,
+                               max(nvl(ajdw.wfs, 0)) as wfs
+                          from thgl_res.view_special_place_all t
+
+                          left join (select substr(t.city_code, 0, 2) || '0000' as city_code,
+                                           sum(case
+                                                 when t.status = 0 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as xzs,
+                                           sum(case
+                                                 when t.status = 1 then
+                                                  1
+                                                 else
+                                                  0
+                                               end) as gbs
+                                      from thgl_res.view_special_place_all t
+                                            <where>
+                                                <if test="cityCode!=null and cityCode!=''">
+                                                    and t.city_code like #{cityCode}||'%'
+                                                </if>
+                                                <if test="type!=null and type!=''">
+                                                    and t.place_type = #{type}
+                                                </if>
+                                                <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                    and t.kyrq &gt;= #{startTime}
+                                                    and t.kyrq &lt;= #{endTime}
+                                                </if>
+                                            </where>
+                                     group by substr(t.city_code, 0, 2) ||
+                                              '0000') tt
+                            on substr(t.city_code, 0, 2) || '0000' =
+                               substr(tt.city_code, 0, 2) || '0000'
+                          left join (select count(1) as wfs,
+                                           substr(tt.city_code, 0, 2) ||
+                                           '0000' as city_code
+                                      from thgl_res.jz_yb_asj_dw t
+                                     inner join thgl_res.view_special_place_all tt
+                                        on t.dwbh = tt.place_id
+                                        <where>
+                                            <if test="cityCode!=null and cityCode!=''">
+                                                and tt.city_code like #{cityCode}||'%'
+                                            </if>
+                                            <if test="type!=null and type!=''">
+                                                and tt.place_type = #{type}
+                                            </if>
+                                            <if test="startTime!=null and startTime!='' || endTime!=null and endTime!=''">
+                                                and tt.kyrq &gt;= #{startTime}
+                                                and tt.kyrq &lt;= #{endTime}
+                                            </if>
+                                        </where>
+                                     group by substr(tt.city_code, 0, 2) ||
+                                              '0000') ajdw
+                            on substr(t.city_code, 0, 2) || '0000' = ajdw.city_code
+                                <where>
+                                    <if test="cityCode!=null and cityCode!=''">
+                                        and t.city_code like #{cityCode}||'%'
+                                    </if>
+                                    <if test="type!=null and type!=''">
+                                        and t.place_type = #{type}
+                                    </if>
+                                </where>
+                         group by substr(t.city_code, 0, 2) || '0000') s
+                 where s.city_code = '440000')
+         group by city_code) t
+ right join sys_area a
+    on t.city_code = a.code
+        <where>
+            <if test="cityCode!=null and cityCode!=''">
+                and a.code like #{cityCode}||'%'
+            </if>
+        </where>
+ order by a.code asc
+
+    </select>
+</mapper>

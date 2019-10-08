@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.tyyh.mapper.TyyhMapper">
+
+    <resultMap id="TyyhMap" type="com.cloud.admin.api.entity.Tyyh">
+
+        <result property="id"                column="id"/>
+        <result property="name"                column="name"/>
+        <result property="idCard"              column="idCard"/>
+        <result property="nation"              column="nation"/>
+        <result property="sex"                column="sex"/>
+        <result property="birth"              column="birth"/>
+        <result property="createTime"                column="createTime"/>
+        <result property="photo"                column="photo"/>
+        <result property="orgId"                column="orgId"/>
+        <result property="orgName"              column="orgName"/>
+        <result property="address"              column="address"/>
+        <result property="sortNo"                column="sortNo"/>
+        <result property="manType"              column="manType"/>
+        <result property="rank"                  column="rank"/>
+        <result property="title"                column="title"/>
+        <result property="policeId"              column="policeId"/>
+        <result property="policeName"            column="policeName"/>
+        <result property="policeNumber"          column="policeNumber"/>
+        <result property="company"              column="company"/>
+        <result property="companyPerson"        column="companyPerson"/>
+        <result property="companyCode"          column="companyCode"/>
+        <result property="orgCode"              column="orgCode"/>
+        <result property="orgLevel"              column="orgLevel"/>
+        <result property="policeBusiness"        column="policeBusiness"/>
+        <result property="personMobile"          column="personMobile"/>
+        <result property="project"              column="project"/>
+        <result property="deleted"              column="deleted"/>
+        <result property="policeCategory"        column="policeCategory"/>
+        <result property="auxiliaryType"        column="auxiliaryType"/>
+        <result property="area"                  column="area"/>
+        <result property="mobilePrivate "        column="mobilePrivate"/>
+        <result property="mobileWork"            column="mobileWork"/>
+        <result property="phone"                column="phone"/>
+        <result property="qqAccount"            column="qqAccount"/>
+        <result property="email"                column="email"/>
+        <result property="wxAccount"            column="wxAccount"/>
+        <result property="jobType"              column="jobType"/>
+        <result property="postType"              column="postType"/>
+        <result property="brithStr"              column="brithStr"/>
+        <result property="createTimeStr"        column="createTimeStr"/>
+        <result property="dutyProject"          column="dutyProject"/>
+        <result property="isParentOrg"          column="isParentOrg"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="TyyhMap">
+        select  A.* FROM tyyh_user A
+        <where>
+            <if test="query.orgId != null and query.orgId != ''">
+                AND A.orgId = #{query.orgId}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                AND A.name = #{query.name}
+            </if>
+            <if test="query.idCard != null and query.idCard != ''">
+                AND A.idCard = #{query.idCard}
+            </if>
+            <if test="query.policeId != null and query.policeId != ''">
+                AND A.policeid = #{query.policeId}
+            </if>
+            <if test="query.policeName != null and query.policeName != ''">
+                AND A.policename = #{query.policeName}
+            </if>
+            <if test="query.policeNumber != null and query.policeNumber != ''">
+                AND A.policenumber = #{query.policeNumber}
+            </if>
+            <if test="query.manType != null and query.manType != ''">
+                AND A.mantype = #{query.manType}
+            </if>
+        </where>
+    </select>
+
+    <select id="getid" resultMap="TyyhMap">
+        select id from tyyh_user where id=#{id}
+    </select>
+
+    <insert id="dowmUser">
+    insert into tyyh_user
+        (id,
+        name,
+        idCard,
+        nation,
+        sex,
+        birth,
+        orgId,
+        orgName,
+        policeNumber,
+        orgCode,
+        area
+    )values (
+        #{id},
+        #{name},
+        #{idCard},
+        #{nation},
+        #{sex},
+        #{birth},
+        #{orgId},
+        #{orgName},
+        #{policeNumber},
+        #{orgCode},
+        #{area}
+    )
+    </insert>
+
+    <update id="updateUser">
+    update tyyh_user set
+        id= #{id},
+        name = #{name},
+        idCard = #{idCard},
+        nation = #{nation},
+        sex= #{sex},
+        birth= #{birth},
+        createTime= #{createTime},
+        photo=#{photo},
+        orgId=#{orgId},
+        orgName=#{orgName},
+        address=#{address},
+        sortNo=#{sortNo},
+        manType=#{manType},
+        rank=#{rank},
+        title=#{title},
+        policeId=#{policeId},
+        policeName=#{policeName},
+        policeNumber=#{policeNumber},
+        company=#{company},
+        companyPerson=#{companyPerson},
+        companyCode=#{companyCode},
+        orgCode=#{orgCode},
+        orgLevel=#{orgLevel},
+        policeBusiness=#{policeBusiness},
+        personMobile=#{personMobile},
+        project=#{project},
+        deleted=#{deleted},
+        policeCategory=#{policeCategory},
+        auxiliaryType=#{auxiliaryType},
+        area=#{area},
+        mobilePrivate=#{mobilePrivate},
+        mobileWork=#{mobileWork},
+        phone=#{phone},
+        qqAccount=#{qqAccount},
+        email=#{email},
+        wxAccount=#{wxAccount},
+        jobType=#{jobType},
+        postType=#{postType},
+        brithStr=#{brithStr},
+        createTimeStr=#{createTimeStr},
+        dutyProject=#{dutyProject},
+        isParentOrg=#{isParentOrg}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,30 @@
+package com.cloud.portal.area.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cloud.portal.area.entity.Area;
+import org.apache.ibatis.annotations.Param;
+
+/**
+ * @author ryt
+ * @date Created in 2019/5/28 9:21
+ * @description:
+ * @modified By:
+ */
+public interface AreaMapper extends BaseMapper<Area> {
+
+    /**
+     * 更新子菜单所有的父ID信息
+     * @param oldParentIds
+     * @param newParentIds
+     * @return
+     */
+    Boolean updateChildById(@Param("oldParentIds") String oldParentIds, @Param("newParentIds")String newParentIds);
+
+    /**
+     * 删除当前ID级其子级
+     * @param id
+     * @param parentIds
+     * @return
+     */
+    Boolean deleteChildById(@Param("id")String id,@Param("parentIds")String parentIds);
+}

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.jingz.mapper.ZajcMapper">
+
+
+    <resultMap id="zajcMap" type="com.cloud.portal.archive.jingz.model.Zajc">
+        <result property="bjcdw" column="bjcdw"/>
+        <result property="bz" column="bz"/>
+        <result property="cljg" column="cljg"/>
+        <result property="clyj" column="clyj"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="departmentcode" column="departmentcode"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="dqdj" column="dqdj"/>
+        <result property="dqfs" column="dqfs"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="dwlb" column="dwlb"/>
+        <result property="dwlx" column="dwlx"/>
+        <result property="dwmc" column="dwmc"/>
+        <result property="fzwt" column="fzwt"/>
+        <result property="gxhylx" column="gxhylx"/>
+        <result property="jcdw" column="jcdw"/>
+        <result property="jcfs" column="jcfs"/>
+        <result property="jcr" column="jcr"/>
+        <result property="jcsj" column="jcsj"/>
+        <result property="jcxmxx" column="jcxmxx" />
+        <result property="jcyj" column="jcyj"/>
+        <result property="kffs" column="kffs"/>
+        <result property="kfqk" column="kfqk"/>
+        <result property="lastupdatedby" column="lastupdatedby"/>
+        <result property="lastupdatedtime" column="lastupdatedtime"/>
+        <result property="lrjls" column="lrjls"/>
+        <result property="lsqk" column="lsqk"/>
+        <result property="lyr" column="lyr"/>
+        <result property="lysj" column="lysj"/>
+        <result property="qt" column="qt"/>
+        <result property="qtjcnr" column="qtjcnr"/>
+        <result property="qydzfzr" column="qydzfzr"/>
+        <result property="rcjcbh" column="rcjcbh"/>
+        <result property="refreshtime" column="refreshtime"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="reservation16" column="reservation16"/>
+        <result property="reservation17" column="reservation17"/>
+        <result property="reservation18" column="reservation18"/>
+        <result property="reservation19" column="reservation19"/>
+        <result property="reservation20" column="reservation20"/>
+        <result property="securitygrade" column="securitygrade"/>
+        <result property="sjzgrq" column="sjzgrq"/>
+        <result property="systemid" column="systemid"/>
+        <result property="uploadflag" column="uploadflag"/>
+        <result property="xqzgrq" column="xqzgrq"/>
+        <result property="zadwbh" column="zadwbh"/>
+        <result property="zbdwbh" column="zbdwbh"/>
+        <result property="zglsjzrq" column="zglsjzrq"/>
+        <result property="zglsksrq" column="zglsksrq"/>
+    </resultMap>
+
+    <resultMap id="zajcConfigMap" type="com.cloud.portal.archive.jingz.model.ZajcConfig">
+        <result property="gnmkname" column="gnmkname"/>
+        <result property="jcxmname" column="jcxmname"/>
+        <result property="nrmkname" column="nrmkname"/>
+        <result property="systemid" column="systemid"/>
+        <result property="sywh" column="sywh"/>
+        <result property="xh" column="xh"/>
+    </resultMap>
+
+
+    <select id="findZajcPage" resultMap="zajcMap">
+        select * from THGL_RES.jz_b_za_rcjcxx A
+        <where>
+            deleteFlag='0'
+            <if test="query.dwbh != null and query.dwbh != ''">
+                AND A.dwbh = #{query.dwbh}
+            </if>
+            <if test="query.clyj != null and query.clyj != ''">
+                AND A.clyj = #{query.clyj}
+            </if>
+            <if test="query.startTime != null and query.startTime != ''">
+                AND A.jcsj &gt; to_date(#{query.startTime}||'00:00:00','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND A.jcsj &lt; to_date(#{query.endTime}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+        </where>
+        order by A.jcsj desc
+    </select>
+
+    <select id="getZajcById" resultMap="zajcMap">
+        select * from THGL_RES.jz_b_za_rcjcxx A
+        <where>
+            <if test="systemId != null and systemId != ''">
+                AND A.systemid = #{systemId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getZajcConfig" resultMap="zajcConfigMap">
+        select a.*,substr(b.reservation20,a.sywh,1)as checkState from THGL_RES.jz_b_za_rcjxconfig a
+        inner join THGL_RES.jz_b_za_rcjcxx b on b.reservation01 = a.gnmkname
+        <where>
+            <if test="systemId != null and systemId != ''">
+                AND b.systemid = #{systemId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

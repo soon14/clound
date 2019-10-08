@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.mechanical.mapper.JxCyryMapper">
+
+    <resultMap id="CyryMap" type="com.cloud.portal.archive.mechanical.model.Cyry">
+        <result property="zagldwbm"        column="zagldwbm"/>
+        <result property="dwmc"           column="dwmc"/>
+        <result property="xm"              column="xm"/>
+        <result property="xbdm"           column="xbdm"/>
+        <result property="mzdm"            column="mzdm"/>
+        <result property="cyzjdm"          column="cyzjdm"/>
+        <result property="zjhm"            column="zjhm"/>
+        <result property="dzmcdzbm"       column="dzmc_dzbm"/>
+        <result property="dzmcssxqdm"     column="dzmc_ssxqdm"/>
+        <result property="dzmcqhnxxdz"    column="dzmc_qhnxxdz"/>
+        <result property="xldm"            column="xldm"/>
+        <result property="gjdm"            column="gjdm"/>
+        <result property="hjdzdzbm"       column="hjdz_dzbm"/>
+        <result property="hjdzssxqdm"     column="hjdz_ssxqdm"/>
+        <result property="hjdzqhnxxdz"    column="hjdz_qhnxxdz"/>
+        <result property="gzmc"            column="gzmc"/>
+        <result property="rzrq"            column="rzrq"/>
+        <result property="lzrq"            column="lzrq"/>
+        <result property="sjgsdwmc"        column="sjgsdwmc"/>
+        <result property="sjgsdwdm"        column="sjgsdwdm"/>
+        <result property="djsj"            column="djsj"/>
+        <result property="gxsj"            column="gxsj"/>
+        <result property="xxid"            column="xxid"/>
+        <result property="sjgxsm"          column="sjgxsm"/>
+        <result property="xh"              column="xh"/>
+        <result property="zgrs"              column="zgrs"/>
+        <result property="bylg"              column="bylg"/>
+        <result property="bysg"              column="bysg"/>
+        <result property="xh1"              column="xh1"/>
+        <result property="zp"            column="zp"       jdbcType="BLOB"/>
+    </resultMap>
+
+
+    <select id="findCyryPage" resultMap="CyryMap">
+        select rownum as xh1, A.* from THGL_RES.jx_tt_cyryxx A
+        <where>
+            1=1
+            <if test="query.dwbh != null and query.dwbh != ''">
+                AND A.zagldwbm = #{query.dwbh}
+            </if>
+            <if test="query.gzmc != null and query.gzmc != ''">
+                AND A.gzmc = #{query.gzmc}
+            </if>
+            <if test="query.xm != null and query.xm != ''">
+                AND A.xm = #{query.xm}
+            </if>
+            <if test="query.rzrq != null and query.rzrq != ''">
+                AND A.zagldwbm = #{query.rzrq}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <select id="CountAll" resultMap="CyryMap">
+        select t1.zgrs as zgrs,t2.bylg as bylg,t3.bysg as bysg from
+        (select count(1) as zgrs,max(t.zagldwbm) as zagldwbm from THGL_RES.jx_tt_cyryxx t where t.zagldwbm=#{dwbh} and t.lzrq  is null ${dataScope}) t1
+        left join
+         (select count(1) as bylg,max(t.zagldwbm) as zagldwbm from THGL_RES.jx_tt_cyryxx t where t.zagldwbm=#{dwbh} and t.lzrq  is not null and TO_CHAR(t.lzrq, 'YYYY-MM') = TO_CHAR(sysdate, 'YYYY-MM') ${dataScope}) t2
+        on t1.zagldwbm = t2.zagldwbm
+        left join
+        (select count(1) as bysg,max(t.zagldwbm) as zagldwbm from THGL_RES.jx_tt_cyryxx t where t.zagldwbm=#{dwbh} and t.rzrq  is not null and TO_CHAR(t.rzrq, 'YYYY-MM') = TO_CHAR(sysdate, 'YYYY-MM') ${dataScope})t3
+        on t1.zagldwbm = t3.zagldwbm
+
+    </select>
+
+    <select id="getById" resultMap="CyryMap">
+        select * from THGL_RES.jx_tt_cyryxx t
+        <where>
+            <if test="xxid != null and xxid != ''">
+                t.xxid = #{xxid}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="CyryImgById" resultMap="CyryMap" >
+        select  A.zp from   THGL_RES.jx_tt_cyryxx  A
+        <where>
+            A.xxid=#{id} AND ROWNUM=1
+        </where>
+
+    </select>
+
+</mapper>

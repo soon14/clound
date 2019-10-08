@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.admin.mapper.SysRoleMenuScopeMapper">
+
+    <resultMap id="sysRoleMenuScopeMap" type="com.cloud.admin.api.entity.SysRoleMenuScope">
+        <id property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="dsType" column="ds_type"/>
+        <result property="dsScope" column="ds_scope"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="permission" column="permission"/>
+
+    </resultMap>
+    <select id="findRoleMenuScopeByRoleId" resultMap="sysRoleMenuScopeMap">
+      select t.* from sys_role_menu_scope t
+      where  t.role_id=#{roleId}
+
+    </select>
+</mapper>

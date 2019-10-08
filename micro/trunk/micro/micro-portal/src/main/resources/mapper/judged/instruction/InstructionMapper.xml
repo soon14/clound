@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.instruction.mapper.InstructionMapper">
+
+    <resultMap id="instructionMap" type="com.cloud.portal.judged.instruction.model.Instruction">
+        <result property="batchSId" column="batch_id"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="id" column="id"/>
+        <result property="modelUdid" column="model_udid"/>
+        <result property="planLibId" column="plan_lib_id"/>
+        <result property="receiveOrg" column="receive_org"/>
+        <result property="receiveOrgLabel" column="receive_org_label"/>
+        <result property="remark" column="remark"/>
+        <result property="sendOrg" column="send_org"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="sendType" column="send_type"/>
+        <result property="status" column="status"/>
+        <result property="timeLimit" column="time_limit"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="updaeBy" column="updae_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="sendOrgLabel" column="send_org_label"/>
+        <result property="createByName" column="create_by_name"/>
+        <result property="updateByName" column="update_by_name"/>
+        <result property="planLibraryLabel" column="lib_title"/>
+        <result property="planLibraryRemark" column="lib_remark"/>
+    </resultMap>
+
+    <select id="findListPage" resultMap="instructionMap">
+        select
+            a.*,
+            d.fullname as receive_org_label,
+            l.fullname as send_org_label,
+            p.name as lib_title,
+            p.describe as lib_remark
+        from T_THCS_WARN_INSTRUCT A
+        left join sys_office d on d.code = a.receive_org
+        left join sys_office l on l.code = a.send_org
+        left join t_thcs_warn_plan_lib p on p.id = a.plan_lib_id
+        <where>
+            <if test="instruction.title != null and instruction.title != ''">
+                AND A.title like '%'||#{instruction.title}||'%'
+            </if>
+            <if test="instruction.cityCode != null and instruction.cityCode != ''">
+                and A.city_code like #{instruction.cityCode}||'%'
+            </if>
+            <if test="instruction.receiveOrg != null and instruction.receiveOrg != ''">
+                and A.receive_org like #{instruction.receiveOrg}||'%'
+            </if>
+            <if test="instruction.status != null and instruction.status != ''">
+                and A.status = #{instruction.status}
+            </if>
+            <if test="instruction.type!=null and instruction.type!=''">
+                and A.type = #{instruction.type}
+            </if>
+            <if test="instruction.createBy!=null and instruction.createBy!=''">
+                and a.create_By = #{instruction.createBy}
+            </if>
+            <if test="instruction.notContainDraft">
+                and a.status not in ('0','2')
+            </if>
+            ${instruction.dataScope}
+        </where>
+        order by a.update_time desc
+    </select>
+
+    <select id="findOvertimeListPage" resultMap="instructionMap">
+        select
+            a.*,
+            d.fullname as receive_org_label,
+            l.fullname as send_org_label,
+            p.name as lib_title,
+            p.describe as lib_remark
+        from T_THCS_WARN_INSTRUCT A
+        left join sys_office d on d.code = a.receive_org
+        left join sys_office l on l.code = a.send_org
+        left join t_thcs_warn_plan_lib p on p.id = a.plan_lib_id
+        <where>
+            a.time_limit &lt; sysdate and a.status = '1'
+            <if test="instruction.title != null and instruction.title != ''">
+                AND A.title like '%'||#{instruction.title}||'%'
+            </if>
+            <if test="instruction.cityCode != null and instruction.cityCode != ''">
+                and A.city_code like #{instruction.cityCode}||'%'
+            </if>
+            <if test="instruction.receiveOrg != null and instruction.receiveOrg != ''">
+                and A.receive_org like #{instruction.receiveOrg}||'%'
+            </if>
+            <if test="instruction.status != null and instruction.status != ''">
+                and A.status = #{instruction.status}
+            </if>
+            <if test="instruction.type!=null and instruction.type!=''">
+                and A.type = #{instruction.type}
+            </if>
+            <if test="instruction.createBy!=null and instruction.createBy!=''">
+                and a.create_By = #{instruction.createBy}
+            </if>
+            ${instruction.dataScope}
+        </where>
+        order by a.update_time desc
+    </select>
+
+    <update id="updateStatus">
+        update T_THCS_WARN_INSTRUCT t set t.status=#{instruction.status},t.updae_By = #{instruction.updaeBy},t.update_time=#{instruction.updateTime}
+        where t.id = #{instruction.id}
+    </update>
+
+</mapper>

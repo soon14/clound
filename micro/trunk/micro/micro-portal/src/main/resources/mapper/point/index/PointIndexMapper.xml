@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.point.index.mapper.PointIndexMapper">
+
+    <resultMap id="pointIndexMap" type="com.cloud.portal.point.index.model.PointIndex">
+        <result property="city" column="city"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="placeType" column="place_type"/>
+        <result property="remark" column="remark"/>
+        <result property="score" column="score"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+        <result property="udId" column="udId"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="upperLimit" column="upper_limit"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <update id="updateStatus">
+        UPDATE T_THCS_POINT_INDEX
+        SET
+        STATUS = #{status},
+        UPDATE_BY = #{updateBy},
+        UPDATE_TIME = sysdate,
+        UPDATER = #{updater},
+        CREATOR = decode(id,#{id},#{updater},CREATOR,CREATOR)
+        <where>
+            AND ID=#{id}
+        </where>
+
+    </update>
+
+    <select id="udIdExit" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM T_THCS_POINT_INDEX T
+        <where>
+            AND T.DEL_FLAG='0'
+            AND T.udId=#{udId}
+            <if test=" id!=null and id !='' ">
+                AND T.id != #{id}
+            </if>
+            AND ROWNUM = 1
+        </where>
+    </select>
+    <select id="findPage" resultMap="pointIndexMap">
+        SELECT A.* FROM T_THCS_POINT_INDEX A
+        <where>
+            AND A.DEL_FLAG='0'
+            <if test="query.name!=null and query.name!=''">
+                AND A.NAME LIKE '%'||#{query.name}||'%'
+            </if>
+
+            <if test="query.city!=null and query.city!=''">
+                AND A.CITY = #{query.city}
+            </if>
+
+            <if test="query.status!=null and query.status!=''">
+                AND A.STATUS = #{query.status}
+            </if>
+
+            <if test="query.type!=null and query.type!=''">
+                AND A.TYPE = #{query.type}
+            </if>
+
+            <if test="query.placeType!=null and query.placeType!=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+
+            <if test="query.dataScope!=null and query.dataScope!=''">
+                AND ( A.CITY IN (SUBSTR(#{query.dataScope},0,4)||'00','440000') OR A.CREATE_BY=#{query.createBy})
+            </if>
+
+        </where>
+        ORDER by A.UPDATE_TIME DESC
+    </select>
+
+    <select id="findList" resultMap="pointIndexMap">
+        SELECT A.* FROM T_THCS_POINT_INDEX A
+        <where>
+            AND A.DEL_FLAG='0'
+            <if test="query.name!=null and query.name!=''">
+                AND A.NAME LIKE '%'||#{query.name}||'%'
+            </if>
+
+            <if test="query.city!=null and query.city!=''">
+                AND A.CITY = #{query.city}
+            </if>
+
+            <if test="query.status!=null and query.status!=''">
+                AND A.STATUS = #{query.status}
+            </if>
+
+            <if test="query.type!=null and query.type!=''">
+                AND A.TYPE = #{query.type}
+            </if>
+
+            <if test="query.placeType!=null and query.placeType!=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+
+            <if test="query.dataScope!=null and query.dataScope!=''">
+                AND ( A.CITY IN (SUBSTR(#{query.dataScope},0,4)||'00','440000') OR A.CREATE_BY=#{query.createBy})
+            </if>
+
+        </where>
+    </select>
+
+    <select id="findIndexByUdIdAndVersion"
+            resultMap="pointIndexMap">
+        SELECT A.* FROM T_THCS_POINT_INDEX A
+        <where>
+            AND A.DEL_FLAG='0'
+            AND A.udId=#{udId}
+            AND A.version=#{version}
+            AND rownum=1
+        </where>
+
+
+    </select>
+
+
+</mapper>

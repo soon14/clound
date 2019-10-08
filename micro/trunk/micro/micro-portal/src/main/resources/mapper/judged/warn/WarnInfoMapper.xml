@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.warn.mapper.WarnInfoMapper">
+
+    <resultMap id="warnInfoMap" type="com.cloud.portal.judged.warn.model.WarnInfo">
+        <result property="batchId" column="batch_id"/>
+        <result property="brief" column="brief"/>
+        <result property="detail" column="detail"/>
+        <result property="id" column="id"/>
+        <result property="modelUdId" column="model_udId"/>
+        <result property="placeId" column="place_id"/>
+        <result property="placeType" column="place_type"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="title" column="title"/>
+        <result property="warnTime" column="warn_time"/>
+        <result property="modelMenu.id" column="model_id"/>
+        <result property="modelMenu.links" column="model_links"/>
+        <result property="modelMenu.name" column="model_name"/>
+        <result property="modelMenu.remark" column="model_remark"/>
+        <result property="type" column="type"/>
+    </resultMap>
+    <select id="findPage" resultMap="warnInfoMap">
+          SELECT W.*,
+                    '00' AS TYPE,
+                    M.ID AS MODEL_ID,
+                    M.LINKS AS MODEL_LINKS,
+                    NVL(M.NAME,W.TITLE) AS MODEL_NAME,
+                    M.REMARK AS MODEL_REMARK
+              FROM T_THCS_WARNING W
+              LEFT JOIN T_THCS_MENU_MODEL M ON W.MODEL_UDID = M.UDID
+             <where>
+                 <if test="query.placeId !=null and query.placeId!=''">
+                     AND W.PLACE_ID =  #{query.placeId}
+                 </if>
+                 <if test="query.sourceType !=null and query.sourceType!=''">
+                     AND W.SOURCE_TYPE =  #{query.sourceType}
+                 </if>
+                 <if test="query.placeType !=null and query.placeType!=''">
+                     AND W.PLACE_TYPE =  #{query.placeType}
+                 </if>
+                 <if test="query.modelUdId !=null and query.modelUdId!=''">
+                     AND W.MODEL_UDID =  #{query.modelUdId}
+                 </if>
+
+             </where>
+
+        ORDER BY W.WARN_TIME DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.ylcs.mapper.CsbafjMapper">
+
+    <resultMap id="csbafjMap" type="com.cloud.portal.archive.ylcs.entity.Csbafj">
+        <result property="fjId" column="fj_id"/>
+        <result property="csbaId" column="csba_id"/>
+        <result property="fjMingcheng" column="fj_mingcheng"/>
+        <result property="fjDaxiao" column="fj_daxiao"/>
+        <result property="fjNeirong" column="fj_neirong" jdbcType="BLOB"/>
+        <result property="fjLeixingid" column="fj_leixingid"/>
+        <result property="fjShijian" column="fj_shijian"/>
+        <result property="ywLx" column="yw_lx"/>
+    </resultMap>
+
+    <select id="findCsbafjPage" resultMap="csbafjMap">
+        select
+        a.fj_id,
+        a.csba_id,
+        a.fj_mingcheng,
+        a.fj_daxiao,
+        a.fj_neirong,
+        a.fj_leixingid,
+        a.fj_shijian,
+        a.yw_lx,
+        b.file_typename as fileTypeName
+        from THGL_RES.YL_CSBA_FJ a
+        left join THGL_RES.yl_sys_file_type b
+        on a.fj_leixingid = b.file_typeid
+        <where>
+            1=1
+            <if test="query.csbaId != null and query.csbaId != ''">
+                and A.csba_id = #{query.csbaId}
+            </if>
+            <if test="query.fjMingcheng != null and query.fjMingcheng != ''">
+                and A.fj_mingcheng like '%'||#{query.fjMingcheng}||'%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findImgById" resultMap="csbafjMap" >
+        select  * from THGL_RES.YL_CSBA_FJ  A
+        <where>
+            <if test="query.csbaId != null and query.csbaId != ''">
+                and  A.csba_id=#{query.csbaId}
+            </if>
+            <if test="query.fjLeixingid != null and query.fjLeixingid != ''">
+                and A.fj_leixingid=#{query.fjLeixingid}
+            </if>
+            <if test="query.fjId != null and query.fjId != ''">
+                and  A.fj_id=#{query.fjId}
+            </if>
+            and ROWNUM=1
+        </where>
+    </select>
+
+    <select id="findPmtById" resultMap="csbafjMap" >
+        select  * from THGL_RES.YL_CSBA_FJ  A
+        where A.csba_id = #{csbaId} and fj_leixingid='csba_fj_10' and ROWNUM=1
+      </select>
+
+</mapper>

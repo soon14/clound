@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.asj.mapper.DanweiAsjMapper">
+
+
+  <resultMap id="DanweiAsjMap" type="com.cloud.portal.asj.model.DanweiAsj">
+      <result property="ab" column="ab"/>
+      <result property="ajbarp" column="ajbarp"/>
+      <result property="ajbh" column="ajbh"/>
+      <result property="ajlary" column="ajlary"/>
+      <result property="ajlx" column="ajlx"/>
+      <result property="ajly" column="ajly"/>
+      <result property="ajmc" column="ajmc"/>
+      <result property="ajssjq" column="ajssjq"/>
+      <result property="ajstate" column="ajstate"/>
+      <result property="ajwh" column="ajwh"/>
+      <result property="ajwhcd" column="ajwhcd"/>
+      <result property="ajxbry" column="ajxbry"/>
+      <result property="ajzbry" column="ajzbry"/>
+      <result property="bz" column="bz"/>
+      <result property="fadd" column="fadd"/>
+      <result property="fadd_jd" column="faddJd"/>
+      <result property="fadd_qx" column="faddQx"/>
+      <result property="fady" column="fady"/>
+      <result property="fasjcz" column="fasjcz"/>
+      <result property="fasjzz" column="fasjzz"/>
+      <result property="fxxs" column="fxxs"/>
+      <result property="ja_jasj" column="jaJasj"/>
+      <result property="ladw" column="ladw"/>
+      <result property="lasj" column="lasj"/>
+      <result property="pasj" column="pasj"/>
+      <result property="sl_bjslh" column="slBjslh"/>
+      <result property="sl_jjfs" column="slJjfs"/>
+      <result property="sl_lrsj" column="slLrsj"/>
+      <result property="slfacs" column="slfacs"/>
+      <result property="slfxrq" column="slfxrq"/>
+      <result property="sljjdw" column="sljjdw"/>
+      <result property="sljjsj" column="sljjsj"/>
+      <result property="sljsdw" column="sljsdw"/>
+      <result property="ssrs" column="ssrs"/>
+      <result property="sssq" column="sssq"/>
+      <result property="swrs" column="swrs"/>
+      <result property="systemid" column="systemid"/>
+      <result property="xa_xasj" column="xaXasj"/>
+      <result property="zabz" column="zabz"/>
+      <result property="zazt" column="zazt"/>
+      <result property="zbdw" column="zbdw"/>
+      <result property="zyaq" column="zyaq"/>
+   </resultMap>
+<select id="findPage" resultMap="DanweiAsjMap">
+    select * from t_thcs_jz_aj a
+    <where>
+        <if test="query.ajbh!=null and query.ajbh!=''">
+            a.ajbh=#{query.ajbh}
+        </if>
+        <if test="query.ajmc!=null and query.ajmc!=''">
+            a.ajmc like '%'||#{query.ajmc}||'%'
+        </if>
+    </where>
+
+</select>
+</mapper>

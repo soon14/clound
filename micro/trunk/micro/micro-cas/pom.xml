@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cloud</groupId>
+		<artifactId>micro</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>micro-cas</artifactId>
+	<packaging>jar</packaging>
+
+	<description>统一单点登录客户端L</description>
+
+	<dependencies>
+
+
+		<!--巨龙单点登录-->
+		<dependency>
+			<groupId>com.dragonsoft</groupId>
+			<artifactId>dcuc-client</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!--common-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>common-core</artifactId>
+		</dependency>
+
+
+		<!--web 模块-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<!--排除tomcat依赖-->
+				<exclusion>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<groupId>org.springframework.boot</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--undertow容器-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>2.9.8</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker.plugin.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>

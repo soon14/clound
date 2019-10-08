@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.jingz.mapper.ZjxxMapper">
+
+
+    <resultMap id="ZjxxMap" type="com.cloud.portal.archive.jingz.model.Zjxx">
+        <result property="systemid" column="systemid"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="zjhm" column="zjhm"/>
+        <result property="zjdm" column="zjdm"/>
+        <result property="fzrq" column="fzrq"/>
+        <result property="fzdw" column="fzdw"/>
+        <result property="spr" column="spr"/>
+        <result property="sprq" column="sprq"/>
+        <result property="yxqx" column="yxqx"/>
+        <result property="bz" column="bz"/>
+        <result property="departmentcode" column="departmentcode"/>
+        <result property="creator" column="creator"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="securitygrade" column="securitygrade"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="reservation17" column="reservation17"/>
+        <result property="reservation18" column="reservation18"/>
+        <result property="reservation19" column="reservation19"/>
+        <result property="reservation20" column="reservation20"/>
+        <result property="lastupdatedby" column="lastupdatedby"/>
+        <result property="lastupdatedtime" column="lastupdatedtime"/>
+        <result property="refreshtime" column="refreshtime"/>
+        <result property="uploadflag" column="uploadflag"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="deleteflag" column="deleteflag"/>
+
+        <result property="fileid" column="fileid"/>
+        <result property="fjmc" column="fjmc"/>
+        <result property="wjlx" column="wjlx"/>
+        <result property="files" column="files" jdbcType="BLOB"/>
+
+    </resultMap>
+
+    <select id="imgById" resultMap="ZjxxMap" >
+        select  A.files from   THGL_RES.jz_b_za_zagxdw_file  A
+        <where>
+            A.systemid=#{fileid} AND ROWNUM=1
+        </where>
+
+    </select>
+
+    <select id="findPage" resultMap="ZjxxMap">
+        select * from( select t1.systemid as fileid,t1.fjmc,t1.wjlx,t.* from  THGL_RES.jz_yb_za_dwzjxx  t left join THGL_RES.jz_b_za_zagxdw_file t1 on t.dwbh = t1.zbbh) a
+        <where>
+            deleteflag='0'
+            <if test="query.systemid !=null and query.systemid!=''">
+                AND a.systemid =  #{query.systemid}
+            </if>
+            <if test="query.dwbh !=null and query.dwbh!=''">
+                AND a.dwbh =  #{query.dwbh}
+            </if>
+            <if test="query.zjhm !=null and query.zjhm!=''">
+                AND a.zjhm =  #{query.zjhm}
+            </if>
+            <if test="query.fjmc !=null and query.fjmc!=''">
+                AND a.fjmc =  '%'||#{query.fjmc}||'%'
+            </if>
+        </where>
+
+    </select>
+</mapper>

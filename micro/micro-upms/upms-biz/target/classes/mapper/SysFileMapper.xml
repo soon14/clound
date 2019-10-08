@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.admin.mapper.SysFileMapper">
+
+	<resultMap id="SysFileMap" type="com.cloud.admin.api.entity.SysFile">
+		<result property="id" column="id"/>
+		<result property="tbPk" column="tb_pk"/>
+		<result property="tbName" column="tb_name"/>
+		<result property="fileName" column="file_name"/>
+		<result property="extName" column="ext_name"/>
+		<result property="path" column="path"/>
+		<result property="fileSize" column="file_size"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="createDeptCode" column="create_dept_code"/>
+		<result property="updateDeptCode" column="update_dept_code"/>
+		<result property="delFlag" column="del_flag"/>
+		<result property="remarks" column="remarks"/>
+		<result property="files" column="files"/>
+	</resultMap>
+</mapper>

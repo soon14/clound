@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.kyzy.mapper.SealImageMapper">
+
+    <resultMap id="sealImageMap" type="com.cloud.portal.archive.kyzy.model.SealImage">
+        <result property="sealAuditImage" column="seal_audit_image"/>
+        <result property="sealMakeImage" column="seal_make_image"/>
+        <result property="sealscanImage" column="seal_scan_image"/>
+    </resultMap>
+
+    <select id="findSealScanImageBySealId" resultMap="sealImageMap">
+        SELECT I.SEAL_SCAN_IMAGE FROM thgl_res.KYZ_SEAL_IMAGE I
+        <where>
+            I.SEAL_ID = #{sealId}
+        </where>
+    </select>
+
+    <select id="findSealAuditImageBySealId" resultMap="sealImageMap">
+        SELECT I.SEAL_Audit_IMAGE FROM thgl_res.KYZ_SEAL_IMAGE I
+        <where>
+            I.SEAL_ID = #{sealId}
+        </where>
+    </select>
+
+    <select id="findSealMakeImageBySealId" resultMap="sealImageMap">
+        SELECT I.SEAL_Make_IMAGE FROM thgl_res.KYZ_SEAL_IMAGE I
+        <where>
+            I.SEAL_ID = #{sealId}
+        </where>
+    </select>
+
+</mapper>

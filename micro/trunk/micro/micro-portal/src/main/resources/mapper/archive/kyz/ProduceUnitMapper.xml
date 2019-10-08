@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.kyzy.mapper.ProduceUnitMapper">
+
+    <resultMap id="produceUnitMap" type="com.cloud.portal.archive.kyzy.model.ProduceUnit">
+        <result property="id" column="id"/>
+        <result property="areaCode" column="area_code"/>
+        <result property="approveCode" column="approve_code"/>
+        <result property="approveCodeName" column="approveCodeName"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="shopType" column="shop_type"/>
+        <result property="legalName" column="legal_name"/>
+        <result property="idcardType" column="idcard_type"/>
+        <result property="idcardNumber" column="idcard_number"/>
+        <result property="address" column="address"/>
+        <result property="businessLicenseNumber" column="business_license_number"/>
+        <result property="organizationCode" column="organization_code"/>
+        <result property="taxNumber" column="tax_number"/>
+        <result property="uniformSocialCreditCode" column="uniform_social_credit_code"/>
+        <result property="specialNumber" column="special_number"/>
+        <result property="phone" column="phone"/>
+        <result property="picture" column="picture"/>
+        <result property="remark" column="remark"/>
+        <result property="issuingDate" column="issuing_date"/>
+        <result property="initIssuingDate" column="init_issuing_date"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="processSign" column="process_sign"/>
+        <result property="eseal" column="eseal"/>
+        <result property="status" column="status"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="chainbrandName" column="chainbrand_name"/>
+        <result property="chainbrandId" column="chainbrand_id"/>
+        <result property="chainbrandLogo" column="chainbrand_logo"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="sealSystemInstallState" column="seal_system_install_state"/>
+        <result property="enterpriseState" column="enterprise_state"/>
+        <result property="policeName" column="police_name"/>
+        <result property="policePhone" column="police_phone"/>
+        <result property="placeLevel" column="place_level"/>
+        <result property="legalPersonPhone" column="legal_person_phone"/>
+        <result property="enterprisePrincipal" column="enterprise_principal"/>
+        <result property="enterprisePrincipalId" column="enterprise_principal_id"/>
+        <result property="enterprisePrincipalPhone" column="enterprise_principal_phone"/>
+        <result property="signboardName" column="signboard_name"/>
+        <result property="registerDate" column="register_date"/>
+        <result property="property" column="property"/>
+        <result property="registerCapital" column="register_capital"/>
+        <result property="licenseAddress" column="license_address"/>
+        <result property="operatingScope" column="operating_scope"/>
+        <result property="operatingProject" column="operating_project"/>
+        <result property="operatingFloor" column="operating_floor"/>
+        <result property="operatingArea" column="operating_area"/>
+        <result property="enterprisePeopleNum" column="enterprise_people_num"/>
+        <result property="fireExtinguisher" column="fire_extinguisher"/>
+        <result property="sprayHeader" column="spray_header"/>
+        <result property="monitorCamera" column="monitor_camera"/>
+        <result property="monitorSaveTime" column="monitor_save_time"/>
+        <result property="securityChief" column="security_chief"/>
+        <result property="securityChiefPhone" column="security_chief_phone"/>
+        <result property="securityPeople" column="security_people"/>
+        <result property="securityCompany" column="security_company"/>
+        <result property="isCyyz" column="is_cyyz"/>
+        <result property="price" column="price"/>
+        <result property="syncFlag" column="sync_flag"/>
+        <result property="bizNum" column="biz_num"/>
+        <result property="pointType" column="level_type"/>
+        <result property="pointLevelId" column="level_id"/>
+        <result property="pointCycleId" column="cycle_id"/>
+        <result property="pointScore" column="total_score"/>
+        <result property="judgeTime"  column="judge_Time"/>
+
+    </resultMap>
+
+    <select id="getCount" resultType="integer">
+        select COUNT(1) as num from THGL_RES.KYZ_PRODUCE_UNIT_INFO A
+        <if test="pointType!=null and pointType!=''">
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.ID=C.PLACE_ID AND C.SOURCE_TYPE = '4')
+        </if>
+        <where>
+            <if test="dwmc != null and dwmc != ''">
+                AND A.name like '%'||#{dwmc}||'%'
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                and A.area_code like '%'||#{orgCode}||'%'
+            </if>
+            <if test="placeType != null and placeType != ''">
+                and A.shop_type = #{placeType}
+            </if>
+            <if test="placeState != null and placeState != ''">
+                and nvl(a.enterprise_state,'1') = #{placeState}
+            </if>
+            <if test="pointType!=null and pointType!=''">
+                AND C.LEVEL_TYPE=#{pointType}
+            </if>
+            ${dataScope}
+        </where>
+    </select>
+
+    <select id="findListPage" resultMap="produceUnitMap">
+        select a.id,area_code,a.name,a.type,a.shop_type,a.address,nvl(a.enterprise_state,'1') as enterprise_state
+        ,C.TOTAL_SCORE,C.LEVEL_TYPE,C.CYCLE_ID,C.LEVEL_ID,C.JUDGE_TIME
+        from THGL_RES.KYZ_PRODUCE_UNIT_INFO A
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.ID=C.PLACE_ID AND C.SOURCE_TYPE = '4')
+        <where>
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.name like '%'||#{query.dwmc}||'%'
+            </if>
+            <if test="query.orgCode != null and query.orgCode != ''">
+                and A.area_code like '%'||#{query.orgCode}||'%'
+            </if>
+            <if test="query.placeType != null and query.placeType != ''">
+                and A.type = #{query.placeType}
+            </if>
+            <if test="query.placeState != null and query.placeState != ''">
+                and nvl(a.enterprise_state,'1') = #{query.placeState}
+            </if>
+            <if test="query.pointType!=null and query.pointType!=''">
+                AND C.LEVEL_TYPE=#{query.pointType}
+            </if>
+            ${query.dataScope}
+        </where>
+        order by a.UPDATE_TIME desc
+    </select>
+
+    <select id="findById" resultMap="produceUnitMap">
+        select a.*,i.name as approveCodeName,C.TOTAL_SCORE,C.LEVEL_TYPE,C.CYCLE_ID,C.LEVEL_ID,C.JUDGE_TIME
+         from THGL_RES.KYZ_PRODUCE_UNIT_INFO A
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.ID=C.PLACE_ID AND C.SOURCE_TYPE = '4')
+        left join thgl_res.kyz_approve_unit_info i
+        on i.id = a.approve_code
+        <where>
+            a.id=#{id}
+        </where>
+    </select>
+
+</mapper>

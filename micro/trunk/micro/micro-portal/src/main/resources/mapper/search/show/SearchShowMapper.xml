@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.search.show.mapper.SearchShowMapper">
+
+
+    <select id="listPage" resultType="map">
+        SELECT
+        <foreach collection="query.columns" item="column" separator=",">
+            A.${column.shamName} AS "${column.realName}"
+        </foreach>
+        FROM ${query.tableName} A
+        <where>
+            <if test="query.searchKeyList!=null and query.searchKeyList.size > 0 ">
+
+                <foreach collection="query.searchKeyList" item="searchKey" separator=" ">
+                    AND A.${searchKey.column}
+                    <choose>
+                        <when test="searchKey.symbol == 'like'">
+                            like '%'||#{searchKey.value}||'%'
+                        </when>
+                        <when test="searchKey.symbol == 'leftlike'">
+                            like '%'||#{searchKey.value}
+                        </when>
+                        <when test="searchKey.symbol == 'rightlike'">
+                            like  #{searchKey.value}||'%'
+                        </when>
+                        <when test="searchKey.symbol == 'lt' ">
+                        <choose>
+                            <when test="searchKey.searchDate!=null and searchKey.searchDate!=''">
+                                &lt;= to_date(#{searchKey.searchDate},'yyyy-mm-dd hh24:mi:ss')
+                            </when>
+                            <otherwise>
+                                &lt;=  #{searchKey.value}
+                            </otherwise>
+                        </choose>
+                        </when>
+                        <when test="searchKey.symbol == 'gt' ">
+                            <choose>
+                                <when test="searchKey.searchDate!=null and searchKey.searchDate!=''">
+                                    &gt;= to_date(#{searchKey.searchDate},'yyyy-mm-dd hh24:mi:ss')
+                                </when>
+                                <otherwise>
+                                    &gt;=  #{searchKey.value}
+                                </otherwise>
+                            </choose>
+                        </when>
+                        <when test="searchKey.symbol == 'in' ">
+                            IN
+                            <foreach collection="searchKey.value" item="value" open="(" separator="," close=")">
+                                #{value}
+                            </foreach>
+                        </when>
+                        <when test="searchKey.startTime!=null and searchKey.startTime!='' and searchKey.endTime!=null and searchKey.endTime!='' ">
+                            between to_date(#{searchKey.startTime},'yyyy-mm-dd hh24:mi:ss')
+                            and to_date(#{searchKey.endTime},'yyyy-mm-dd hh24:mi:ss')
+                        </when>
+                        <otherwise>
+                            = #{searchKey.value}
+                        </otherwise>
+                    </choose>
+                </foreach>
+
+            </if>
+
+            <if test="query.dataScope!=null and query.dataScope!=''">
+                ${query.dataScope}
+            </if>
+        </where>
+
+        <if test=" query.orderByKey!=null and query.orderByKey.size > 0 ">
+            ORDER BY
+            <foreach collection="query.orderByKey.entrySet()" item="value" index="key" separator=" , ">
+                A.${key} ${value}
+            </foreach>
+        </if>
+
+
+    </select>
+</mapper>

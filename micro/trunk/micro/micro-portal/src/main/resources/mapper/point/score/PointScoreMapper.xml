@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.point.score.mapper.PointScoreMapper">
+
+    <resultMap id="scoreMap" type="com.cloud.portal.point.score.model.PointScore">
+        <result property="cycleId" column="cycle_id"/>
+        <result property="id" column="id"/>
+        <result property="judgeTime" column="judge_time"/>
+        <result property="levelId" column="level_id"/>
+        <result property="levelType" column="level_type"/>
+        <result property="placeId" column="place_id"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="placeAddress" column="place_address"/>
+        <result property="placeName" column="place_name"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="placeType" column="place_type"/>
+        <result property="cycleName" column="cycle_name"/>
+        <result property="cycleType" column="cycleType"/>
+
+    </resultMap>
+
+    <select id="levelExitInScore" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM T_THCS_POINT_SCORE A
+        <where>
+            AND A.LEVEL_ID
+            <choose>
+
+                <when test="null!=levelIds and levelIds.size == 1">
+                    = #{levelIds[0]}
+                </when>
+                <otherwise>
+                    IN
+                    <foreach collection="levelIds" item="levelId" open="(" separator="," close=")">
+                        #{levelId}
+                    </foreach>
+                </otherwise>
+            </choose>
+
+            AND ROWNUM =1
+        </where>
+
+    </select>
+    <select id="findCycleScoreList" resultMap="scoreMap">
+        select A.* from (
+        <choose>
+            <when test=" query.cycleType=='1' || query.cycleType==1">
+                SELECT A.*,NVL(CY.CYCLE,'无') as CYCLE_NAME,'1' as cycleType FROM T_THCS_POINT_SCORE A
+            </when>
+            <otherwise>
+                SELECT A.*,NVL(SO.SHORTNAME,A.DEPT_CODE) AS DEPT_NAME,NVL(CY.CYCLE,'无') as CYCLE_NAME,'0' as cycleType,
+                C.TOTAL_SCORE,
+                C.LEVEL_TYPE,
+                C.CYCLE_ID,
+                C.LEVEL_ID,
+                C.JUDGE_TIME,
+                C.DEFAULT_SCORE
+                FROM
+                THGL_RES.VIEW_SPECIAL_PLACE_ALL A
+                left join t_thcs_point_current_score C on (A.PLACE_ID=C.PLACE_ID AND A.SOURCE_TYPE=C.SOURCE_TYPE)
+                LEFT JOIN SYS_OFFICE SO ON A.DEPT_CODE =SO.CODE
+            </otherwise>
+        </choose>
+
+
+        LEFT JOIN T_THCS_POINT_SCHEME_CYCLE CY on CY.ID=CYCLE_ID
+        <where>
+            <if test="null!=query.placeName and query.placeName !=''">
+                AND A.PLACE_NAME LIKE #{query.placeName}||'%'
+            </if>
+            <if test="null!=query.cityCode and query.cityCode !=''">
+                AND A.CITY_CODE LIKE #{query.cityCode}||'%'
+            </if>
+            <if test="null!=query.levelType and query.levelType !=''">
+                AND LEVEL_TYPE = #{query.levelType}
+            </if>
+            <if test="null!=query.deptCode and query.deptCode !=''">
+                AND A.DEPT_CODE LIKE #{query.deptCode}||'%'
+            </if>
+            <if test="null!=query.placeType and query.placeType !=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+            <if test="null!=query.sourceType and query.sourceType !=''">
+                AND A.SOURCE_TYPE = #{query.sourceType}
+            </if>
+            <if test="query.cycleTime !=null and query.cycleTime!=''">
+                AND CY.CYCLE_END_TIME &gt;= TO_DATE(#{query.cycleTime}, 'yyyy-MM')
+                AND CY.CYCLE_START_TIME &lt;= to_date(#{query.cycleTime},'yyyy-MM')
+            </if>
+
+            ${query.dataScope}
+        </where>
+
+        ORDER BY TOTAL_SCORE ASC
+        ) A
+        <where>
+            and rownum &lt;=10
+        </where>
+    </select>
+
+    <select id="findCycleScorePage" resultMap="scoreMap">
+
+        <choose>
+            <when test=" query.cycleType=='1' || query.cycleType==1">
+                SELECT A.*,NVL(CY.CYCLE,'无') as CYCLE_NAME,'1' as cycleType FROM T_THCS_POINT_SCORE A
+            </when>
+            <otherwise>
+                SELECT A.*,NVL(SO.SHORTNAME,A.DEPT_CODE) AS DEPT_NAME,NVL(CY.CYCLE,'无') as CYCLE_NAME,'0' as cycleType,
+                C.TOTAL_SCORE,
+                C.LEVEL_TYPE,
+                C.CYCLE_ID,
+                C.LEVEL_ID,
+                C.JUDGE_TIME,
+                C.DEFAULT_SCORE
+                FROM
+                THGL_RES.VIEW_SPECIAL_PLACE_ALL A
+                left join t_thcs_point_current_score C on (A.PLACE_ID=C.PLACE_ID AND A.SOURCE_TYPE=C.SOURCE_TYPE)
+                LEFT JOIN SYS_OFFICE SO ON A.DEPT_CODE =SO.CODE
+            </otherwise>
+        </choose>
+
+
+        LEFT JOIN T_THCS_POINT_SCHEME_CYCLE CY on CY.ID=CYCLE_ID
+        <where>
+            <if test="null!=query.placeName and query.placeName !=''">
+                AND A.PLACE_NAME LIKE #{query.placeName}||'%'
+            </if>
+            <if test="null!=query.cityCode and query.cityCode !=''">
+                AND A.CITY_CODE LIKE #{query.cityCode}||'%'
+            </if>
+            <if test="null!=query.levelType and query.levelType !=''">
+                AND LEVEL_TYPE = #{query.levelType}
+            </if>
+            <if test="null!=query.deptCode and query.deptCode !=''">
+                AND A.DEPT_CODE LIKE #{query.deptCode}||'%'
+            </if>
+            <if test="null!=query.placeType and query.placeType !=''">
+                AND A.PLACE_TYPE = #{query.placeType}
+            </if>
+            <if test="null!=query.sourceType and query.sourceType !=''">
+                AND A.SOURCE_TYPE = #{query.sourceType}
+            </if>
+            <if test="query.cycleTime !=null and query.cycleTime!=''">
+                AND CY.CYCLE_END_TIME &gt;= TO_DATE(#{query.cycleTime}, 'yyyy-MM')
+                AND CY.CYCLE_START_TIME &lt;= to_date(#{query.cycleTime},'yyyy-MM')
+            </if>
+
+            ${query.dataScope}
+        </where>
+
+        ORDER BY TOTAL_SCORE ASC
+    </select>
+
+    <select id="getCurrentCycleScoreByPlaceId" resultMap="scoreMap">
+        SELECT
+            A.*,
+            NVL(SO.SHORTNAME, A.DEPT_CODE) AS DEPT_NAME,
+            NVL(CY.CYCLE, '无') as CYCLE_NAME,
+            '0' as cycleType,
+            C.TOTAL_SCORE,
+            C.LEVEL_TYPE,
+            C.CYCLE_ID,
+            C.LEVEL_ID,
+            C.JUDGE_TIME,
+            C.DEFAULT_SCORE
+        FROM thgl_res.view_special_place_all A
+        LEFT JOIN T_THCS_POINT_CURRENT_SCORE C on (A.PLACE_ID=C.PLACE_ID AND A.SOURCE_TYPE=C.SOURCE_TYPE)
+        LEFT JOIN SYS_OFFICE SO ON A.DEPT_CODE = SO.CODE
+        LEFT JOIN T_THCS_POINT_SCHEME_CYCLE CY  on CY.ID = C.CYCLE_ID
+        where a.PLACE_ID = #{placeId}
+        and rownum = 1
+
+    </select>
+
+    <select id="getPlaceAllScore" resultMap="scoreMap">
+     SELECT  V.* ,NVL(CY.CYCLE,'无') AS CYCLE_NAME,'1' as cycleType
+     FROM (
+        SELECT V.PLACE_ID AS ID,
+               V.PLACE_ID,
+               V.PLACE_NAME,
+               V.PLACE_TYPE,
+               V.CITY_CODE,
+               V.DEPT_CODE,
+               V.PLACE_ADDRESS,
+               V.SOURCE_TYPE,
+                C.TOTAL_SCORE,
+               C.LEVEL_TYPE,
+               C.CYCLE_ID,
+               C.LEVEL_ID,
+               C.JUDGE_TIME,
+               NVL(SO.SHORTNAME, V.DEPT_CODE) DEPT_NAME
+          FROM THGL_RES.VIEW_SPECIAL_PLACE_ALL V
+         left join t_thcs_point_current_score C on (V.PLACE_ID=C.PLACE_ID AND V.SOURCE_TYPE=C.SOURCE_TYPE)
+          LEFT JOIN SYS_OFFICE SO
+            ON V.DEPT_CODE = SO.CODE
+         WHERE V.PLACE_ID = #{placeId}
+       union
+       SELECT A.ID,
+                       A.PLACE_ID,
+                       A.PLACE_NAME,
+                       A.PLACE_TYPE,
+                       A.CITY_CODE,
+                       A.DEPT_CODE,
+                       A.PLACE_ADDRESS,
+                       A.SOURCE_TYPE,
+                       A.TOTAL_SCORE,
+                       A.LEVEL_TYPE,
+                       A.CYCLE_ID,
+                       A.LEVEL_ID,
+                       A.JUDGE_TIME,
+                       A.DEPT_NAME
+                  FROM T_THCS_POINT_SCORE A
+                 WHERE A.PLACE_ID = #{placeId}
+      ) V LEFT JOIN T_THCS_POINT_SCHEME_CYCLE CY on CY.ID=V.CYCLE_ID
+        ORDER BY V.JUDGE_TIME DESC
+    </select>
+
+
+    <select id="findPlaceScore" resultType="com.cloud.portal.point.score.model.PointScore">
+        SELECT A.*,C.TOTAL_SCORE,
+        C.LEVEL_TYPE,
+        C.CYCLE_ID,
+        C.LEVEL_ID,
+        C.JUDGE_TIME,
+        C.DEFAULT_SCORE FROM THGL_RES.VIEW_SPECIAL_PLACE_ALL A
+        left join t_thcs_point_current_score C on (A.PLACE_ID=C.PLACE_ID AND A.SOURCE_TYPE=C.SOURCE_TYPE)
+        <where>
+            AND A.PLACE_ID=#{placeId}
+        </where>
+
+    </select>
+
+
+    <update id="resetCurrentCycleScore">
+
+        MERGE INTO T_THCS_POINT_CURRENT_SCORE T1
+        USING ( SELECT SUM(V.TOTAL_SCORE) AS TOTAL_SCORE,
+        V.PLACE_ID,
+        V.CYCLE_ID,
+        V.CITY_CODE,
+        V.PLACE_TYPE,
+        V.SOURCE_TYPE
+        FROM V_POINT_INDEX_DETAIL V
+        WHERE V.CYCLE_ID = #{cycleId}
+        AND V.DEL_FLAG='0'
+        GROUP BY V.PLACE_ID, V.CYCLE_ID, V.CITY_CODE, V.PLACE_TYPE ,V.SOURCE_TYPE) T2
+        ON (T1.PLACE_ID = T2.PLACE_ID AND T1.CYCLE_ID = T2.CYCLE_ID and t1.SOURCE_TYPE=T2.SOURCE_TYPE )
+        WHEN MATCHED THEN
+        UPDATE
+        SET T1.TOTAL_SCORE = T2.TOTAL_SCORE,
+        T1.JUDGE_TIME = SYSDATE,
+        T1.LEVEL_TYPE =FN_INDEX_SCORE_LEVEL(T2.PLACE_TYPE, T2.CITY_CODE, NVL(T1.Default_Score,0)+T2.TOTAL_SCORE,'1'),
+        T1.LEVEL_ID = FN_INDEX_SCORE_LEVEL(T2.PLACE_TYPE, T2.CITY_CODE, NVL(T1.Default_Score,0)+T2.TOTAL_SCORE,'0')
+
+
+    </update>
+    <update id="resetRelateScore">
+        MERGE INTO T_THCS_POINT_CURRENT_SCORE T1
+                USING (SELECT DISTINCT T.JZDWBH,
+                V.CYCLE_ID,
+                V.TOTAL_SCORE,
+                V.JUDGE_TIME,
+                V.LEVEL_TYPE,
+                V.LEVEL_ID,
+                V.DEFAULT_SCORE
+                FROM T_THCS_POINT_CURRENT_SCORE V
+                INNER JOIN T_THCS_GLXX T
+                ON V.PLACE_ID = T.QTDWBH
+                WHERE V.CYCLE_ID = #{cycleId}
+                ) T2
+                ON (T1.PLACE_ID = T2.JZDWBH AND T1.CYCLE_ID=T2.CYCLE_ID AND T1.SOURCE_TYPE='0')
+                WHEN MATCHED THEN
+                UPDATE
+                SET T1.TOTAL_SCORE = T2.TOTAL_SCORE,
+                T1.JUDGE_TIME = T2.JUDGE_TIME,
+                T1.LEVEL_TYPE = T2.LEVEL_TYPE,
+                T1.LEVEL_ID = T2.LEVEL_ID,
+                T1.DEFAULT_SCORE=t2.DEFAULT_SCORE
+
+
+    </update>
+    <update id="resetPlaceScore">
+        UPDATE T_THCS_POINT_CURRENT_SCORE  SET
+        TOTAL_SCORE=#{totalScore},LEVEL_ID=#{levelId},LEVEL_TYPE=#{levelType},JUDGE_TIME = SYSDATE
+        WHERE
+        PLACE_ID=#{placeId} AND cycle_id=#{cycleId} AND SOURCE_TYPE=#{sourceType}
+    </update>
+
+
+    <update id="resetAllScore" statementType="CALLABLE">
+        BEGIN
+        <choose>
+            <when test="null!= cycleId and ''!=cycleId">
+                <!--第一步 将不是这个周期内的所有分值归属到历史表中-->
+                MERGE INTO MICRO_PORTAL.T_THCS_POINT_SCORE T
+                USING (
+                SELECT V.*,
+                SYS_GUID() AS ID,
+                NVL(SO.SHORTNAME, V.DEPT_CODE) AS DEPT_NAME,
+                C.CYCLE_ID,C.TOTAL_SCORE,C.LEVEL_ID, C.LEVEL_TYPE,C.JUDGE_TIME
+                FROM THGL_RES.VIEW_SPECIAL_PLACE_ALL V
+                LEFT JOIN T_THCS_POINT_CURRENT_SCORE C ON (V.PLACE_ID=C.PLACE_ID AND V.SOURCE_TYPE=C.SOURCE_TYPE)
+                LEFT JOIN MICRO_PORTAL.SYS_OFFICE SO
+                ON V.DEPT_CODE = SO.CODE
+                WHERE CYCLE_ID NOT IN (#{cycleId},'0')
+                ) V
+                ON (T.PLACE_ID = V.PLACE_ID AND V.CYCLE_ID = T.CYCLE_ID)
+                WHEN NOT MATCHED THEN
+                INSERT
+                (T.ID,T.CYCLE_ID,T.PLACE_ID,T.TOTAL_SCORE,T.LEVEL_ID,T.LEVEL_TYPE,T.JUDGE_TIME,T.DEPT_CODE,
+                T.CITY_CODE,T.PLACE_TYPE,T.SOURCE_TYPE,T.PLACE_NAME,T.DEPT_NAME,T.PLACE_ADDRESS)
+                VALUES
+                (V.ID,V.CYCLE_ID,V.PLACE_ID,V.TOTAL_SCORE,V.LEVEL_ID, V.LEVEL_TYPE,V.JUDGE_TIME,V.DEPT_CODE,
+                V.CITY_CODE,V.PLACE_TYPE, V.SOURCE_TYPE,V.PLACE_NAME,V.DEPT_NAME,V.PLACE_ADDRESS);
+                commit;
+                <!--第二步 将没有加入到当前周期里面的特行场所加入-->
+                MERGE INTO T_THCS_POINT_CURRENT_SCORE a
+                USING thgl_res.view_special_place_all b
+                ON (a.place_id=b.place_id AND a.source_type=b.source_type )
+                WHEN NOT MATCHED THEN
+                INSERT (a.place_id,a.source_type,a.cycle_id,a.dept_code,a.place_type,a.city_code)
+                VALUES(b.place_id,b.source_type,'0',b.dept_code,b.place_type,b.city_code) ;
+                commit;
+                <!--第三步 将所有不是这个周期的特行场所初始化分值-->
+
+                UPDATE T_THCS_POINT_CURRENT_SCORE A SET
+
+                <choose>
+                    <when test=" isInit=='0' || isInit == 0 ">
+                        A.TOTAL_SCORE =${defaultScore},
+                        A.DEFAULT_SCORE =${defaultScore},
+                    </when>
+                    <otherwise>
+                        A.TOTAL_SCORE = DECODE(nvl(A.TOTAL_SCORE,0),0,${defaultScore},A.TOTAL_SCORE)
+                        A.DEFAULT_SCORE = DECODE(nvl(A.TOTAL_SCORE,0),0,${defaultScore},A.TOTAL_SCORE)
+                    </otherwise>
+                </choose>
+                A.JUDGE_TIME = SYSDATE,
+                A.cycle_Id =#{cycleId}
+                where A.cycle_Id not in (#{cycleId});
+                commit;
+
+                <!--第五步 更新等级类型和等级状态 利用游标更新 不会将所有资源耗费掉-->
+                BEGIN
+                DECLARE
+                CURSOR CUR IS
+                SELECT A.* FROM T_THCS_POINT_CURRENT_SCORE A ORDER BY A.PLACE_ID;
+                V_VOUNTER NUMBER;
+                BEGIN
+                V_VOUNTER := 0;
+                FOR ROW IN CUR LOOP
+                UPDATE T_THCS_POINT_CURRENT_SCORE A
+                SET A.LEVEL_TYPE = FN_INDEX_SCORE_LEVEL(A.PLACE_TYPE,A.CITY_CODE,A.TOTAL_SCORE, '1'),
+                A.LEVEL_ID   = FN_INDEX_SCORE_LEVEL(A.PLACE_TYPE, A.CITY_CODE,A.TOTAL_SCORE,'0')
+                WHERE A.PLACE_TYPE = ROW.PLACE_TYPE AND A.SOURCE_TYPE = ROW.SOURCE_TYPE;
+                V_VOUNTER := V_VOUNTER + 1;
+                IF (V_VOUNTER >= 5000) THEN
+                COMMIT;
+                V_VOUNTER := 0;
+                END IF;
+                END LOOP;
+                COMMIT;
+                END;
+                END;
+
+                <!--第四步 从新计算分值-->
+
+                MERGE INTO T_THCS_POINT_CURRENT_SCORE T1
+                USING ( SELECT SUM(V.TOTAL_SCORE) AS TOTAL_SCORE,
+                V.PLACE_ID,
+                V.CYCLE_ID,
+                V.CITY_CODE,
+                V.PLACE_TYPE,
+                V.SOURCE_TYPE
+                FROM V_POINT_INDEX_DETAIL V
+                WHERE V.CYCLE_ID = #{cycleId}
+                AND V.DEL_FLAG='0'
+                GROUP BY V.PLACE_ID, V.CYCLE_ID, V.CITY_CODE, V.PLACE_TYPE ,V.SOURCE_TYPE) T2
+                ON (T1.PLACE_ID = T2.PLACE_ID AND T1.CYCLE_ID = T2.CYCLE_ID and t1.SOURCE_TYPE=T2.SOURCE_TYPE )
+                WHEN MATCHED THEN
+                UPDATE
+                SET T1.TOTAL_SCORE = NVL(T1.Default_Score,0)+T2.TOTAL_SCORE,
+                T1.JUDGE_TIME = SYSDATE,
+                T1.LEVEL_TYPE =FN_INDEX_SCORE_LEVEL(T2.PLACE_TYPE, T2.CITY_CODE,
+                NVL(T1.Default_Score,0)+T2.TOTAL_SCORE,'1'),
+                T1.LEVEL_ID = FN_INDEX_SCORE_LEVEL(T2.PLACE_TYPE, T2.CITY_CODE,
+                NVL(T1.Default_Score,0)+T2.TOTAL_SCORE,'0');
+                commit;
+
+
+                <!--第五步 初始化所有关联的分值-->
+
+                MERGE INTO T_THCS_POINT_CURRENT_SCORE T1
+                USING (SELECT DISTINCT T.JZDWBH,
+                V.CYCLE_ID,
+                V.TOTAL_SCORE,
+                V.JUDGE_TIME,
+                V.LEVEL_TYPE,
+                V.LEVEL_ID,
+                V.DEFAULT_SCORE
+                FROM T_THCS_POINT_CURRENT_SCORE V
+                INNER JOIN T_THCS_GLXX T
+                ON V.PLACE_ID = T.QTDWBH
+                WHERE V.CYCLE_ID = #{cycleId}
+                ) T2
+                ON (T1.PLACE_ID = T2.JZDWBH AND T1.CYCLE_ID=T2.CYCLE_ID AND T1.SOURCE_TYPE='0')
+                WHEN MATCHED THEN
+                UPDATE
+                SET T1.TOTAL_SCORE = T2.TOTAL_SCORE,
+                T1.JUDGE_TIME = T2.JUDGE_TIME,
+                T1.LEVEL_TYPE = T2.LEVEL_TYPE,
+                T1.LEVEL_ID = T2.LEVEL_ID,
+                T1.DEFAULT_SCORE=t2.DEFAULT_SCORE ;
+                commit;
+
+
+            </when>
+            <otherwise>
+                <!--第一步 将所有周期不为空的分值 插入到历史表中-->
+                MERGE INTO MICRO_PORTAL.T_THCS_POINT_SCORE T
+                USING (
+                SELECT V.*,
+                SYS_GUID() AS ID,
+                NVL(SO.SHORTNAME, V.DEPT_CODE) AS DEPT_NAME,
+                C.CYCLE_ID,C.TOTAL_SCORE,C.LEVEL_ID, C.LEVEL_TYPE,C.JUDGE_TIME
+                FROM THGL_RES.VIEW_SPECIAL_PLACE_ALL V
+                LEFT JOIN T_THCS_POINT_CURRENT_SCORE C ON (V.PLACE_ID=C.PLACE_ID AND V.SOURCE_TYPE=C.SOURCE_TYPE)
+                LEFT JOIN MICRO_PORTAL.SYS_OFFICE SO
+                ON V.DEPT_CODE = SO.CODE
+                WHERE CYCLE_ID NOT IN ('0')
+                ) V
+                ON (T.PLACE_ID = V.PLACE_ID AND V.CYCLE_ID = T.CYCLE_ID)
+                WHEN NOT MATCHED THEN
+                INSERT
+                (T.ID,T.CYCLE_ID,T.PLACE_ID,T.TOTAL_SCORE,T.LEVEL_ID,T.LEVEL_TYPE,T.JUDGE_TIME,T.DEPT_CODE,
+                T.CITY_CODE,T.PLACE_TYPE,T.SOURCE_TYPE,T.PLACE_NAME,T.DEPT_NAME,T.PLACE_ADDRESS)
+                VALUES
+                (V.ID,V.CYCLE_ID,V.PLACE_ID,V.TOTAL_SCORE,V.LEVEL_ID, V.LEVEL_TYPE,V.JUDGE_TIME,V.DEPT_CODE,
+                V.CITY_CODE,V.PLACE_TYPE, V.SOURCE_TYPE,V.PLACE_NAME,V.DEPT_NAME,V.PLACE_ADDRESS);
+                commit;
+                <!-- 第二步 清空分值-->
+
+                BEGIN
+                DECLARE
+                CURSOR CUR IS
+                SELECT A.* FROM T_THCS_POINT_CURRENT_SCORE A WHERE  A.CYCLE_ID not in ('0') ORDER BY A.PLACE_ID;
+                V_VOUNTER NUMBER;
+                BEGIN
+                V_VOUNTER := 0;
+                FOR ROW IN CUR LOOP
+                UPDATE T_THCS_POINT_CURRENT_SCORE A
+                SET
+                A.CYCLE_ID = '0',
+                A.JUDGE_TIME = NULL,
+                A.LEVEL_TYPE = '0',
+                A.TOTAL_SCORE = 0,
+                A.default_score =0,
+                A.LEVEL_ID = '0'
+                WHERE A.PLACE_TYPE = ROW.PLACE_TYPE AND A.SOURCE_TYPE = ROW.SOURCE_TYPE;
+                V_VOUNTER := V_VOUNTER + 1;
+                IF (V_VOUNTER >= 5000) THEN
+                COMMIT;
+                V_VOUNTER := 0;
+                END IF;
+                END LOOP;
+                COMMIT;
+                END;
+                END;
+            </otherwise>
+        </choose>
+
+        END ;
+
+
+    </update>
+
+</mapper>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.cloud.common.security.feign.MicroFeignConfiguration,\
+  com.cloud.common.security.service.MicroUserDetailsServiceImpl

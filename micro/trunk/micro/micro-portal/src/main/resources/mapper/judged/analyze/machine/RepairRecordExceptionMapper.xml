@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.analyze.machine.mapper.RepairRecordExceptionMapper">
+
+    <resultMap id="repairRecordExceptionMap" type="com.cloud.portal.judged.analyze.machine.model.RepairRecordException">
+        <result property="address" column="address"/>
+        <result property="batchId" column="batch_id"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="dayDate" column="day_date"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="id" column="id"/>
+        <result property="monitorTime" column="monitor_time"/>
+        <result property="modelUdId" column="model_udId"/>
+        <result property="num" column="num"/>
+        <result property="placeName" column="place_name"/>
+        <result property="type" column="type"/>
+        <result property="deptName" column="dept_Name"/>
+        <result property="placeId" column="PLACE_ID"/>
+        <result property="searchTime" column="searchTime"/>
+    </resultMap>
+    <sql id="rreFields">
+      A.ID,
+      A.PLACE_NAME,
+      A.CITY_CODE,
+      A.DEPT_CODE,
+      A.ADDRESS,
+      A.TYPE,
+      A.DAY_DATE,
+      A.NUM,
+      A.MODEL_UDID,
+      A.BATCH_ID,
+      A.MONITOR_TIME,
+      A.DEPT_NAME,
+      A.PLACE_ID ,
+    to_char(A.day_date,'yyyy-mm-dd') as searchTime
+    </sql>
+
+    <select id="analyzePage" resultMap="repairRecordExceptionMap">
+        <choose>
+            <when test="query.startTime!=null and query.endTime!=null and query.startTime!= query.endTime">
+                SELECT A.* ,
+                B.DWMC AS PLACE_NAME,
+                B.DWDZ_SSXQDM AS CITY_CODE,
+                B.DJDW_GAJGJGDM AS DEPT_CODE,
+                B.DWDZ_QHNXXDZ AS ADDRESS,
+                B.QYZTDM AS TYPE,
+                'repair_record_exception' as MODEL_UDID,
+                B.DJDW_GAJGMC AS DEPT_NAME
+                ,to_char(A.dmin,'yyyy-mm-dd')||' 至 '||to_char(A.dmax,'yyyy-mm-dd') as searchTime
+                from (
+                SELECT sum(A.Num) as num ,A.place_id,max(A.DAY_DATE) as  dmax,min(A.DAY_DATE) as dmin from T_THCS_ANALY_JX_XCJLYC A
+                <where>
+                    <if test="query.placeName!=null and query.placeName!='' ">
+                        AND A.PLACE_NAME like #{query.placeName}||'%'
+                    </if>
+                    <if test="query.deptCode!=null and query.deptCode!='' ">
+                        AND A.DEPT_CODE like #{query.deptCode}||'%'
+                    </if>
+                    <if test="query.placeId!=null and query.placeId!='' ">
+                        AND A.PLACE_ID = #{query.placeId}
+                    </if>
+                    <if test="query.startTime!=null and query.endTime!=null ">
+                        AND A.day_date BETWEEN #{query.startTime}  AND #{query.endTime}
+                    </if>
+                    ${query.dataScope}
+                </where>
+                group by A.place_id
+                ) A left join THGL_RES.JX_TT_QYJBXX B on A.PLACE_ID =B.ZAGLDWBM
+                <where>
+                    <if test="query.num!=null ">
+                        AND A.NUM
+                    <choose>
+                        <when test="query.operator == 'lt' "> &lt;=  ${query.num}</when>
+                        <when test="query.operator == 'gt' "> &gt;= ${query.num} </when>
+                        <otherwise> = ${query.num}  </otherwise>
+                    </choose>
+                    </if>
+                </where>
+                order by A.num asc
+            </when>
+            <otherwise>
+                SELECT
+                <include refid="rreFields"/>
+
+                from T_THCS_ANALY_JX_XCJLYC A
+                <where>
+                    <if test="query.placeName!=null and query.placeName!='' ">
+                        AND A.PLACE_NAME like #{query.placeName}||'%'
+                    </if>
+                    <if test="query.deptCode!=null and query.deptCode!='' ">
+                        AND A.DEPT_CODE like #{query.deptCode}||'%'
+                    </if>
+                    <if test="query.startTime!=null and query.endTime!=null ">
+                        AND A.day_date BETWEEN #{query.startTime} and  #{query.endTime}
+                    </if>
+                    <if test="query.placeId!=null and query.placeId!='' ">
+                        AND A.PLACE_ID = #{query.placeId}
+                    </if>
+                    <if test="query.num!=null ">
+                        AND A.NUM
+                        <choose>
+                            <when test="query.operator == 'lt' "> &lt;=  ${query.num}</when>
+                            <when test="query.operator == 'gt' "> &gt;= ${query.num} </when>
+                            <otherwise> = ${query.num}  </otherwise>
+                        </choose>
+                    </if>
+                    ${query.dataScope}
+                </where>
+                order by A.DAY_DATE desc
+            </otherwise>
+        </choose>
+
+
+    </select>
+    <select id="findListPage" resultMap="repairRecordExceptionMap">
+        SELECT
+        <include refid="rreFields"/>
+        from T_THCS_ANALY_JX_XCJLYC A
+        <where>
+            <if test="query.placeName!=null and query.placeName!='' ">
+                AND A.PLACE_NAME like #{query.placeName}||'%'
+            </if>
+            <if test="query.deptCode!=null and query.deptCode!='' ">
+                AND A.DEPT_CODE like #{query.deptCode}||'%'
+            </if>
+            <if test="query.startTime!=null and query.endTime!=null ">
+                AND A.day_date BETWEEN #{query.startTime} and #{query.endTime}
+            </if>
+            <if test="query.placeId!=null and query.placeId!='' ">
+                AND A.PLACE_ID = #{query.placeId}
+            </if>
+            <if test="query.num!=null ">
+                AND A.NUM
+                <choose>
+                    <when test="query.operator == 'lt' "> &lt;=  ${query.num}</when>
+                    <when test="query.operator == 'gt' "> &gt;= ${query.num} </when>
+                    <otherwise> = ${query.num}  </otherwise>
+                </choose>
+            </if>
+            ${query.dataScope}
+        </where>
+        order by A.DAY_DATE desc
+
+    </select>
+
+
+</mapper>

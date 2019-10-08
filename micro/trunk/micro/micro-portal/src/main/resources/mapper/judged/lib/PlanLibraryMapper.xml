@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.lib.mapper.PlanLibraryMapper">
+
+    <resultMap id="PlanLibrary" type="com.cloud.portal.judged.lib.model.PlanLibrary">
+        <result property="id"              column="id"/>
+        <result property="name"           column="name"/>
+        <result property="type"               column="type"/>
+        <result property="placeType"              column="place_type"/>
+        <result property="cityCode"           column="city_code"/>
+        <result property="createTime"               column="create_time"/>
+        <result property="updateTime"           column="update_time"/>
+        <result property="createBy"              column="create_by"/>
+        <result property="updateBy"           column="update_by"/>
+        <result property="delFlag"               column="del_flag"/>
+        <result property="describe"           column="describe"/>
+        <result property="status"           column="status"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="PlanLibrary">
+        select * from t_thcs_warn_plan_lib T
+        <where>
+              del_flag='0' 
+            <if test="query.name!=null and query.name !='' ">
+                AND T.name like '%'||#{query.name}||'%'
+            </if>
+            <if test="query.type!=null and query.type !='' ">
+                AND T.type = #{query.type}
+            </if>
+            <if test="query.placeType!=null and query.placeType !='' ">
+                AND T.place_type = #{query.placeType}
+            </if>
+            <if test="query.cityCode!=null and query.cityCode !='' ">
+                AND T.city_code = #{query.cityCode}
+            </if>
+            <if test="query.status!=null and query.status !='' ">
+                AND T.status = #{query.status}
+            </if>
+            ${query.dataScope}
+        </where>
+    </select>
+
+    <update id="updatePlanLibraryById">
+		UPDATE t_thcs_warn_plan_lib SET
+		      name = #{name},
+              type = #{type},
+              place_type = #{placeType},
+              city_code = #{cityCode},
+              update_time = #{updateTime},
+              update_by = #{updateBy},
+              describe = #{describe},
+              status = #{status},
+		WHERE id = #{id}
+	</update>
+
+    <insert id="insertPlanLibrary">
+		INSERT INTO t_thcs_warn_plan_lib(
+		    id,
+			name,
+			type,
+			place_type,
+			city_code,
+			create_time,
+			create_by,
+			del_flag,
+			describe,
+			status,
+			dept_code
+		) VALUES (
+		    sys_guid(),
+			#{name},
+			#{type},
+			#{placeType},
+			#{cityCode},
+			#{createTime},
+			#{createBy},
+			#{delFlag},
+			#{describe},
+			#{status},
+			#{deptCode}
+		)
+	</insert>
+
+    <delete id="removeById">
+        delete from t_thcs_warn_plan_lib where id = #{id}
+    </delete>
+
+    <select id="selectByType" resultMap="PlanLibrary">
+        select * from t_thcs_warn_plan_lib T
+        <where>
+            del_flag='0'
+            <if test="query.placeType!=null and query.placeType !='' ">
+                AND T.place_type like #{query.placeType}||'%'
+            </if>
+--             ${query.dataScope}
+        </where>
+    </select>
+
+</mapper>

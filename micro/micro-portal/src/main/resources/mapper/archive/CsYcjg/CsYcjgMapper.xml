@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.csycjg.mapper.CsYcjgMapper">
+
+    <resultMap id="CsYcjgMap" type="com.cloud.portal.archive.csycjg.model.CsYcjg">
+        <result property="yplx"           column="yplx"/>
+        <result property="ycnr"               column="ycnr"/>
+        <result property="yjsj"           column="yjsj"/>
+        <result property="mxid"           column="mxid"/>
+        <result property="lyxt"           column="lyxt"/>
+        <result property="dwbh"           column="dwbh"/>
+        <result property="xh"           column="xh"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="CsYcjgMap">
+        select rownum as xh, A.* FROM t_thcs_jgxx A
+        <where>
+            <if test="query.dwbh != null and query.dwbh != ''">
+                AND A.dwbh = #{query.dwbh}
+            </if>
+        </where>
+    </select>
+
+</mapper>

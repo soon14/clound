@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.jingz.mapper.XfjcMapper">
+
+
+    <resultMap id="xfjcMap" type="com.cloud.portal.archive.jingz.model.Xfjc">
+        <result property="bz" column="bz"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="csaqck" column="csaqck"/>
+        <result property="deleteflag" column="deleteflag"/>
+        <result property="downloadflag" column="downloadflag"/>
+        <result property="dqsbsfkr" column="dqsbsfkr"/>
+        <result property="dwbh" column="dwbh"/>
+        <result property="dwdz" column="dwdz"/>
+        <result property="dwmc" column="dwmc"/>
+        <result property="dwxz" column="dwxz"/>
+        <result property="dwzgry" column="dwzgry"/>
+        <result property="dzxsxfzz" column="dzxsxfzz"/>
+        <result property="fhaqgy" column="fhaqgy"/>
+        <result property="fhjc" column="fhjc"/>
+        <result property="fhmqk" column="fhmqk"/>
+        <result property="gzjjcsaqjc" column="gzjjcsaqjc"/>
+        <result property="gzjjcsmhzy" column="gzjjcsmhzy"/>
+        <result property="jcbh" column="jcbh"/>
+        <result property="jcdh" column="jcdh"/>
+        <result property="jcrq" column="jcrq"/>
+        <result property="jdjcry" column="jdjcry"/>
+        <result property="jzcs" column="jzcs"/>
+        <result property="jzfhqtqk" column="jzfhqtqk"/>
+        <result property="jzgd" column="jzgd"/>
+        <result property="jzmj" column="jzmj"/>
+        <result property="jzwhfs" column="jzwhfs"/>
+        <result property="jzwxfss" column="jzwxfss"/>
+        <result property="jzwxfys" column="jzwxfys"/>
+        <result property="lastupdatedby" column="lastupdatedby"/>
+        <result property="lastupdatedtime" column="lastupdatedtime"/>
+        <result property="mhhyjssya" column="mhhyjssya"/>
+        <result property="mhq" column="mhq"/>
+        <result property="mhqaqzk" column="mhqaqzk"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="reservation11" column="reservation11"/>
+        <result property="reservation12" column="reservation12"/>
+        <result property="reservation13" column="reservation13"/>
+        <result property="reservation14" column="reservation14"/>
+        <result property="reservation15" column="reservation15"/>
+        <result property="reservation16" column="reservation16"/>
+        <result property="reservation17" column="reservation17"/>
+        <result property="reservation18" column="reservation18"/>
+        <result property="reservation19" column="reservation19"/>
+        <result property="reservation20" column="reservation20"/>
+        <result property="reservation21" column="reservation21"/>
+        <result property="reservation22" column="reservation22"/>
+        <result property="reservation23" column="reservation23"/>
+        <result property="reservation24" column="reservation24"/>
+        <result property="reservation25" column="reservation25"/>
+        <result property="reservation26" column="reservation26"/>
+        <result property="reservation27" column="reservation27"/>
+        <result property="reservation28" column="reservation28"/>
+        <result property="reservation29" column="reservation29"/>
+        <result property="reservation30" column="reservation30"/>
+        <result property="sfhhsz" column="sfhhsz"/>
+        <result property="snxftd" column="snxftd"/>
+        <result property="snxhs" column="snxhs"/>
+        <result property="sshaqtd" column="sshaqtd"/>
+        <result property="sszsbz" column="sszsbz"/>
+        <result property="systemid" column="systemid"/>
+        <result property="uploadflag" column="uploadflag"/>
+        <result property="wgyhydyq" column="wgyhydyq"/>
+        <result property="wxpyjzcsyz" column="wxpyjzcsyz"/>
+        <result property="xfangzzd" column="xfangzzd"/>
+        <result property="xfaqglr" column="xfaqglr"/>
+        <result property="xfaqjcbhgwh" column="xfaqjcbhgwh"/>
+        <result property="xfaqjchgwh" column="xfaqjchgwh"/>
+        <result property="xfaqqtqk" column="xfaqqtqk"/>
+        <result property="xfaqzd" column="xfaqzd"/>
+        <result property="xfctd" column="xfctd"/>
+        <result property="xfjgbah" column="xfjgbah"/>
+        <result property="xfkzs" column="xfkzs"/>
+        <result property="xfsswhgl" column="xfsswhgl"/>
+        <result property="xfsy" column="xfsy"/>
+        <result property="xfxcjy" column="xfxcjy"/>
+        <result property="xfylqk" column="xfylqk"/>
+        <result property="xfyswh" column="xfyswh"/>
+        <result property="ygxfaqjypx" column="ygxfaqjypx"/>
+        <result property="yjzm" column="yjzm"/>
+        <result property="ysgajgclqk" column="ysgajgclqk"/>
+        <result property="ysxfjgx" column="ysxfjgx"/>
+        <result property="ysxfjgxlnr" column="ysxfjgxlnr"/>
+        <result property="yzy" column="yzy"/>
+        <result property="zfflwsmchbh" column="zfflwsmchbh"/>
+        <result property="zlgzbh" column="zlgzbh"/>
+        <result property="zxjd" column="zxjd"/>
+        <result property="zxsykrcl" column="zxsykrcl"/>
+        <result property="zxwd" column="zxwd"/>
+        <result property="zyfzr" column="zyfzr"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime"  column="endTime"/>
+    </resultMap>
+
+
+    <select id="findXfjcPage" resultMap="xfjcMap">
+        select * from THGL_RES.jz_b_za_rcxfjdxx A
+        <where>
+            A.deleteflag='0'
+            <if test="query.dwbh != null and query.dwbh != ''">
+                AND A.dwbh = #{query.dwbh}
+            </if>
+            <if test="query.reservation02 != null and query.reservation02 != ''">
+                AND A.reservation02 = #{query.reservation02}
+            </if>
+            <if test="query.reservation04 != null and query.reservation04 != ''">
+                AND A.reservation04 = #{query.reservation04}
+            </if>
+            <if test="query.startTime != null and query.startTime != ''">
+                AND A.jcrq &gt; to_date(#{query.startTime}||'00:00:00','yyyy-mm-dd hh24:mi:ss')
+            </if>
+            <if test="query.endTime != null and query.endTime != ''">
+                AND A.jcrq &lt; to_date(#{query.endTime}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+            </if>
+        </where>
+        order by A.jcrq desc
+    </select>
+
+    <select id="getXfjcById" resultMap="xfjcMap">
+        select * from THGL_RES.jz_b_za_rcxfjdxx A
+        <where>
+            <if test="systemId != null and systemId != ''">
+                AND A.systemid = #{systemId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

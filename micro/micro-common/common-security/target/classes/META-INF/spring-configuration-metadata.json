@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "security.oauth2.client",
+      "type": "com.cloud.common.security.component.PermitAllUrlProperties",
+      "sourceType": "com.cloud.common.security.component.PermitAllUrlProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "security.oauth2.client.ignore-urls",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.cloud.common.security.component.PermitAllUrlProperties"
+    }
+  ],
+  "hints": []
+}

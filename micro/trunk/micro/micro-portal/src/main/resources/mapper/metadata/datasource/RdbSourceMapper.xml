@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.metadata.datasource.mapper.RdbSourceMapper">
+    <resultMap id="RdbSourceMapper" type="com.cloud.portal.metadata.datasource.entity.RdbSource">
+    <id property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="type" column="type"/>
+    <result property="ip" column="ip"/>
+    <result property="account" column="account"/>
+    <result property="pwd" column="pwd"/>
+    <result property="port" column="port"/>
+    <result property="serverName" column="server_Name"/>
+    <result property="schema" column="schema"/>
+    <result property="dept" column="dept"/>
+    <result property="dbOwner" column="dbOwner"/>
+    <result property="phone"  column="phone"/>
+    </resultMap>
+    <select id="getById" resultType="com.cloud.portal.metadata.datasource.entity.RdbSource" >
+        select * from v_datasource_rdbsource
+        <where>
+            del_flag='0'
+            <if test="queryCondition.dbId != null and queryCondition.dbId != ''">
+                and id = #{queryCondition.dbId}
+            </if>
+        </where>
+    </select>
+    <select id="getOracleSource" resultType="com.cloud.portal.metadata.datasource.entity.RdbSource" >
+    select * from T_DATASOURCE_ORACLE
+    <where>
+        del_flag='0'
+        <if test="queryCondition.dbId != null and queryCondition.dbId != ''">
+            and id = #{queryCondition.dbId}
+        </if>
+    </where>
+</select>
+    <select id="getDb2Source" resultType="com.cloud.portal.metadata.datasource.entity.RdbSource" >
+        select * from T_DATASOURCE_DB2
+        <where>
+            del_flag='0'
+            <if test="queryCondition.dbId != null and queryCondition.dbId != ''">
+                and id = #{queryCondition.dbId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findOraclePage" resultMap="RdbSourceMapper">
+        select * from t_datasource_oracle
+
+        <where>
+            del_flag='0'
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                and name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+
+        </where>
+    </select>
+    <select id="findMySqlPage" resultMap="RdbSourceMapper">
+        select * from t_datasource_mysql
+
+        <where>
+            del_flag='0'
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                and name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+
+        </where>
+    </select>
+    <select id="findSQLServerPage" resultMap="RdbSourceMapper">
+        select * from t_datasource_sqlserver
+
+        <where>
+            del_flag='0'
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                and name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+
+        </where>
+    </select>
+    <select id="findDB2Page" resultMap="RdbSourceMapper">
+        select * from t_datasource_db2
+
+        <where>
+            del_flag='0'
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                and name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+
+        </where>
+    </select>
+
+    <update id="updatesourceOracleById">
+		UPDATE t_datasource_oracle SET
+		      name = #{name},
+              type = #{type},
+              ip = #{ip},
+              account = #{account},
+              pwd = #{pwd},
+              port = #{port},
+              SERVER_NAME = #{serverName},
+              schema = #{schema},
+              AREA = #{dept},
+              USER_NAME = #{dbOwner},
+              phone = #{phone}
+		WHERE id = #{id}
+	</update>
+    <update id="updatesourceMySqlById">
+		UPDATE t_datasource_mysql SET
+		      name = #{name},
+              type = #{type},
+              ip = #{ip},
+              account = #{account},
+              pwd = #{pwd},
+              port = #{port},
+              SERVER_NAME = #{serverName},
+
+              AREA = #{dept},
+              USER_NAME = #{dbOwner},
+              phone = #{phone}
+		WHERE id = #{id}
+	</update>
+    <update id="updatesourceSQLServerById">
+		UPDATE t_datasource_sqlserver SET
+		      name = #{name},
+              type = #{type},
+              ip = #{ip},
+              account = #{account},
+              pwd = #{pwd},
+              port = #{port},
+              SERVER_NAME = #{serverName},
+
+              AREA = #{dept},
+              USER_NAME = #{dbOwner},
+              phone = #{phone}
+		WHERE id = #{id}
+	</update>
+    <update id="updatesourceDB2ById">
+		UPDATE t_datasource_db2 SET
+		      name = #{name},
+              type = #{type},
+              ip = #{ip},
+              account = #{account},
+              pwd = #{pwd},
+              port = #{port},
+              SERVER_NAME = #{serverName},
+              schema = #{schema},
+              AREA = #{dept},
+              USER_NAME = #{dbOwner},
+              phone = #{phone}
+		WHERE id = #{id}
+	</update>
+
+    <select id="getOracleName" resultMap="RdbSourceMapper">
+        select name from t_datesourse_all
+        <where>
+
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+
+    </select>
+    <select id="getMySqlName" resultMap="RdbSourceMapper">
+        select name from t_datasource_mysql
+        <where>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+        </where>
+
+    </select>
+    <select id="getSQLServerName" resultMap="RdbSourceMapper">
+        select name from t_datasource_sqlserver
+        <where>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+        </where>
+
+    </select>
+    <select id="getDB2Name" resultMap="RdbSourceMapper">
+        select name from t_datasource_db2
+        <where>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+        </where>
+
+    </select>
+
+    <delete id="removesourceOracleId">
+        delete from t_datasource_oracle where id = #{id}
+
+    </delete>
+    <delete id="removesourceMySqlId">
+        delete from t_datasource_mysql where id = #{id}
+
+    </delete>
+    <delete id="removesourceSQLServerId">
+        delete from t_datasource_sqlserver where id = #{id}
+
+    </delete>
+    <delete id="removesourceDB2Id">
+        delete from t_datasource_db2 where id = #{id}
+
+    </delete>
+
+    <insert id="savedatasourceOracle" >
+		INSERT INTO t_datasource_oracle
+		(
+
+                name,
+                type,
+                ip,
+                account,
+                pwd,
+                port,
+                SERVER_NAME,
+                del_flag,
+                schema,
+                AREA,
+                USER_NAME,
+                phone
+
+		) VALUES (
+
+                #{name},
+                #{type},
+                #{ip},
+                #{account},
+                #{pwd},
+                #{port},
+                #{serverName},
+                #{del_flag},
+                #{schema},
+                #{dept},
+                #{dbOwner},
+                #{phone}
+		)
+	</insert>
+    <insert id="savedatasourceMySql" >
+		INSERT INTO t_datasource_mysql
+		(
+
+                name,
+                type,
+                ip,
+                account,
+                pwd,
+                port,
+                SERVER_NAME,
+                del_flag,
+                schema,
+                AREA,
+                USER_NAME,
+                phone
+
+		) VALUES (
+
+                #{name},
+                #{type},
+                #{ip},
+                #{account},
+                #{pwd},
+                #{port},
+                #{serverName},
+                #{del_flag},
+                #{schema},
+                #{dept},
+                #{dbOwner},
+                #{phone}
+		)
+	</insert>
+    <insert id="savedatasourceSQLServer" >
+		INSERT INTO t_datasource_sqlserver
+		(
+
+                name,
+                type,
+                ip,
+                account,
+                pwd,
+                port,
+                SERVER_NAME,
+                del_flag,
+                schema,
+                AREA,
+                USER_NAME,
+                phone
+
+		) VALUES (
+
+                #{name},
+                #{type},
+                #{ip},
+                #{account},
+                #{pwd},
+                #{port},
+                #{serverName},
+                #{del_flag},
+                #{schema},
+                #{dept},
+                #{dbOwner},
+                #{phone}
+		)
+	</insert>
+    <insert id="savedatasourceDB2" >
+		INSERT INTO t_datasource_db2
+		(
+
+                name,
+                type,
+                ip,
+                account,
+                pwd,
+                port,
+                SERVER_NAME,
+                del_flag,
+                schema,
+                AREA,
+                USER_NAME,
+                phone
+
+		) VALUES (
+
+                #{name},
+                #{type},
+                #{ip},
+                #{account},
+                #{pwd},
+                #{port},
+                #{serverName},
+                #{del_flag},
+                #{schema},
+                #{dept},
+                #{dbOwner},
+                #{phone}
+		)
+	</insert>
+</mapper>

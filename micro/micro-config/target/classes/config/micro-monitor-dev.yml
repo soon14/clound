@@ -1,0 +1,13 @@
+spring:
+  # 安全配置
+  security:
+    user:
+      name: ENC(IIJjPbXKPf6RQ0fNs2Izkg==)     # ygnet
+      password: ENC(MKBcBGasz5LkPmYwkNcVLgUZGPZ886Q6) # sunshine
+  boot:
+    admin:
+      ui:
+        resource-locations: 'classpath:/ui/,classpath:/static/'
+        template-location: 'classpath:/ui/'
+        title: '服务状态监控'
+        brand: '服务状态监控'

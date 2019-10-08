@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.statistics.employee.mapper.IllegalityMapper">
+
+    <resultMap id="illegalityMap" type="com.cloud.portal.statistics.employee.model.Illegality">
+        <result property="ajbh" column="ajbh"/>
+        <result property="ajmc" column="ajmc"/>
+        <result property="ab" column="ab"/>
+        <result property="ajstate" column="ajstate"/>
+        <result property="fasjcz" column="fasjcz"/>
+        <result property="sljsdw" column="sljsdw"/>
+        <result property="sljsdwName" column="sljsdw_name"/>
+        <result property="fadd" column="fadd"/>
+        <result property="zyaq" column="zyaq" />
+    </resultMap>
+
+    <select id="findListByZJHM" resultMap="illegalityMap">
+        select l.fullname as sljsdw_name,a.* from thgl_res.jz_yb_asj_aj a
+        inner join thgl_res.jz_yb_asj_rysaqk b
+        on b.ajbh = a.ajbh
+        inner join thgl_res.jz_yb_asj_xyrdj c
+        on c.systemid = b.rybh
+        and c.zjhm = #{zjhm}
+        left join micro_portal.sys_office l
+        on l.code = a.sljsdw
+    </select>
+
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>spring-cloud-dependencies-parent</artifactId>
+		<groupId>org.springframework.cloud</groupId>
+		<version>2.1.3.RELEASE</version>
+		<relativePath/>
+	</parent>
+
+	<artifactId>common-bom</artifactId>
+	<packaging>pom</packaging>
+	<version>${micro.version}</version>
+	<description> 公共版本控制</description>
+
+	<properties>
+		<micro.version>1.0.0</micro.version>
+		<jackson.modules>2.9.6</jackson.modules>
+		<mybatis-plus.version>3.0.6</mybatis-plus.version>
+		<mysql.connector.version>8.0.13</mysql.connector.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- 工具包-->
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-core</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-data</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-gateway</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-job</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-log</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-minio</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-security</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-swagger</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>common-transaction</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cloud</groupId>
+				<artifactId>upms-api</artifactId>
+				<version>${micro.version}</version>
+			</dependency>
+
+			<!--jackson模块-->
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-modules-java8</artifactId>
+				<version>${jackson.modules}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--mybatis plus extension,包含了mybatis plus core-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-extension</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--mybatis-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--mysql 驱动-->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.connector.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.jingz.mapper.PlaceFileMapper">
+
+
+    <resultMap id="placeFileMap" type="com.cloud.portal.archive.jingz.model.PlaceFile">
+        <result property="departmentCode" column="departmentcode"/>
+        <result property="fjmc" column="fjmc"/>
+        <result property="gxhylx" column="gxhylx"/>
+        <result property="scr" column="scr"/>
+        <result property="scsj" column="scsj"/>
+        <result property="systemId" column="systemid"/>
+        <result property="wjdx" column="wjdx"/>
+        <result property="wjlx" column="wjlx"/>
+        <result property="wjmc" column="wjmc"/>
+        <result property="zadwbh" column="zadwbh"/>
+        <result property="zbbh" column="zbbh"/>
+        <result property="zbdwbh" column="zbdwbh"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="files" column="files" jdbcType="BLOB"/>
+    </resultMap>
+    <sql id="selectSql">
+       A.SYSTEMID,
+       A.ZBBH,
+       A.ZADWBH,
+       A.ZBDWBH,
+       A.GXHYLX,
+       A.FJMC,
+       A.WJMC,
+       A.WJLX,
+       A.SCR,
+       A.SCSJ,
+       A.DELETEFLAG,
+       A.RESERVATION01,
+       A.RESERVATION02,
+       A.RESERVATION03,
+       A.RESERVATION04,
+       A.RESERVATION05,
+       A.RESERVATION06,
+       A.RESERVATION07,
+       A.RESERVATION08,
+       A.RESERVATION09,
+       A.RESERVATION10,
+       A.DEPARTMENTCODE,
+       A.WJDX
+    </sql>
+    <sql id="blobFiled">
+         , A.FILES
+    </sql>
+
+    <select id="findPage" resultMap="placeFileMap">
+        SELECT
+        <include refid="selectSql"/>
+        FROM THGL_RES.JZ_B_ZA_ZAGXDW_FILE A
+        <where>
+            AND A.DELETEFLAG='0'
+            <if test="query.zbbh !=null and query.zbbh!=''">
+                AND A.ZBBH=#{query.zbbh}
+            </if>
+
+            <if test="query.zbdwbh !=null and query.zbdwbh!=''">
+                AND A.ZBDWBH=#{query.zbdwbh}
+            </if>
+
+            <if test="query.gxhylx !=null and query.gxhylx!=''">
+                AND A.GXHYLX = #{query.gxhylx}
+            </if>
+
+            <if test="query.wjmc !=null and query.wjmc!=''">
+                AND (A.FJMC LIKE '%'||#{query.wjmc}||'%' or  A.WJMC like '%'||#{query.wjmc}||'%')
+            </if>
+
+
+            <if test="query.wjlx !=null and query.wjlx!=''">
+                AND A.WJLX = #{query.wjlx}
+            </if>
+        </where>
+        ORDER BY A.SCSJ DESC
+    </select>
+
+    <select id="getFileBySystemId" resultMap="placeFileMap">
+        SELECT
+        <include refid="selectSql"/>
+        <include refid="blobFiled"/>
+        FROM THGL_RES.JZ_B_ZA_ZAGXDW_FILE A
+        <where>
+            AND A.SYSTEMID=#{systemId}
+        </where>
+    </select>
+
+    <select id="findList" resultMap="placeFileMap">
+        SELECT
+        <include refid="selectSql"/>
+        FROM THGL_RES.JZ_B_ZA_ZAGXDW_FILE A
+        <where>
+            AND A.DELETEFLAG='0'
+            <if test="query.zbbh !=null and query.zbbh!=''">
+                AND A.ZBBH=#{query.zbbh}
+            </if>
+            <if test="query.zadwbh !=null and query.zadwbh!=''">
+                AND A.ZADWBH=#{query.zadwbh}
+            </if>
+            <if test="query.zbdwbh !=null and query.zbdwbh!=''">
+                AND A.ZBDWBH=#{query.zbdwbh}
+            </if>
+
+            <if test="query.gxhylx !=null and query.gxhylx!=''">
+                AND A.GXHYLX = #{query.gxhylx}
+            </if>
+
+            <if test="query.fjmc !=null and query.fjmc!=''">
+                AND A.FJMC LIKE '%'||#{query.fjmc}||'%'
+            </if>
+            <if test="query.wjmc !=null and query.wjmc!=''">
+                AND A.WJMC like '%'||#{query.wjmc}||'%'
+            </if>
+
+            <if test="query.wjlx !=null and query.wjlx!=''">
+                AND A.WJLX = #{query.wjlx}
+            </if>
+        </where>
+
+    </select>
+
+
+    <!--########特行场所-人员照片信息（包括场所单位信息和从业人员照片信息） 开始#######-->
+
+    <resultMap id="photoMap" type="com.cloud.portal.archive.jingz.model.PhotoEntity">
+        <result property="createdTime" column="createdtime"/>
+        <result property="creator" column="creator"/>
+        <result property="deleteFlag" column="deleteflag"/>
+        <result property="departmentCode" column="departmentcode"/>
+        <result property="downloadFlag" column="downloadflag"/>
+        <result property="lastUpdatedBy" column="lastupdatedby"/>
+        <result property="lastUpdatedTime" column="lastupdatedtime"/>
+        <result property="lrdw" column="lrdw"/>
+        <result property="lrr" column="lrr"/>
+        <result property="lrsj" column="lrsj"/>
+        <result property="systemId" column="systemid"/>
+        <result property="uploadFlag" column="uploadflag"/>
+        <result property="ywbbh" column="ywbbh"/>
+        <result property="photoName" column="photoname"/>
+        <result property="photoNo" column="photono"/>
+        <result property="photoRegTime" column="photoregtime"/>
+        <result property="photoSource" column="photosource"/>
+        <result property="photoType" column="phototype"/>
+        <result property="refreshTime" column="refreshtime"/>
+        <result property="reservation01" column="reservation01"/>
+        <result property="reservation02" column="reservation02"/>
+        <result property="reservation03" column="reservation03"/>
+        <result property="reservation04" column="reservation04"/>
+        <result property="reservation05" column="reservation05"/>
+        <result property="reservation06" column="reservation06"/>
+        <result property="reservation07" column="reservation07"/>
+        <result property="reservation08" column="reservation08"/>
+        <result property="reservation09" column="reservation09"/>
+        <result property="reservation10" column="reservation10"/>
+        <result property="securityGrade" column="securitygrade"/>
+
+        <result property="photo" column="photo" jdbcType="BLOB"/>
+
+    </resultMap>
+
+    <select id="getOnePhoto" resultMap="photoMap">
+       SELECT * FROM THGL_RES.JZ_B_RYZP A
+       <where>
+           <if test="query.systemId !=null and query.systemId!=''">
+               AND A.SYSTEMID=#{query.systemId}
+           </if>
+           <if test="query.photoName !=null and query.photoName!=''">
+               AND A.PHOTONAME=#{query.photoName}
+           </if>
+           <if test="query.ywbbh !=null and query.ywbbh!=''">
+               AND A.YWBBH=#{query.ywbbh}
+           </if>
+           <if test="query.photoNo !=null and query.photoNo!=''">
+               AND A.PHOTONO=#{query.photoNo}
+           </if>
+           AND ROWNUM=1
+       </where>
+
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.statistics.employee.mapper.EmployeeMessageMapper">
+
+    <resultMap id="employeeMessageMap" type="com.cloud.portal.statistics.employee.model.EmployeeMessage">
+        <result property="name" column="name"/>
+        <result property="xb" column="xb_ch"/>
+        <result property="csrq" column="csrq"/>
+        <result property="mz" column="mz_ch"/>
+        <result property="zjhm" column="zjhm"/>
+        <result property="hjqh" column="hjqh_ch"/>
+        <result property="jzdz" column="jzdz"/>
+        <result property="cyzt" column="cyzt_ch"/>
+        <result property="sgrq" column="sgrq"/>
+        <result property="lgrq" column="lgrq"/>
+        <result property="dwid" column="dwid"/>
+        <result property="dwmc" column="dwmc"/>
+        <result property="dwdz" column="dwdz"/>
+        <result property="gxdw" column="gxdw"/>
+        <result property="gxqh" column="gxqh"/>
+        <result property="hylx" column="hylx"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="rylx" column="rylx"/>
+        <result property="systemId" column="system_id"/>
+        <result property="tagType" column="tag_type"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="employeeMessageMap">
+        select * from thgl_res.view_employee_all a
+        <where>
+            <if test="query.hylx!=null and query.hylx!=''">
+                and a.hylx = #{query.hylx}
+            </if>
+            <if test="query.gxqh!=null and query.gxqh!=''">
+                and a.gxqh like #{query.gxqh}||'%'
+            </if>
+            <!--<if test="query.rylx!=null and query.rylx!=''">
+                and a.rylx like #{query.rylx}||'%'
+            </if>-->
+            <if test="query.sourceType!=null and query.sourceType!=''">
+                and a.source_type = #{query.sourceType}
+            </if>
+        </where>
+    </select>
+
+    <select id="findPageBySourceType" resultMap="employeeMessageMap">
+        select * from (
+            <choose>
+                <when test="query.sourceType=='1'||query.sourceType==1">
+                    select
+                        y.ryba_id as system_id,
+                        y.ryba_mc as name,
+                        to_char(y.ryba_xb) as xb,
+                        decode(y.ryba_xb, 1, '男', 2, '女', '') as xb_ch,
+                        y.ryba_csrq as csrq,
+                        y.ryba_mzdm as mz,
+                        y.ryba_mz as mz_ch,
+                        y.ryba_zjhm as zjhm,
+                        y.ryba_hjqhdm as hjqh,
+                        y.ryba_hjdz as hjqh_ch,
+                        y.ryba_jzdz as jzdz,
+                        y.ryba_cyzt as cyzt,
+                        decode(y.ryba_cyzt, '20', '在职', '') as cyzt_ch,
+                        y.ryba_djsj as sgrq,
+                        y.ryba_lzsj as lgrq,
+                        y.comp_id as dwid,
+                        y.comp_name as dwmc,
+                        b.csba_jydz as dwdz,
+                        y.comp_code as gxdw,
+                        substr(y.comp_code, 0, 6) as gxqh,
+                        decode(y.yw_lx, '1', '08', '2', '10', '3', '09', '15') as hylx,
+                        '1' as source_type,
+                        TA.tag_type
+                    from thgl_res.YL_RYBA y
+                    left join thgl_res.yl_csba b
+                    on b.comp_id = y.comp_id
+                    left join thgl_res.yl_sys_dictionary d1
+                    on d1.field_value = y.ryba_cyzt
+                    <choose>
+                        <when test="query.tagType !=null and query.tagType!=''">
+                            INNER
+                        </when>
+                        <otherwise>
+                            LEFT
+                        </otherwise>
+                    </choose>
+                    JOIN  T_THCS_EMPLOYEE_TAG TA  ON y.ryba_zjhm= TA.ID_CARD
+                    where y.ryba_lzsj is null
+                    and y.state = '0'
+                    and y.comp_code is not null
+                    <if test="query.hylx!=null and query.hylx!=''">
+                        and decode(y.yw_lx, '1', '08', '2', '10', '3', '09', '15') = #{query.hylx}
+                    </if>
+                    <if test="query.gxqh!=null and query.gxqh!=''">
+                        and substr(y.comp_code,0,6) like #{query.gxqh}||'%'
+                    </if>
+                    <if test="query.tagType !=null and query.tagType!=''">
+                        AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+                    </if>
+                    <if test="query.name!=null and query.name!=''">
+                        AND y.ryba_mc like #{query.name}||'%'
+                    </if>
+                    <if test="query.zjhm!=null and query.zjhm!=''">
+                        AND y.ryba_zjhm = #{query.zjhm}
+                    </if>
+                    <if test="query.cyzt!=null and query.cyzt!=''">
+                        AND y.ryba_cyzt = #{query.cyzt}
+                    </if>
+                    <if test="query.dwmc!=null and query.dwmc!=''">
+                        AND y.comp_name like #{query.dwmc}||'%'
+                    </if>
+                </when>
+                <when test="query.sourceType=='2'||query.sourceType==2">
+                    select
+                        x.xxid as system_id,
+                        x.xm as name,
+                        x.xbdm as xb,
+                        decode(x.xbdm, '1', '男', '2', '女', '') as xb_ch,
+                        null as csrq,
+                        x.mzdm as mz,
+                        '' as mz_ch,
+                        x.zjhm,
+                        x.dzmc_ssxqdm as hjqh,
+                        d7.name as hjqh_ch,
+                        x.hjdz_qhnxxdz as jzdz,
+                        '' as ryzt,
+                        '' as ryzt_ch,
+                        x.rzrq as sgrq,
+                        x.lzrq as lgrq,
+                        x.zagldwbm as dwid,
+                        x.dwmc,
+                        '' as dwdz,
+                        x.sjgsdwdm as gxdw,
+                        substr(x.sjgsdwdm,0,6) as gxqh,
+                        '05' as hylx,
+                        '2' as source_type,
+                        TA.tag_type
+                    from thgl_res.jx_tt_cyryxx x
+                    <choose>
+                        <when test="query.tagType !=null and query.tagType!=''">
+                            INNER
+                        </when>
+                        <otherwise>
+                            LEFT
+                        </otherwise>
+                    </choose>
+                    JOIN  T_THCS_EMPLOYEE_TAG TA  ON x.zjhm= TA.ID_CARD
+                    left join micro_portal.sys_area d7 on d7.code = x.dzmc_ssxqdm
+                    where x.lzrq is null
+                    <if test="query.hylx!=null and query.hylx!=''">
+                        and '05' = #{query.hylx}
+                    </if>
+                    <if test="query.gxqh!=null and query.gxqh!=''">
+                        and substr(x.sjgsdwdm,0,6) like #{query.gxqh}||'%'
+                    </if>
+                    <if test="query.tagType !=null and query.tagType!=''">
+                        AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+                    </if>
+                    <if test="query.name!=null and query.name!=''">
+                        AND x.xm like #{query.name}||'%'
+                    </if>
+                    <if test="query.zjhm!=null and query.zjhm!=''">
+                        AND x.zjhm = #{query.zjhm}
+                    </if>
+                    <if test="query.dwmc!=null and query.dwmc!=''">
+                        AND x.dwmc like #{query.dwmc}||'%'
+                    </if>
+                </when>
+                <when test="query.sourceType=='3'||query.sourceType==3">
+                    select
+                        e.psid as system_id,
+                        e.xm as name,
+                        e.xb,
+                        decode(e.xb, '1', '男', '2', '女', '') as xb_ch,
+                        to_date(e.csrq,'yyyyMMdd') as csrq,
+                        e.mz,
+                        d2.title as mz_ch,
+                        e.zjhm,
+                        e.hjdqh as hjqh,
+                        d3.title as hjqh_ch,
+                        e.xzzxz as jzdz,
+                        e.ryzt as cyzt,
+                        d4.title as cyzt_ch,
+                        decode(thgl_res.isdate(e.sgrq,'yyyy-MM-dd'),'1',to_date(e.sgrq,'yyyy-MM-dd'),null) as sgrq,
+                        decode(thgl_res.isdate(e.lgrq,'yyyy-MM-dd'),'1',to_date(e.lgrq,'yyyy-MM-dd'),null) as lgrq,
+                        h.hnohotel as dwid,
+                        h.hname as dwmc,
+                        h.haddress as dwdz,
+                        h.psorgan as gxdw,
+                        substr(h.psorgan,0,6) as gxqh,
+                        decode(h.hotelKind, '1', '01', '2', '16', '3', '09', '15') as hylx,
+                        '3' as source_type,
+                        TA.tag_type
+                    from thgl_res.view_ly_employee e
+                    inner join thgl_res.view_ly_hotel h
+                    on h.hnohotel = e.dwbh
+                    left join thgl_res.t_ly_commondict d2
+                    on d2.code = e.mz and d2.codetype = '0201'
+                    left join thgl_res.t_ly_commondict d3
+                    on d3.code = e.hjdxz and d3.codetype = '0129'
+                    left join thgl_res.t_ly_commondict d4
+                    on d4.code = e.ryzt and d4.codetype = 'RYZT'
+                    <choose>
+                        <when test="query.tagType !=null and query.tagType!=''">
+                            INNER
+                        </when>
+                        <otherwise>
+                            LEFT
+                        </otherwise>
+                    </choose>
+                    JOIN  T_THCS_EMPLOYEE_TAG TA  ON e.zjhm= TA.ID_CARD
+                    where h.city_code is not null
+                    and e.lgrq is null
+                    and length(h.city_code) = 6
+                    <if test="query.hylx!=null and query.hylx!=''">
+                        and decode(h.hotelKind, '1', '01', '2', '16', '3', '09', '15') = #{query.hylx}
+                    </if>
+                    <if test="query.gxqh!=null and query.gxqh!=''">
+                        and substr(h.psorgan,0,6) like #{query.gxqh}||'%'
+                    </if>
+                    <if test="query.tagType !=null and query.tagType!=''">
+                        AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+                    </if>
+                    <if test="query.name!=null and query.name!=''">
+                        AND e.xm like #{query.name}||'%'
+                    </if>
+                    <if test="query.zjhm!=null and query.zjhm!=''">
+                        AND e.zjhm = #{query.zjhm}
+                    </if>
+                    <if test="query.cyzt!=null and query.cyzt!=''">
+                        AND e.ryzt = #{query.cyzt}
+                    </if>
+                    <if test="query.dwmc!=null and query.dwmc!=''">
+                        AND h.hname like #{query.dwmc}||'%'
+                    </if>
+                </when>
+                <otherwise>
+                    select
+                        j.systemid as system_id,
+                        j.xm as name,
+                        j.xb,
+                        decode(j.xb, '1', '男', '2', '女', '') as xb_ch,
+                        j.csrq,
+                        j.mz,
+                        d6.detail as mz_ch,
+                        j.zjhm,
+                        j.hjdqh as hjqh,
+                        d5.detail as hjqh_ch,
+                        j.xzdxz as jzdz,
+                        j.ryzt,
+                        decode(j.ryzt,'1','有效','0','注销','') as ryzt_ch,
+                        j.sgrq as sgrq,
+                        j.lgrq as lgrq,
+                        z.systemid as dwid,
+                        z.dwywmc as dwmc,
+                        z.xxdz as dwdz,
+                        z.dwszdpcs as gxdw,
+                        z.dwszdxzqh as gxqh,
+                        nvl(substr(z.hylb, 0, 2), '15') as hylx,
+                        '0' as source_type,
+                        TA.tag_type
+                    from THGL_RES.JZ_B_ZA_CYRY j
+                    <choose>
+                        <when test="query.tagType !=null and query.tagType!=''">
+                            INNER
+                        </when>
+                        <otherwise>
+                            LEFT
+                        </otherwise>
+                    </choose>
+                    JOIN  T_THCS_EMPLOYEE_TAG TA  ON j.zjhm= TA.ID_CARD
+                    inner join thgl_res.jz_b_za_zagxdw z
+                    on (z.systemid = j.dwbh or z.dwbh = j.dwbh)
+                    left join THGL_RES.jz_zacq_dictionary d5
+                    on d5.kind='07' and d5.code = j.hjdqh
+                    left join THGL_RES.jz_zacq_dictionary d6
+                    on d6.kind='05' and d6.code = j.hjdqh
+                    where j.djdwdm is not null
+                    <if test="query.hylx!=null and query.hylx!=''">
+                        and nvl(substr(z.hylb, 0, 2), '15') = #{query.hylx}
+                    </if>
+                    <if test="query.gxqh!=null and query.gxqh!=''">
+                        and z.dwszdxzqh like #{query.gxqh}||'%'
+                    </if>
+                    <if test="query.tagType !=null and query.tagType!=''">
+                        AND  instr(TA.TAG_TYPE, #{query.tagType}) > 0
+                    </if>
+                    <if test="query.name!=null and query.name!=''">
+                        AND j.xm like #{query.name}||'%'
+                    </if>
+                    <if test="query.zjhm!=null and query.zjhm!=''">
+                        AND j.zjhm = #{query.zjhm}
+                    </if>
+                    <if test="query.cyzt!=null and query.cyzt!=''">
+                        AND j.ryzt = #{query.cyzt}
+                    </if>
+                    <if test="query.dwmc!=null and query.dwmc!=''">
+                        AND z.dwywmc like #{query.dwmc}||'%'
+                    </if>
+                </otherwise>
+            </choose>
+        )a
+        ${query.dataScope}
+    </select>
+
+</mapper>

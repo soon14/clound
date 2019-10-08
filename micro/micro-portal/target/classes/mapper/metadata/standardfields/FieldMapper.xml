@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.metadata.standardfields.mapper.FieldMapper">
+
+
+  <resultMap id="FieldMapper" type="com.cloud.portal.metadata.standardfields.entity.Field">
+                  <id property="id" column="id"/>
+                        <result property="tableId" column="table_Id"/>
+                        <result property="name" column="name"/>
+                        <result property="cName" column="c_name"/>
+                        <result property="length" column="length"/>
+                        <result property="type" column="type"/>
+                        <result property="pk" column="pk"/>
+                        <result property="createDate" column="create_date" />
+                        <result property="createBy" column="create_by"/>
+                        <result property="updateDate" column="update_date" />
+                        <result property="updateBy" column="update_by"/>
+                        <result property="delFlag" column="del_flag"/>
+                        <result property="remarks" column="remarks"/>
+                        <result property="notNull" column="not_null"/>
+            </resultMap>
+
+      <sql id="fieldColumns">
+                a.id,
+                a.table_Id,
+                a.name,
+                a.c_name,
+                a.length,
+                a.type,
+                a.pk,
+                a.create_date,
+                a.create_by,
+                a.update_date,
+                a.update_by,
+                a.del_flag,
+                a.remarks,
+                a.not_null
+    </sql>
+
+      <sql id="fieldJoins">
+         LEFT JOIN t_datasource_table tb on tb.id = a.table_id
+    </sql>
+
+      <select id="findFieldPage"  resultMap="FieldMapper">
+            select
+            <include refid="fieldColumns"/>
+            from t_datasource_field a
+            <where>
+                  a.del_flag='0'
+                  <if test="queryCondition.tableId != null and queryCondition.tableId != ''">
+                    and a.table_Id = #{queryCondition.tableId}
+                  </if>
+                  <if test="queryCondition.name != null and queryCondition.name != ''">
+                        and a.name LIKE  '%' ||  #{queryCondition.name} || '%'
+                  </if>
+                  ORDER BY a.create_date DESC
+            </where>
+      </select>
+
+    <select id="findExistsFieldList" resultMap="FieldMapper">
+        select
+        a.name AS "name",
+        a.type AS "type",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag"
+        from t_datasource_field a
+        <where>
+            a.del_flag = '0'
+            <if test="queryCondition.tableId != null and queryCondition.tableId != ''">
+                AND a.table_id = #{queryCondition.tableId}
+            </if>
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                and a.name LIKE  '%' ||  #{queryCondition.name} || '%'
+            </if>
+        </where>
+    </select>
+
+      <insert id="saveField">
+		INSERT INTO t_datasource_field(
+			id,
+			table_Id,
+			name,
+			c_name,
+			length,
+			type,
+			pk,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			not_null
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{name},
+			#{cName},
+			#{length},
+			#{type},
+			#{pk},
+			#{createBy},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{notNull}
+		)
+	</insert>
+
+      <update id="updateFieldById">
+		UPDATE t_datasource_field SET
+		name = #{name},
+		c_name = #{cName},
+		length = #{length},
+		type = #{type},
+		pk = #{pk},
+		remarks = #{remarks},
+		update_date = #{updateDate},
+		update_by = #{updateBy},
+		not_null = #{notNull}
+		WHERE id = #{id}
+	</update>
+
+
+    <insert id="saveAll">
+        MERGE INTO t_datasource_field T1
+        USING (
+        <foreach collection="fieldList" item="field" index="index" separator=" union all">
+            SELECT
+            <choose>
+                <when test="field.id !=null and  field.id != ''">
+                    #{field.id} as id,
+                </when>
+                <otherwise>
+                    sys_guid() as id,
+                </otherwise>
+            </choose>
+            #{field.table.id} as tableId,
+            #{field.name} as name,
+            #{field.cName} as cName ,
+            #{field.length} as length,
+            #{field.type} as type,
+            #{field.pk} as pk,
+            #{field.remarks} as remarks,
+            #{field.createDate} as createDate,
+            #{field.createBy} as createBy,
+            #{field.delFlag} as delFlag,
+            #{field.notNull} as notNull,
+            #{field.updateDate} as updateDate,
+            #{field.updateBy} as updateBy
+            FROM dual
+        </foreach>
+        ) T2
+        ON ( T1.id=T2.id)
+        WHEN MATCHED THEN
+        UPDATE  SET
+        T1.name = T2.name,
+        T1.c_name = T2.cName,
+        T1.length =T2.length,
+        T1.type = T2.type,
+        T1.pk = T2.pk,
+        T1.remarks = T2.remarks,
+        T1.update_date = T2.updateDate,
+        T1.update_by = T2.updateBy,
+        T1.not_Null = T2.notNull
+        WHEN NOT MATCHED THEN
+        INSERT (
+        T1.id,
+        T1.table_id,
+        T1.name,
+        T1.c_name,
+        T1.length,
+        T1.type,
+        T1.pk,
+        T1.remarks,
+        T1.create_date,
+        T1.create_by,
+        T1.del_flag,
+        T1.update_date,
+        T1.update_by,
+        T1.not_Null
+        ) VALUES (
+        t2.id,
+        T2.tableId,
+        T2.name,
+        T2.cName,
+        T2.length,
+        T2.type,
+        T2.pk,
+        T2.remarks,
+        T2.createDate,
+        T2.createBy,
+        T2.delFlag,
+        T2.updateDate,
+        T2.updateBy,
+        T2.notNull)
+    </insert>
+
+</mapper>

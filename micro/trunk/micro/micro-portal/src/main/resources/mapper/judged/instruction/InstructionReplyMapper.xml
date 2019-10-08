@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.judged.instruction.mapper.InstructionReplyMapper">
+
+    <resultMap id="instructionReplyMap" type="com.cloud.portal.judged.instruction.model.InstructionReply">
+
+        <result property="id" column="id"/>
+        <result property="instructId" column="instruct_id"/>
+        <result property="policeNo" column="police_no"/>
+        <result property="remark" column="remark"/>
+        <result property="replyOrg" column="reply_org"/>
+        <result property="replyTime" column="reply_time"/>
+        <result property="replyOrgLabel" column="reply_org_label"/>
+        <result property="policeName" column="police_name"/>
+    </resultMap>
+
+    <select id="findListByInstructionId" resultMap="instructionReplyMap">
+        select t.*,l.fullname as reply_org_label from T_THCS_WARN_INSTRUCT_REPLY t
+        left join sys_office l on l.code = t.reply_org
+        where t.instruct_id = #{instructionId}
+        order by t.reply_time desc
+    </select>
+</mapper>

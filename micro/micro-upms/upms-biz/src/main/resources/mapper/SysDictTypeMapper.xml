@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.admin.mapper.SysDictTypeMapper">
+
+	<resultMap id="sysDictTypeMap" type="com.cloud.admin.api.entity.SysDictType">
+		<result property="id" column="id"/>
+		<result property="innerFlag" column="inner_flag"/>
+		<result property="chineseName" column="chinese_name"/>
+		<result property="fullName" column="full_name"/>
+		<result property="name" column="name"/>
+		<result property="versions" column="versions"/>
+		<result property="synonymy" column="synonymy"/>
+		<result property="explain" column="`explain`"/>
+		<result property="objectWord" column="object_word"/>
+		<result property="characterWord" column="character_word"/>
+		<result property="expressWord" column="express_word"/>
+		<result property="dateType" column="dateType"/>
+		<result property="expressFormat" column="express_format"/>
+		<result property="range" column="`range`"/>
+		<result property="relation" column="relation"/>
+		<result property="measurUnit" column="measur_unit"/>
+		<result property="status" column="status"/>
+		<result property="organ" column="organ"/>
+		<result property="rapporteur" column="rapporteur"/>
+		<result property="approveDate" column="approve_date"/>
+		<result property="remarks" column="remarks"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="createBy" column="createBy.id"/>
+		<result property="updateBy" column="updateBy.id"/>
+		<result property="delFlag" column="delFlag"/>
+		<result property="isTree" column="is_tree"/>
+		<result property="source" column="source"/>
+		<result property="cache" column="cache"/>
+	</resultMap>
+</mapper>

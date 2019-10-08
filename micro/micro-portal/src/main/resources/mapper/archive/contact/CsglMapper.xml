@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.contact.mapper.CsglMapper">
+
+    <resultMap id="csglMap" type="com.cloud.portal.archive.contact.entity.Csgl">
+        <result property="jzdwbh" column="jzdwbh"/>
+        <result property="lyxtType" column="lyxt_type"/>
+        <result property="qtdwbh" column="qtdwbh"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="findContactPage" resultMap="csglMap">
+        select A.*,
+        B.systemId as dwbh,
+        B.Qyzcmc as dwmc,
+        B.Gxhylx as hylx,
+        B.Jyzt as placeState,
+        B.Dwszdxzqh as areaCode ,
+        B.Departmentcode as sspcs,
+        B.Jydz as address
+        from t_thcs_glxx A
+        left join THGL_RES.JWZH_ZA_B_ZA_ZAGXDW B
+        on A.JZDWBH = B.Systemid
+        <where>
+            1=1
+            <if test="query.qtdwbh != null and query.qtdwbh != ''">
+                AND A.qtdwbh = #{query.qtdwbh}
+            </if>
+         <!--   <if test="query.lyxtType != null and query.lyxtType != ''">
+                AND A.lyxt_type = #{query.lyxtType}
+            </if>
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND B.Qyzcmc = #{query.dwmc}
+            </if>
+            <if test="query.hylx != null and query.hylx != ''">
+                AND B.Gxhylx = #{query.hylx}
+            </if>
+            <if test="query.placeState != null and query.placeState != ''">
+                AND B.Jyzt = #{query.placeState}
+            </if>
+            <if test="query.areaCode != null and query.areaCode != ''">
+                AND B.Dwszdxzqh like '%'||#{query.areaCode}||'%'
+            </if>
+            <if test="query.address != null and query.address != ''">
+                AND B.Jydz like '%'||#{query.address}||'%'
+            </if>-->
+        </where>
+    </select>
+
+
+    <select id="findPage" resultMap="csglMap">
+        select
+        A.systemId as dwbh,
+        A.Qyzcmc as dwmc,
+        A.Gxhylx as hylx,
+        A.Jyzt as placeState,
+        A.Dwszdxzqh as areaCode ,
+        A.Departmentcode as sspcs,
+        A.Jydz as address
+         from THGL_RES.JWZH_ZA_B_ZA_ZAGXDW A
+        <where>
+            1=1
+            <if test="query.dwmc != null and query.dwmc != ''">
+                AND A.Qyzcmc like '%'|| #{query.dwmc}||'%'
+            </if>
+            <if test="query.hylx != null and query.hylx != ''">
+                AND A.Gxhylx = #{query.hylx}
+            </if>
+            <if test="query.areaCode != null and query.areaCode != ''">
+                AND A.Dwszdxzqh like '%'||#{query.areaCode}||'%'
+            </if>
+            <if test="query.address != null and query.address != ''">
+                AND A.Jydz like '%'||#{query.address}||'%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

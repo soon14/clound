@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.concern.mapper.PersonConcernMapper">
+
+
+  <resultMap id="PersonConcernMapper" type="com.cloud.portal.concern.entity.PersonConcern">
+                  <id property="id" column="id"/>
+                        <result property="name" column="name"/>
+                        <result property="idCard" column="id_card"/>
+                        <result property="cardType" column="card_type"/>
+                        <result property="peopleType" column="people_type"/>
+                        <result property="createDate" column="create_date" />
+                        <result property="createBy" column="create_by"/>
+                        <result property="updateDate" column="update_date" />
+                        <result property="updateBy" column="update_by"/>
+                        <result property="delFlag" column="del_flag"/>
+                        <result property="remarks" column="remarks"/>
+                        <result property="userId" column="user_id"/>
+                        <result property="officeId" column="office_id"/>
+                        <result property="channel" column="channel"/>
+                        <result property="listSource" column="list_source"/>
+                        <result property="appId" column="app_id"/>
+                        <result property="startTime" column="start_time" />
+                        <result property="endTime" column="end_time" />
+                        <result property="status" column="status"/>
+                        <result property="lastDate" column="last_date"/>
+                        <result property="namepy" column="namepy"/>
+                        <result property="sex" column="sex"/>
+                        <result property="nation" column="nation"/>
+                        <result property="bdate" column="bdate"/>
+                        <result property="xzqh" column="xzqh"/>
+                        <result property="address" column="address"/>
+                        <result property="userNo" column="user_no"/>
+                        <result property="img" column="img"/>
+                          <association property="sysUser" javaType="com.cloud.admin.api.entity.SysUser">
+                              <id column="userId" property="userId"/>
+                              <result property="username" column="userName"/>
+                              <result property="idcard" column="idCard"/>
+                              <result property="policeNumber" column="policeNumber"/>
+                          </association>
+            </resultMap>
+
+
+
+            <sql id="personConcerColumns">
+                a.id ,
+                a.name ,
+                a.id_card ,
+                a.card_type ,
+                a.people_type ,
+                a.create_date ,
+                a.create_by ,
+                a.update_date,
+                a.update_by ,
+                a.del_flag ,
+                a.remarks ,
+                a.user_id ,
+                a.office_id ,
+                a.channel ,
+                a.list_source ,
+                a.app_id,
+                a.start_time,
+                a.end_time ,
+                a.status ,
+                a.last_date ,
+                a.namepy ,
+                a.sex ,
+                a.nation ,
+                a.bdate ,
+                a.xzqh ,
+                a.address ,
+                a.user_no ,
+                a.img  ,
+                a.user_id AS "userId",
+                u.username AS "userName",
+                u.idcard AS "idCard",
+                u.police_number AS "policeNumber"
+            </sql>
+
+            <sql id="personConcerJoins">
+                LEFT JOIN micro_upms.sys_user u ON u.user_id = a.user_id
+                LEFT JOIN micro_upms.sys_dept o ON o.dept_id = a.office_id
+            </sql>
+
+    <select id="findPesonConcernPage"  resultMap="PersonConcernMapper">
+          select
+            <include refid="personConcerColumns"/>
+          from t_person_concern a
+        <include refid="personConcerJoins"/>
+        <where>
+            and a.del_flag='0' AND a.user_id = #{queryCondition.sysUser.userId}
+            ${queryCondition.dataScope}
+            <if test="queryCondition.name != null and queryCondition.name != ''">
+                AND a.name LIKE
+                concat('%',#{queryCondition.name},'%')
+            </if>
+            <if test="queryCondition.idCard != null and queryCondition.idCard != ''">
+                AND a.id_card LIKE
+                concat('%',#{queryCondition.idCard},'%')
+            </if>
+            <if test="queryCondition.cardType != null and queryCondition.cardType != ''">
+                AND a.card_type = #{queryCondition.cardType}
+            </if>
+            <if test="queryCondition.peopleType != null and queryCondition.peopleType != ''">
+                AND a.people_type = #{queryCondition.peopleType}
+            </if>
+         <!--   <if test="queryCondition.startTime != null and queryCondition.startTime != ''">
+                AND a.start_time &gt;= #{queryCondition.startTime}
+            </if>
+            <if test="queryCondition.endTime != null and queryCondition.endTime != ''">
+                AND a.end_time &lt;= #{queryCondition.endTime}
+            </if>-->
+        </where>
+        ORDER BY a.create_date DESC
+    </select>
+
+
+    <insert id="savePersonConcern">
+		INSERT INTO t_person_concern(
+			id,
+			name,
+			id_card,
+			card_type,
+			people_type,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			del_flag,
+			remarks,
+			user_id,
+			office_id,
+			channel,
+			list_source,
+			app_id,
+			start_time,
+			end_time,
+			status
+		) VALUES (
+			#{id},
+			#{name},
+			#{idCard},
+			#{cardType},
+			#{peopleType},
+			#{createDate},
+			#{sysUser.userId},
+			#{updateDate},
+			#{sysUser.userId},
+			#{delFlag},
+			#{remarks},
+			#{sysUser.userId},
+			#{sysUser.deptId},
+			#{channel},
+			#{listSource},
+			#{appId},
+			#{startTime},
+			#{endTime},
+			#{status}
+		)
+	</insert>
+
+
+
+
+</mapper>

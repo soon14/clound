@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.portal.archive.dict.mapper.DictMapper">
+
+    <resultMap id="DictMap" type="com.cloud.portal.archive.dict.model.Dict">
+        <result property="id"              column="id"/>
+        <result property="codetype"           column="codetype"/>
+        <result property="code"               column="code"/>
+        <result property="title"           column="title"/>
+        <result property="spell"           column="spell"/>
+        <result property="supercode"           column="supercode"/>
+        <result property="lyb"           column="lyb"/>
+        <result property="lyxt"           column="lyxt"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="DictMap">
+        select * from thgl_res.view_dict_all A
+        <where>
+            <if test="query.codetype != null and query.codetype != ''">
+                AND A.codetype = #{query.codetype}
+            </if>
+            <if test="query.code != null and query.code != ''">
+                AND A.code = #{query.code}
+            </if>
+            <if test="query.title != null and query.title != ''">
+                AND A.title = #{query.title}
+            </if>
+            <if test="query.lyxt != null and query.lyxt != ''">
+                AND A.lyxt = #{query.lyxt}
+            </if>
+        </where>
+    </select>
+
+    <select id="getDict" resultMap="DictMap">
+        select * from(
+        select * from thgl_res.view_dict_all A
+        union all
+        select t.id as id,t.id as ids,t.parent_id as parentId,t.parent_ids as parentIds,'area' as CODETYPE,t.code as CODE,t.full_name as TITLE,'' as SPELL,'' as SUPERCODE,'sys_area' as lyb,'area' as lyxt from micro_portal.sys_area t
+        ) tt
+        <where>
+            <if test="codetype != null and codetype != ''">
+                AND tt.codetype = #{codetype}
+            </if>
+            <if test="lyxt != null and lyxt != ''">
+                AND tt.lyxt = #{lyxt}
+            </if>
+        </where>
+    </select>
+</mapper>
