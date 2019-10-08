@@ -1,0 +1,118 @@
+.avue-ueditor {
+    position: relative;
+    .ql-toolbar.ql-snow {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-color: #dcdfe6;
+    }
+    .ql-editor.ql-blank:before {
+        font-style: normal;
+        font-size: 14px;
+        color: #ccc;
+    }
+    .ql-container.ql-snow {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-color: #dcdfe6;
+    }
+    .ql-container {
+        height: calc(100% - 98px) !important;
+    }
+    .ql-editor {
+        height: 100%;
+    }
+    &__dialog{
+        position: fixed;
+        left:0;
+        top: 0;
+        width:100%;
+        height: 100%;
+    }
+    &__mask{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background-color: rgba(0,0,0,.45);
+    }
+    &__content{
+        padding: 30px 30px;
+        max-height:600px;
+        min-height: 200px;
+        position: relative;
+        margin: 150px auto 50px;
+        background: #fff;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        width: 50%;
+    }
+   &__upload{
+       position: relative;
+   }
+    &__file{
+        position: absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height: 100%;
+        opacity: 0;
+    }
+    &__img{
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        &-left{
+            margin-right: 20px;
+            input{
+                margin-left: 10px;
+                width:80px;
+                height: 30px;
+                border-radius: 5px;
+                border:1px solid #ccc;
+            }
+        }
+        &-right{
+            box-sizing: border-box;
+            flex:1;
+            border:1px solid #ccc;
+            height: 200px;
+            overflow: auto;
+        }
+    }
+    &__menu{
+        display: flex;
+        justify-content: flex-end;
+        button{
+            margin-left: 10px;
+        }
+    }
+    &__tip{
+        font-size: 14px;
+        color:#666;
+        text-align: center;
+    }
+    &__btn{
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        border: 1px solid #dcdfe6;
+        border-color: #dcdfe6;
+        color: #606266;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: .1s;
+        font-weight: 500;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+        color: #fff;
+        background-color: #409EFF;
+        border-color: #409EFF;
+    }
+}

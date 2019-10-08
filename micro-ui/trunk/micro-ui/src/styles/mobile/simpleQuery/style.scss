@@ -1,0 +1,93 @@
+.place{
+  .van-tabs__line {
+    position: absolute;
+    bottom: 15px;
+    left: 0px;
+    z-index: 1;
+    height: 2px !important;
+    background-color: #1989fa;
+    border-radius: 3px;
+  }
+  .cardList{
+    padding-bottom: 3px;
+  }
+  .van-card {
+    position: relative;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    color: #323233;
+    font-size: 14px!important;
+    background-color: #fafafa;
+  }
+  .vanLoading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-15px,-15px);
+  }
+  .tagPadding{
+    margin-left: 5px;
+  }
+  .timeLabel {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 16px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+
+  .el-input {
+    position: relative;
+    font-size: 14px;
+    display: inline-block;
+    width: 38%;
+    margin-left: 12px;
+    margin-top: -8px;
+  }
+
+  .el-input__suffix {
+    right: 55px !important;
+    transition: all .3s;
+  }
+
+  .el-input__inner {
+    -webkit-appearance: none;
+    background-color: #FFF;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #ffffff !important;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: 0;
+    padding: 0px 38px;
+    -webkit-transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
+    transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
+    width: 100%;
+  }
+}
+.vanCellBox{
+  .van-cell:not(:last-child)::after {
+    border-bottom: 2px solid #ebedf0 !important;
+  }
+  .van-cell__title{
+
+  }
+  .van-cell__value {
+    text-align:left!important;
+    -webkit-box-flex: 2!important;
+    -webkit-flex: 2!important;
+    flex:2!important;
+  }
+}
